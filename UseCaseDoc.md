@@ -1,5 +1,5 @@
 # About
-Bryan Kohler, Jason Birdsong, Luke Cerimano, Ryan Egan, Luke Johnson
+Bryan Kohler, Jason Birdsong, Luke Cerimano, Ryan Eagan, Luke Johnson
 
 University of Dayton
 
