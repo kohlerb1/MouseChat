@@ -1,6 +1,9 @@
 # About
 <<<<<<< HEAD
 Bryan Kohler, Jason Birdsong, Luke Cerminaro, Ryan Egan, Luke Johnson
+=======
+Bryan Kohler, Jason Birdsong, Luke Cerimano, Ryan Eagan, Luke Johnson
+>>>>>>> 098b304d1e9c366127c0d6bce08cf02fab169b40
 
 University of Dayton
 
