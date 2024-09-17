@@ -39,6 +39,7 @@ Activity Diagram:
 
 Communication Diagram:
 
+
 ## 2) Sending a Message
     Summary: The user will be able to type a message into a text box and send their message to a user(s)
 
@@ -63,6 +64,7 @@ Communication Diagram:
 Activity Diagram:
 
 Communication Diagram:
+
 ## 3) Sending a Message to a Single Reciever
     Summary:The user will specify who they want to send a message to via the reciever's username. They will then type their message into a text box, click the send button, and the message will be sent to that user. The text box will then clear.
 
@@ -89,6 +91,7 @@ Communication Diagram:
 Activity Diagram:
 
 Communication Diagram:
+
 ## 4) Receiving a Message
     Summary: User will get a message notification that specifies what user is sending them a message. When they click into that chat log, they will see their chat history, including the new message sent to them
 
@@ -113,3 +116,11 @@ Communication Diagram:
 Activity Diagram:
 
 Communication Diagram:
+
+# Screenshots of Progress
+
+## Begining
+
+## Middle
+
+## End
