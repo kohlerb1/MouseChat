@@ -1,4 +1,5 @@
 # About
+<<<<<<< HEAD
 Bryan Kohler, Jason Birdsong, Luke Cerminaro, Ryan Egan, Luke Johnson
 
 University of Dayton
@@ -35,6 +36,9 @@ Below are the features we want our messanger app to have. They are separated int
     Precondition: The user is on the login page
 
     Postcondition: The user is taken to the corresponding account's homepage
+Activity Diagram:
+
+Communication Diagram:
 
 
 ## 2) Sending a Message
@@ -58,6 +62,9 @@ Below are the features we want our messanger app to have. They are separated int
     Precondition: User has an account and is sending a message to someone who has an account
 
     Postcondition: User's message will be sent and displayed in their chat log, and they can continue using the site.
+Activity Diagram:
+
+Communication Diagram:
 
 ## 3) Sending a Message to a Single Reciever
     Summary:The user will specify who they want to send a message to via the reciever's username. They will then type their message into a text box, click the send button, and the message will be sent to that user. The text box will then clear.
@@ -82,6 +89,9 @@ Below are the features we want our messanger app to have. They are separated int
     Precondition: User has an account and is sending a message to someone who has an account
 
     Postcondition: User's message will be sent to the specified user, displayed in their chat log, and they can continue using the site.
+Activity Diagram:
+
+Communication Diagram:
 
 ## 4) Receiving a Message
     Summary: User will get a message notification that specifies what user is sending them a message. When they click into that chat log, they will see their chat history, including the new message sent to them
@@ -104,4 +114,14 @@ Below are the features we want our messanger app to have. They are separated int
     Precondition: User is sent a message
 
     Postcondition: User cn read message and continue using the site
+Activity Diagram:
 
+Communication Diagram:
+
+# Screenshots of Progress
+
+## Begining
+
+## Middle
+
+## End
