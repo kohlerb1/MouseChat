@@ -9,7 +9,7 @@ Department of Computer Science
 
 CPS 490 - Capstone - Fall 2024
 
-Instructor: Ms. Lacie Stiffler
+Instructor: Mrs. Lacie Stiffler
 
 # Case Study: Messanger Application
 
