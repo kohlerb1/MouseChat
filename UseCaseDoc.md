@@ -118,7 +118,7 @@ Communication Diagram:
 
     Postcondition: User can read message and continue using the site
 Activity Diagram:
-
+![Receiving a Message Activity Diagram](/figures/Receive_a_Message_Activity_Diagram.jpg)
 Communication Diagram:
 
 # Screenshots of Progress
