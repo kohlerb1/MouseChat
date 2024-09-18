@@ -124,7 +124,8 @@ Communication Diagram:
 # Screenshots of Progress
 
 ## Beginning
-
+![Trello Board Beginning Screenshot 1](/figures/MouseChat_Sprint1_img1.jpg)
+![Trello Board Beginning Screenshot 2](/figures/MouseChat_Sprint1_img1.2.jpg)
 ## Middle
 
 ## End
