@@ -38,6 +38,7 @@ Below are the features we want our messanger app to have. They are separated int
 
     Postcondition: The user is taken to the corresponding account's homepage
 Activity Diagram:
+![Login Activity Diagram](./figures/Login_Activity_Diagram.jpg)
 
 Communication Diagram:
 
