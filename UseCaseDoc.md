@@ -19,16 +19,16 @@ Instructor: Mrs. Lacie Stiffler
 Below are the features we want our messanger app to have. They are separated into use cases and each have a sequence diagram and activity diagram associated with them.
 
 ## 1) User Login
-    Summary: The user is able to login to their existing account, currently only with their username. With a valid login, they will be taken to thier messanger app home page
+    Summary: The user is able to login to their existing account, currently only with their username. With a valid login, they will be taken to thier messenger app home page
 
     Basic Course of Events:
         1) Student enters their username in the login page
 
-        2)Once they click "Submit" they will be taken to the corresponding account's homepage
+        2) Once they click "Submit" they will be taken to the corresponding account's homepage
     
     Alternative Paths: N/A
 
-    Exception paths: If their is no username connected to the one entered, or they entern nothing into the username field, their access will be denied, and an error message will appear.
+    Exception paths: If there is no username connected to the one entered, or they enter nothing into the username field, their access will be denied, and an error message will appear.
 
     Trigger: Entering an existing username and clicking "Submit"
 
@@ -38,6 +38,7 @@ Below are the features we want our messanger app to have. They are separated int
 
     Postcondition: The user is taken to the corresponding account's homepage
 Activity Diagram:
+
 ![Login Activity Diagram](./figures/Login_Activity_Diagram.jpg)
 
 Communication Diagram:
@@ -69,7 +70,7 @@ Activity Diagram:
 Communication Diagram:
 
 ## 3) Sending a Message to a Single Reciever
-    Summary:The user will specify who they want to send a message to via the reciever's username. They will then type their message into a text box, click the send button, and the message will be sent to that user. The text box will then clear.
+    Summary:The user will specify who they want to send a message to via the receiver's username. They will then type their message into a text box, click the send button, and the message will be sent to that user. The text box will then clear.
 
     Basic Course of Events:
         1) User will specify who they want to send a message to by looking up their username
@@ -115,14 +116,14 @@ Communication Diagram:
 
     Precondition: User is sent a message
 
-    Postcondition: User cn read message and continue using the site
+    Postcondition: User can read message and continue using the site
 Activity Diagram:
 
 Communication Diagram:
 
 # Screenshots of Progress
 
-## Begining
+## Beginning
 
 ## Middle
 
