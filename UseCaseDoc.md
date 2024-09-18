@@ -81,7 +81,7 @@ Communication Diagram:
 
     Alternative Paths: If the user types nothing into the text box, nothing will be sent.
 
-    Exception Paths: N/A
+    Exception Paths: If the username they intend to send a message to doesn't exist, an error will appear and they cannot send a message
 
     Trigger: User selecting an existing user, typing into the text box and clicking the send button
     
