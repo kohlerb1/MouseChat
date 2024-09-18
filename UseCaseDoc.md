@@ -92,7 +92,7 @@ Communication Diagram:
     Precondition: User has an account and is sending a message to someone who has an account
 
     Postcondition: User's message will be sent to the specified user, displayed in their chat log, and they can continue using the site.
-Activity Diagram:
+![Sending to Singl Receiver Activity Diagram](./figures/ActivitySendingToRec.jpg)
 
 Communication Diagram:
 
