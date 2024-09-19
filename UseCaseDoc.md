@@ -69,6 +69,8 @@ Communication Diagram:
     Postcondition: User's message will be sent and displayed in their chat log, and they can continue using the site.
 Activity Diagram:
 
+![Send Message Activity Diagram](./figures/Send_Message_Activity_Diagram.jpg) 
+
 Communication Diagram:
 
 ## 3) Sending a Message to a Single Reciever
