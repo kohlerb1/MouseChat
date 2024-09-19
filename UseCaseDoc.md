@@ -128,5 +128,5 @@ Communication Diagram:
 ![Trello Board Beginning Screenshot 1](/figures/MouseChat_Sprint1_img1.jpg)
 ![Trello Board Beginning Screenshot 2](/figures/MouseChat_Sprint1_img1.2.jpg)
 ## Middle
-
+![Trello Board Middle Screenshot](/figures/MouseChat_Sprint1_Middle.jpg)
 ## End
