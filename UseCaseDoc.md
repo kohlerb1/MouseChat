@@ -43,6 +43,8 @@ Activity Diagram:
 
 Communication Diagram:
 
+![Login Communication Diagram](./figures/Login_Communication_Diagram.jpg)
+
 
 ## 2) Sending a Message
     Summary: The user will be able to type a message into a text box and send their message to a user(s)
