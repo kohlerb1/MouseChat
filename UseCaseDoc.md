@@ -124,6 +124,7 @@ Communication Diagram:
 Activity Diagram:
 ![Receiving a Message Activity Diagram](/figures/Receive_a_Message_Activity_Diagram.jpg)
 Communication Diagram:
+![Receiving a Message Activity Diagram Draft](/figures/Receiving_A_Message_Communication_Diagram.jpg)
 
 # Screenshots of Progress
 
