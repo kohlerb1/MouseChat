@@ -16,7 +16,7 @@ Instructor: Mrs. Lacie Stiffler
 ## System Analysis
 
 ## User Requirements
-Below are the features we want our messanger app to have. They are separated into use cases and each have a sequence diagram and activity diagram associated with them.
+Below are the features we want our messanger app to have. They are separated into use cases and each have a communication diagram and activity diagram associated with them.
 
 ## 1) User Login
     Summary: The user is able to login to their existing account, currently only with their username. With a valid login, they will be taken to thier messenger app home page
