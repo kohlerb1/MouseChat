@@ -11,15 +11,15 @@ CPS 490 - Capstone - Fall 2024
 
 Instructor: Mrs. Lacie Stiffler
 
-# Case Study: Messanger Application
+# Case Study: Messenger Application
 
 ## System Analysis
 
 ## User Requirements
-Below are the features we want our messanger app to have. They are separated into use cases and each have a communication diagram and activity diagram associated with them.
+Below are the features we want our messenger app to have. They are separated into use cases and each have a communication diagram and activity diagram associated with them.
 
 ## 1) User Login
-    Summary: The user is able to login to their existing account, currently only with their username. With a valid login, they will be taken to thier messenger app home page
+    Summary: The user is able to login to their existing account, currently only with their username. With a valid login, they will be taken to their messenger app home page
 
     Basic Course of Events:
         1) Student enters their username in the login page
@@ -93,7 +93,7 @@ Communication Diagram:
 
     Trigger: User selecting an existing user, typing into the text box and clicking the send button
     
-    Assumptions: The user sending and recieving the message exist.
+    Assumptions: The user sending and receiving the message exist.
 
     Precondition: User has an account and is sending a message to someone who has an account
 
