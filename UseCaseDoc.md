@@ -140,3 +140,4 @@ Communication Diagram:
 ## Middle
 ![Trello Board Middle Screenshot](/figures/MouseChat_Sprint1_Middle.jpg)
 ## End
+![Trello Board Middle Screenshot](/figures/MouseChat_Sprint1_Final.jpg)
