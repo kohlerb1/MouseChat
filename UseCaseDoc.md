@@ -102,6 +102,8 @@ Activity Diagram:
 
 Communication Diagram:
 
+![Sending to Single Receiver Activity Diagram](./figures/CommunicationSendToRec.jpg)
+
 ## 4) Receiving a Message
     Summary: User will get a message notification that specifies what user is sending them a message. When they click into that chat log, they will see their chat history, including the new message sent to them
 
