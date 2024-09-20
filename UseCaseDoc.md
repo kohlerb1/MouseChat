@@ -73,6 +73,8 @@ Activity Diagram:
 
 Communication Diagram:
 
+![Send Message Communication Diagram](./figures/Send_Message_Communication_Diagram.jpg)
+
 ## 3) Sending a Message to a Single Reciever
     Summary:The user will specify who they want to send a message to via the receiver's username. They will then type their message into a text box, click the send button, and the message will be sent to that user. The text box will then clear.
 
