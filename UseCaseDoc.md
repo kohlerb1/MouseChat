@@ -52,7 +52,7 @@ Communication Diagram:
     Basic Course of Events:
         1) User will type a message into a text box
 
-        2) User will hit send button
+        2) User will hit send button 
 
         3) Message will be sent and text box will be empty of their last message, and the chat log will show their sent message
 
