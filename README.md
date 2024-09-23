@@ -1,4 +1,11 @@
-# Bryan Test
-# Luke Test
-# MouseChat TEST Ryan Test
-# THIS IS JASON'S TEST
+# Group 2 "MouseChat"
+## Members
+Luke Johnson
+
+Luke Cerminaro
+
+Ryan Eagan
+
+Bryan Kohler
+
+Jason Birdsong
