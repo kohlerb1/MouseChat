@@ -245,14 +245,13 @@ const getUser = async(req, res) => {
     }
 };
 
-
-
-
-
-
-
-
-
+const logout = async (req, res) => {
+    let user = req.session.user.username;
+    req.session.destroy( () => {
+        console.log(`${user} logged out`);
+    });
+    res.redirect('/');
+}
 
 
 
