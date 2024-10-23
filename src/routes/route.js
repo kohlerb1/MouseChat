@@ -18,7 +18,23 @@ router.get('/login', (req, res) => {
 //router.post call function to do login
 
 
-//protected page here
+//protected page stuff here
+
+//check for authenticated to access protected page
+const checkSignIn = (req, res, next) => {
+    if(req.session.user){
+        return next() //If session exists, proceed to page
+    } else{
+        const err = new Error("Not logged in!");
+        err.status = 400;
+        return next(err);   //Error, trying to access unauthorized page!
+    }
+};
+
+// router call for proected page, calls checksign in for authication before accessing protected page
+router.get('/protected', checkSignIn, (req, res) => {
+    res.render('protected_page', {id: req.session.user.id});
+});
 
 module.exports = router;
 
