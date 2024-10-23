@@ -204,11 +204,11 @@ const login = async(req, res) => {
         return;
     }   
 
-    // let user = User.find( (element) => {
-    //     return element.username === req.body.username && element.password === req.body.password;
-    // });
+    let user = User.find( (element) => {
+        return element.username === req.body.username && element.password === req.body.password;
+    });
     getUser(req, res);
-    let user = findUser(req.body.username, req.body.password);
+    // let user = findUser(req.body.username, req.body.password);
 
     console.log("<Login> Find: ", user);
     if(user === undefined || user === null) {
@@ -241,36 +241,10 @@ const getUser = async(req, res) => {
     }
 };
 
-const findUser = async (uname, pword) => {
-    query = {username: uname, password: pword};
-    return await User.find((query));
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// const findUser = async (uname, pword) => {
+//     query = {username: uname, password: pword};
+//     return await User.find((query));
+// };
 
 
 
