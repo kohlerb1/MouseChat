@@ -123,7 +123,7 @@ const updateUserCheese = async (req, res) => {
     try{
         let uname = req.params.username
         let pword = req.params.password
-        let ch = req.params.cheese
+        let ch = req.body.cheese
         let query = {username: uname, password: pword};
         let update = {cheese: ch};
 
@@ -143,7 +143,7 @@ const updateUserPfp = async (req, res) => {
     try{
         let uname = req.params.username
         let pword = req.params.password
-        let pfp = req.params.profilepicture
+        let pfp = req.body.profilepicture
         let query = {username: uname, password: pword};
         let update = {profilepicture: pfp};
 
@@ -497,6 +497,5 @@ const getUser = async(req, res) => {
 
 
 
-
 //************LINE 500 *///////////////
-module.exports = {createUser, login};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login};

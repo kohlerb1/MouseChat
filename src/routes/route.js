@@ -15,7 +15,9 @@ router.post('/signup', Controller.createUser);
 
 //protected page here
 
-
+router.delete("/:username/:password", Controller.deleteUser);
+router.put("/:username/:password/cheese", Controller.updateUserCheese);
+router.put("/:username/:password/pfp", Controller.updateUserPfp);
 //home page here
 router.get('/', (req, res) => {
     res.render('homepage');
