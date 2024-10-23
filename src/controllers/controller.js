@@ -1,41 +1,42 @@
+const User = require('../models/model');
 
+const userExists = async (uname) => {
+    query = {username: uname};
+    return await User.exists(query);
+};
 
+const createUser = async (req,res) => {
+    try{
+        const userData = await req.body;
+        console.log(`This is the data: ${JSON.stringify(userData)}`);
 
+        let uname = userData.username;
+        let pword = userData.password;
+        let cheeze = userData.cheese;
+        let propic = userData.profilepicture
 
+        if (await userExists(uname)) {
+            res.status(400).json({success: false, message: "User already exists!"});
+            return;
+        }
 
+        let db_data = {username: uname, password: pword, cheese: cheeze, profilepicture: propic};
+        await User.create(db_data).then( (createdUser) => {
+            if (!createdUser)
+                return res.status(404).json({ success: false, message: "User creation failed", error: "Unable to get created User" });
 
+            //res.status(201).json({ success: true, createdUser});
+            res.redirect('/protected');
+        })
 
+        .catch( (error) => {
+            res.status(404).json({ success: false, error: error.message});
+        });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal server error"});
+    }
+};
 
 
 
@@ -498,3 +499,4 @@ const updateUserPfp = async (req, res) => {
 
 
 //************LINE 500 *///////////////
+module.exports = {createUser};
