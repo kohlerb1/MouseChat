@@ -1,3 +1,4 @@
-const Router = require("./routes/route");
+
+const Router = require("./routes/route")
 
 module.exports = {Router};
