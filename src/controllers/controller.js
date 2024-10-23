@@ -97,7 +97,6 @@ const createUser = async (req,res) => {
 
 
 
-
 //************LINE 100 *///////////////
 const deleteUser = async (req, res) => {
     try{
@@ -124,7 +123,7 @@ const updateUserCheese = async (req, res) => {
     try{
         let uname = req.params.username
         let pword = req.params.password
-        let ch = req.params.cheese
+        let ch = req.body.cheese
         let query = {username: uname, password: pword};
         let update = {cheese: ch};
 
@@ -144,7 +143,7 @@ const updateUserPfp = async (req, res) => {
     try{
         let uname = req.params.username
         let pword = req.params.password
-        let pfp = req.params.profilepicture
+        let pfp = req.body.profilepicture
         let query = {username: uname, password: pword};
         let update = {profilepicture: pfp};
 
@@ -499,4 +498,4 @@ const updateUserPfp = async (req, res) => {
 
 
 //************LINE 500 *///////////////
-module.exports = {createUser};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp};
