@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(upload.array());
 
 const router = require('./routes');
-app.use('/', router.router);
+app.use('/', router.Router);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
