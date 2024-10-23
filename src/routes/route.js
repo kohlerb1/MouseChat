@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Controller = require("../controllers/controller");
+const Controller= require("../controllers/controller");
 
 router.get('/signup', (req, res) => {
     res.render('signup');

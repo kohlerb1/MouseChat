@@ -198,16 +198,19 @@ const updateUserPfp = async (req, res) => {
 
 
 //************LINE 200 *///////////////  ME
+const session = require('express-session');
+
 const login = async(req, res) => {
     if (!req.body.username || !req.body.password) {
         res.render('login', {message: "Please enter both your username and password"});
         return;
     }   
 
-    let user = User.find( (element) => {
-        return element.username === req.body.username && element.password === req.body.password;
-    });
+    let user = findUser(req.body.username, req.body.password);
+
+    console.log("user established");
     getUser(req, res);
+    console.log("response sent");
     // let user = findUser(req.body.username, req.body.password);
 
     console.log("<Login> Find: ", user);
@@ -241,10 +244,10 @@ const getUser = async(req, res) => {
     }
 };
 
-// const findUser = async (uname, pword) => {
-//     query = {username: uname, password: pword};
-//     return await User.find((query));
-// };
+const findUser = async (uname, pword) => {
+    query = {username: uname, password: pword};
+    return await User.find(query);
+};
 
 
 
@@ -498,4 +501,4 @@ const getUser = async(req, res) => {
 
 
 //************LINE 500 *///////////////
-module.exports = {createUser};
+module.exports = {createUser, login};
