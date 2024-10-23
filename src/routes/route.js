@@ -14,6 +14,11 @@ router.post('/signup', Controller.createUser);
 
 //protected page here
 
+
+//home page here
+router.get('/', (req, res) => {
+    res.render('homepage');
+});
 module.exports = router;
 
 
