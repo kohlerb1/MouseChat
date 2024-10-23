@@ -199,14 +199,16 @@
 
 //************LINE 200 *///////////////  ME
 const login = async(req, res) => {
-    if (!req.body.id || !req.body.password) {
-        res.render('login', {message: "Please enter both your id and password"});
+    if (!req.body.username || !req.body.password) {
+        res.render('login', {message: "Please enter both your username and password"});
         return;
     }   
 
-    let user = User.find( (element) => {
-        return element.id === req.body.id && element.password === req.body.password;
-    });
+    // let user = User.find( (element) => {
+    //     return element.username === req.body.username && element.password === req.body.password;
+    // });
+    getUser(req, res);
+    let user = findUser(req.body.username, req.body.password);
 
     console.log("<Login> Find: ", user);
     if(user === undefined || user === null) {
@@ -219,6 +221,30 @@ const login = async(req, res) => {
     }
 };
 
+const getUser = async(req, res) => {
+    try{
+        let uname = req.body.username
+        let pword = req.body.password 
+
+        let query = {username: uname, password: pword};
+
+        await User.findOne(query).then( (foundUser) => {
+            if (!foundUser)
+                return res.status(404).json({success: false, message: "User retrieval failed", error: "Unable to find User"});
+            res.status(201).json({success: true, foundUser});
+        })
+        .catch( (error) => {
+            res.status(404).json({success: false, error: error.message});
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: "Internal Server Error"});
+    }
+};
+
+const findUser = async (uname, pword) => {
+    query = {username: uname, password: pword};
+    return await User.find((query));
+};
 
 
 
