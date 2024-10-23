@@ -200,18 +200,19 @@ const updateUserPfp = async (req, res) => {
 //************LINE 200 *///////////////  ME
 const session = require('express-session');
 
+const findUser = async (uname, pword) => {
+    const query = {username: uname, password: pword};
+    return await User.findOne(query);
+};
+
 const login = async(req, res) => {
     if (!req.body.username || !req.body.password) {
         res.render('login', {message: "Please enter both your username and password"});
         return;
     }   
-
-    let user = findUser(req.body.username, req.body.password);
-
-    console.log("user established");
+    
+    let user = await findUser(req.body.username, req.body.password);
     getUser(req, res);
-    console.log("response sent");
-    // let user = findUser(req.body.username, req.body.password);
 
     console.log("<Login> Find: ", user);
     if(user === undefined || user === null) {
@@ -219,7 +220,7 @@ const login = async(req, res) => {
         return;
     } else {
         req.session.user = user;
-        res.redirect('/protected_page');
+        res.redirect('/protected');
         return;
     }
 };
@@ -244,10 +245,7 @@ const getUser = async(req, res) => {
     }
 };
 
-const findUser = async (uname, pword) => {
-    query = {username: uname, password: pword};
-    return await User.find(query);
-};
+
 
 
 
