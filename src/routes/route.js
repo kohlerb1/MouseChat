@@ -16,7 +16,7 @@ router.get('/login', (req, res) => {
     res.render('login');
 });
 //router.post call function to do login
-
+router.post('/login', Controller.login);
 
 //protected page here
 

@@ -197,27 +197,27 @@
 
 
 
-//************LINE 200 *///////////////
+//************LINE 200 *///////////////  ME
+const login = async(req, res) => {
+    if (!req.body.id || !req.body.password) {
+        res.render('login', {message: "Please enter both your id and password"});
+        return;
+    }   
 
+    let user = User.find( (element) => {
+        return element.id === req.body.id && element.password === req.body.password;
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    console.log("<Login> Find: ", user);
+    if(user === undefined || user === null) {
+        res.render('login', {message: "Invalid credentials!"});
+        return;
+    } else {
+        req.session.user = user;
+        res.redirect('/protected_page');
+        return;
+    }
+};
 
 
 
