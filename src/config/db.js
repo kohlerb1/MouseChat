@@ -1,5 +1,5 @@
 const uname = "mousechatofficial";
-const pword = "np9M9f2fmKNe7Thgb";
+const pword = "p9M9f2fmKNe7Thgb";
 const cluster = "messengerdb.y9swx";
 const dbname = "MessengerDB";
 
