@@ -1,7 +1,7 @@
 const uname = "mousechatofficial";
 const pword = "p9M9f2fmKNe7Thgb";
 const cluster = "messengerdb.y9swx";
-const dbname = "MessengerDB";
+const dbname = "MouseChatDB";
 
 const uri = `mongodb+srv://${uname}:${pword}@${cluster}.mongodb.net/${dbname}?retryWrites=true&w=majority&appName=MessengerDB`;
 
