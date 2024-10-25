@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Controller= require("../controllers/controller");
+const session = require("express-session");
 
 router.get('/signup', (req, res) => {
     res.render('signup');
@@ -11,12 +12,24 @@ router.get('/login', (req, res) => {
 });
 //router.post call function to do login
 router.post('/login', Controller.login);
-router.post('/signup', Controller.createUser);
+router.post('/signup', Controller.createUser, (req,res) =>{  
+    console.log("<Signup> Find: ", user);
+    if (user === undefined || user === null) {
+        let newUser = {id: req.body.id, password: req.body.password};
+        Users.push(newUser);
+        req.session.user = newUser;
+        res.redirect('/protected');
+        return;
+    } else {
+    res.render('signup', { message: "User Already Exists! Login or choose another user id"});
+    return;
+    }
+});
 
 //protected page stuff here
 
 //check for authenticated to access protected page
-const checkSignIn = (req, res, next) => {
+const checkSignIn = (req, res, next) => { // note: does not work on redirect from inital signup, but works on login
     if(req.session.user){
         return next() //If session exists, proceed to page
     } else{
