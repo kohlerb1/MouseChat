@@ -24,5 +24,25 @@ router.get('/', (req, res) => {
 });
 module.exports = router;
 
+router.get("/updateUserCheese", (req, res) => {
+    res.render("updateUserCheese");
+})
+router.post("/updateUserCheese", Controller.updateUserCheese);
+
+router.get("/updateUserPFP", (req, res) => {
+    res.render("updateUserPFP");
+})
+router.post("/updateUserPFP", Controller.updateUserPfp);
+
+router.get("/deleteUser", (req, res) => {
+    res.render("deleteUser");
+})
+router.post("/deleteUser", Controller.deleteUser);
 
 
+/*
+curl -X PUT http://localhost:3000/"username"/"password"/cheese -H "Content-Type: application/json" -d "{\"cheese\": \"Swiss\"}"
+curl -X PUT http://localhost:3000/"username"/"password"/pfp -H "Content-Type: application/json" -d "{\"profilepicture\": 20}"
+
+curl -X DELETE http://localhost:3000/"username"/"password"
+*/

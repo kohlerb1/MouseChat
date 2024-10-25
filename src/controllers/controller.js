@@ -100,66 +100,96 @@ const createUser = async (req,res) => {
 //************LINE 100 *///////////////
 const deleteUser = async (req, res) => {
     try{
-        let uname = req.params.username
-        let pword = req.params.password
+        let uname = req.body.username
+        let pword = req.body.password
         let query = {username: uname, password: pword};
 
         await User.findOneAndDelete(query).then( (foundUser) => {
-            if (!foundUser)
-                return res.status(404).json({
+            if (!foundUser) {
+                res.render("deleteUser", {message: "Invalid User Credentials"})
+                /*return res.status(404).json({
                     success: false,
-                    message: "User deletion failed", error: "Unable to locate User" });
-            res.status(201).json({ success: true, foundUser});
+                    message: "User deletion failed", error: "Unable to locate User" });*/
+                }
+            //res.status(201).json({ success: true, foundUser});
+            res.redirect('/');
         })
         .catch( (error) => {
-            res.status(404).json({success: false, error: error.message});
+            res.render("deleteUser", {message: "Invalid User Credentials"})
+            //res.status(404).json({success: false, error: error.message});
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Internal server error"});
+        res.render("deleteUser", {message: "Internal server error"})
+        //res.status(500).json({ success: false, message: "Internal server error"});
     }
 };
 
 const updateUserCheese = async (req, res) => {
     try{
-        let uname = req.params.username
-        let pword = req.params.password
+        let uname = req.body.username
+        let pword = req.body.password
         let ch = req.body.cheese
         let query = {username: uname, password: pword};
         let update = {cheese: ch};
 
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
             if (!foundUser)
-                return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
-            res.status(201).json({ success: true, foundUser});
+                res.render("updateUserCheese", {message: "Invalid User Credentials"})
+                //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
+            //res.status(201).json({ success: true, foundUser});
+            res.redirect('/protected');
         })
         .catch ( (error) => {
-            res.status(404).json({ success: false, error: error.message});
+            res.render("updateUserCheese", {message: "Invalid User Credentials"})
+            //res.status(404).json({ success: false, error: error.message});
         })
     } catch (error){
-        res.status(500).json({ success: false, message: "Internal server error"});
+        res.render("updateUserCheese", {message: "Internal"})
+        //res.status(500).json({ success: false, message: "Internal server error"});
     }
 };
 const updateUserPfp = async (req, res) => {
     try{
-        let uname = req.params.username
-        let pword = req.params.password
+        let uname = req.body.username
+        let pword = req.body.password
         let pfp = req.body.profilepicture
         let query = {username: uname, password: pword};
         let update = {profilepicture: pfp};
 
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
             if (!foundUser)
-                return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
-            res.status(201).json({ success: true, foundUser});
+                res.render("updateUserPFP", {message: "Invalid User Credentials"})
+                //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
+            //res.status(201).json({ success: true, foundUser});
+            res.redirect('/protected');
         })
         .catch ( (error) => {
-            res.status(404).json({ success: false, error: error.message});
+            res.render("updateUserPFP", {message: "Invalid User Credentials"})
+            //res.status(404).json({ success: false, error: error.message});
         })
     } catch (error){
-        res.status(500).json({ success: false, message: "Internal server error"});
+        res.render("updateUserPFP", {message: "Internal Server Error"})
+        //res.status(500).json({ success: false, message: "Internal server error"});
     }
 };
+const getUserByName = async(req, res) => {
+    try{
+        let uname = req.body.username
 
+        let query = {username: uname};
+
+        await User.findOne(query).then( (foundUser) => {
+            if (!foundUser)
+                return res.status(404).json({success: false, message: "Unable to Find User", error: "User does not Exist"});
+            res.status(201).json({success: true, foundUser});
+        })
+        .catch( (error) => {
+            res.status(404).json({success: false, error: error.message});
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: "Internal Server Error"});
+    }
+};
 
 
 
@@ -236,6 +266,7 @@ const getUser = async(req, res) => {
             if (!foundUser)
                 return res.status(404).json({success: false, message: "User retrieval failed", error: "Unable to find User"});
             res.status(201).json({success: true, foundUser});
+            //do messaging stuff here, on success case, for next sprint
         })
         .catch( (error) => {
             res.status(404).json({success: false, error: error.message});
@@ -497,4 +528,4 @@ const getUser = async(req, res) => {
 
 
 //************LINE 500 *///////////////
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getUserByName};
