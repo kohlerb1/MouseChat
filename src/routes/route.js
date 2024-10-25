@@ -24,6 +24,8 @@ router.get('/', (req, res) => {
 });
 router.get("/all", Controller.getAllUsers);
 
+router.post('/uploadProfilePic', upload.single('profilepic'), Controller.uploadPic);
+
 module.exports = router;
 
 

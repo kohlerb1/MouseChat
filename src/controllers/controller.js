@@ -1,5 +1,5 @@
-const User = require('../models/model');
-
+//const User = require('../models/model');
+const User = require('../models/temp_model');
 const userExists = async (uname) => {
     query = {username: uname};
     return await User.exists(query);
@@ -253,7 +253,22 @@ const getUser = async(req, res) => {
 
 
 
-
+const uploadPic = async(req, res) => {
+    // Code from ChatGPT
+    try {
+        const user = await User.findById(req.params.userId);
+    
+        user.profilepicture = {
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+        };
+    
+        await user.save();
+        res.status(200).send('Avatar uploaded successfully!');
+      } catch (error) {
+        res.status(500).send('Error uploading avatar');
+      }
+}
 
 
 
