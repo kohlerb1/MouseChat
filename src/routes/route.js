@@ -22,6 +22,8 @@ router.put("/:username/:password/pfp", Controller.updateUserPfp);
 router.get('/', (req, res) => {
     res.render('homepage');
 });
+router.get("/all", Controller.getAllUsers);
+
 module.exports = router;
 
 
