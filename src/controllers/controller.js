@@ -13,7 +13,22 @@ const createUser = async (req,res) => {
         let uname = userData.username;
         let pword = userData.password;
         let cheeze = userData.cheese;
-        let propic = userData.profilepicture
+
+        // fetch('/uploadProfilePic', {
+        //     method: 'POST',
+        //     body: 
+        // })
+
+        console.log("File received:", req.file); // Debugging line
+        console.log("HERE");
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No profile picture uploaded!" });
+        }
+
+        // Set up profile picture data
+        const propic = { data: req.file.buffer, contentType: req.file.mimetype };
+        // console.log(typeof(propic));
+        // console.log(propic);
 
         if (await userExists(uname)) {
             res.status(400).json({success: false, message: "User already exists!"});
@@ -246,29 +261,41 @@ const getUser = async(req, res) => {
     }
 };
 
-
-
-
-
-
-
-
-const uploadPic = async(req, res) => {
-    // Code from ChatGPT
+const showPic = async(req, res) => {
     try {
-        const user = await User.findById(req.params.userId);
+        let uname = req.params.username;
+        let pword = req.params.password ;
+        let query = {username: uname, password: pword};
+        const user = await User.findOne(query);
+        if (!user || !user.profilepicture) {
+            return res.status(404).send('Profile picture not found');
+        }
+
+        res.set('Content-Type', user.profilepicture.contentType);
+        res.send(user.profilepicture.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal server error');
+    }
+};
+// const uploadPic = async(req, res) => {
+//     // Code from ChatGPT
+//     try {
+//         const user = await User.findById(req.params.userId);
     
-        user.profilepicture = {
-          data: req.file.buffer,
-          contentType: req.file.mimetype,
-        };
-    
-        await user.save();
-        res.status(200).send('Avatar uploaded successfully!');
-      } catch (error) {
-        res.status(500).send('Error uploading avatar');
-      }
-}
+//         user.profilepicture = {
+//           data: req.file.buffer,
+//           contentType: req.file.mimetype,
+//         };
+//         console.log("saving");
+//         await user.save();
+//         console.log("picture uploaded");
+//         res.status(200).send('Avatar uploaded successfully!');
+//       } catch (error) {
+//         console.log("ERROR");
+//         res.status(500).send('Error uploading avatar');
+//       }
+// }
 
 
 
@@ -514,4 +541,4 @@ const uploadPic = async(req, res) => {
 
 
 //************LINE 500 *///////////////
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, showPic};

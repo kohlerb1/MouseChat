@@ -1,14 +1,14 @@
-html 
+html
     head 
         title Signup 
     body 
         h2 Welcome to MouseChat! 
         h3 Please Fill out the Information Below to Complete the Sign Up Process.
-        if(message)
+        if message
             h4 #{message} 
-        form(action = "/signup" method = "POST")
-            input(name = "username" type = "text" required placeholder = "Username")
-            input(name = "password" type = "password" required placeholder = "Password")
-            input(name = "cheese" type = "text" required placeholder = "Favorite Cheese")
-            input(name = "profilepicture" type = "number" required placeholder = "1")
-            button(type = "Submit") Sign Up!
+        form(action="/signup" method="POST" enctype="multipart/form-data")
+            input(name="username" type="text" required placeholder="Username")
+            input(name="password" type="password" required placeholder="Password")
+            input(name="cheese" type="text" required placeholder="Favorite Cheese")
+            input(name="profilepicture" type="file" accept="image/jpeg,image/jpg" required placeholder="Profile Picture")
+            button(type="submit") Sign Up!

@@ -2,7 +2,9 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const upload = multer();
+//const storage = multer.memoryStorage();
+//const upload = multer({ storage: storage });
+const upload = multer({ dest: 'uploads/' });
 const session = require('express-session');
 
 const db = require('./config/db');
@@ -12,7 +14,7 @@ app.set('views','./views');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
-app.use(upload.array());
+//app.use(upload.array());
 app.use(session( {secret: "Mellon"}));
 
 const router = require('./routes');
