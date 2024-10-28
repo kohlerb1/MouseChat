@@ -16,7 +16,7 @@ const createUser = async (req,res) => {
         let propic = userData.profilepicture
 
         if (await userExists(uname)) {
-            res.status(400).json({success: false, message: "User already exists!"});
+            res.render("signup", {message: "User Already Exists"})
             return;
         }
 
@@ -30,11 +30,13 @@ const createUser = async (req,res) => {
         })
 
         .catch( (error) => {
-            res.status(404).json({ success: false, error: error.message});
+            //res.status(404).json({ success: false, error: error.message});
+            res.render("signup", {message: "User Already Exists"})
         });
 
     } catch (error) {
-        res.status(500).json({ success: false, message: "Internal server error"});
+        //res.status(500).json({ success: false, message: "Internal server error"});
+        res.render("signup", {message: "Internal Server Error"})
     }
 };
 
