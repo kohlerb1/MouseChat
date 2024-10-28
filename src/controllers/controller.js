@@ -98,20 +98,24 @@ const getAllUsers = async (req,res) => {
 
 
 //************LINE 100 *///////////////
+const session = require('express-session');
 const deleteUser = async (req, res) => {
     try{
+        let unameCheck = req.session.user.username
+        let pwordCheck = req.session.user.password
         let uname = req.body.username
         let pword = req.body.password
-        let query = {username: uname, password: pword};
+        let query = {username: unameCheck, password: pwordCheck};
 
         await User.findOneAndDelete(query).then( (foundUser) => {
-            if (!foundUser) {
+            if (!foundUser || unameCheck != uname || pword!=pwordCheck) {
                 res.render("deleteUser", {message: "Invalid User Credentials"})
-                /*return res.status(404).json({
-                    success: false,
-                    message: "User deletion failed", error: "Unable to locate User" });*/
                 }
             //res.status(201).json({ success: true, foundUser});
+            let user = req.session.user.id;
+            req.session.destroy( () => {
+                console.log(`${user} logged out.`)
+            });
             res.redirect('/');
         })
         .catch( (error) => {
@@ -126,21 +130,21 @@ const deleteUser = async (req, res) => {
 
 const updateUserCheese = async (req, res) => {
     try{
-        let uname = req.body.username
-        let pword = req.body.password
+        let uname = req.session.user.username
+        let pword = req.session.user.password
         let ch = req.body.cheese
         let query = {username: uname, password: pword};
         let update = {cheese: ch};
 
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
             if (!foundUser)
-                res.render("updateUserCheese", {message: "Invalid User Credentials"})
+                res.render("updateUserCheese", {message: "Not properly logged in"})
                 //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
             //res.status(201).json({ success: true, foundUser});
             res.redirect('/protected');
         })
         .catch ( (error) => {
-            res.render("updateUserCheese", {message: "Invalid User Credentials"})
+            res.render("updateUserCheese", {message: "Not properly logged in"})
             //res.status(404).json({ success: false, error: error.message});
         })
     } catch (error){
@@ -150,21 +154,21 @@ const updateUserCheese = async (req, res) => {
 };
 const updateUserPfp = async (req, res) => {
     try{
-        let uname = req.body.username
-        let pword = req.body.password
+        let uname = req.session.user.username
+        let pword = req.session.user.password
         let pfp = req.body.profilepicture
         let query = {username: uname, password: pword};
         let update = {profilepicture: pfp};
 
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
             if (!foundUser)
-                res.render("updateUserPFP", {message: "Invalid User Credentials"})
+                res.render("updateUserPFP", {message: "Not properly logged in"})
                 //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
             //res.status(201).json({ success: true, foundUser});
             res.redirect('/protected');
         })
         .catch ( (error) => {
-            res.render("updateUserPFP", {message: "Invalid User Credentials"})
+            res.render("updateUserPFP", {message: "Not properly logged in"})
             //res.status(404).json({ success: false, error: error.message});
         })
     } catch (error){
@@ -198,7 +202,7 @@ const getUserByName = async(req, res) => {
 
 
 //************LINE 200 *///////////////  ME
-const session = require('express-session');
+//const session = require('express-session');
 
 const findUser = async (uname, pword) => {
     const query = {username: uname, password: pword};
