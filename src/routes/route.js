@@ -44,9 +44,9 @@ router.get('/protected', checkSignIn, (req, res) => {
     res.render('protected_page', {id: req.session.user.id});
 });
 
-router.delete("/:username/:password", Controller.deleteUser);
-router.put("/:username/:password/cheese", Controller.updateUserCheese);
-router.put("/:username/:password/pfp", Controller.updateUserPfp);
+//router.delete("/:username/:password", Controller.deleteUser);
+//.put("/:username/:password/cheese", Controller.updateUserCheese);
+//router.put("/:username/:password/pfp", Controller.updateUserPfp);
 //home page here
 router.get('/', (req, res) => {
     res.render('homepage');
@@ -55,18 +55,18 @@ router.get("/all", Controller.getAllUsers);
 
 module.exports = router;
 
-router.get("/updateUserCheese", (req, res) => {
-    res.render("updateUserCheese");
+router.get("/updateUserCheese", checkSignIn, (req, res) => {
+    res.render("updateUserCheese", {id: req.session.user.id});
 })
 router.post("/updateUserCheese", Controller.updateUserCheese);
 
-router.get("/updateUserPFP", (req, res) => {
-    res.render("updateUserPFP");
+router.get("/updateUserPFP", checkSignIn, (req, res) => {
+    res.render("updateUserPFP", {id: req.session.user.id});
 })
 router.post("/updateUserPFP", Controller.updateUserPfp);
 
-router.get("/deleteUser", (req, res) => {
-    res.render("deleteUser");
+router.get("/deleteUser", checkSignIn, (req, res) => {
+    res.render("deleteUser", {id: req.session.user.id});
 })
 router.post("/deleteUser", Controller.deleteUser);
 
