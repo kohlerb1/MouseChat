@@ -4,13 +4,13 @@ html
         title Protected Page (temp title)
 
     body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") 
-        div Hey #{username}, How are you doing today? 
+        div Hey #{id}, How are you doing today? 
+        div Your favorite cheese is #{cheese}. 
         div Want to log out?
         div 
           p 
-          //add link for logout once that is established
-              a(href="/logout") Logout // 
-        div Want to change some user info? 
+              a(href="/login") Logout 
+        div Want to change your cheese? 
         div 
           p 
             br

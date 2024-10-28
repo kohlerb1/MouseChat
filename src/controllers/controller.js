@@ -1,5 +1,5 @@
-const User = require('../models/model');
-
+//const User = require('../models/model');
+const User = require('../models/temp_model');
 const userExists = async (uname) => {
     query = {username: uname};
     return await User.exists(query);
@@ -13,10 +13,25 @@ const createUser = async (req,res) => {
         let uname = userData.username;
         let pword = userData.password;
         let cheeze = userData.cheese;
-        let propic = userData.profilepicture
+
+        // fetch('/uploadProfilePic', {
+        //     method: 'POST',
+        //     body: 
+        // })
+
+        //console.log("File received:", req.file); // Debugging line
+        //console.log("HERE");
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No profile picture uploaded!" });
+        }
+
+        // Set up profile picture data
+        const propic = { data: req.file.buffer, contentType: req.file.mimetype };
+        // console.log(typeof(propic));
+        // console.log(propic);
 
         if (await userExists(uname)) {
-            res.status(400).json({success: false, message: "User already exists!"});
+            res.render("signup", {message: "User Already Exists"})
             return;
         }
 
@@ -26,15 +41,17 @@ const createUser = async (req,res) => {
                 return res.status(404).json({ success: false, message: "User creation failed", error: "Unable to get created User" });
 
             //res.status(201).json({ success: true, createdUser});
-            res.redirect('/protected');
+            const user = createdUser;
+            res.redirect('/login');
         })
 
         .catch( (error) => {
-            res.status(404).json({ success: false, error: error.message});
+            //res.status(404).json({ success: false, error: error.message});
+            res.render("signup", {message: "User Does Not Exist"})
         });
-
     } catch (error) {
-        res.status(500).json({ success: false, message: "Internal server error"});
+        //res.status(500).json({ success: false, message: "Internal server error"});
+        res.render("signup", {message: "Internal Server Error"})
     }
 };
 
@@ -52,22 +69,6 @@ const getAllUsers = async (req,res) => {
         res.status(500).json({success: false, message: "Internal Server Error", error:error.message});
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -246,14 +247,49 @@ const getUser = async(req, res) => {
     }
 };
 
+const showPic = async(req, res) => {
+    try {
+        let uname = req.params.username;
+        let pword = req.params.password ;
+        let query = {username: uname, password: pword};
+        const user = await User.findOne(query);
+        if (!user || !user.profilepicture) {
+            return res.status(404).send('Profile picture not found');
+        }
 
+        res.set('Content-Type', user.profilepicture.contentType);
+        res.send(user.profilepicture.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal server error');
+    }
+};
+// const uploadPic = async(req, res) => {
+//     // Code from ChatGPT
+//     try {
+//         const user = await User.findById(req.params.userId);
+    
+//         user.profilepicture = {
+//           data: req.file.buffer,
+//           contentType: req.file.mimetype,
+//         };
+//         console.log("saving");
+//         await user.save();
+//         console.log("picture uploaded");
+//         res.status(200).send('Avatar uploaded successfully!');
+//       } catch (error) {
+//         console.log("ERROR");
+//         res.status(500).send('Error uploading avatar');
+//       }
+// }
 
-
-
-
-
-
-
+const logout = async (req, res) => {
+    let user = req.session.user.username;
+    req.session.destroy( () => {
+        console.log(`${user} logged out`);
+    });
+    res.redirect('/');
+}
 
 
 
@@ -499,5 +535,5 @@ const getUser = async(req, res) => {
 
 //************LINE 500 *///////////////
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, showPic, logout};
 

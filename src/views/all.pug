@@ -1,7 +1,8 @@
 html 
     head 
         title All Users
-    body
+    body(style = "text-align:center; background:rgb(212,191,157); font-size:20px; color:rgb(46, 44, 39):")
+        include ./header.pug
         if(type == "error")
             h3(style = "color:red") #{message} 
         else 
@@ -9,3 +10,4 @@ html
             each user in allUsers
                 p 
                     | Username: #{user.username} | Password: #{user.password} | Favorite Cheese: #{user.cheese} | Profile Picture: #{user.profilepicture}
+        include ./footer.pug
