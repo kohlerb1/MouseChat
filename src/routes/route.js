@@ -1,8 +1,8 @@
 const router = require("express").Router();
 const Controller= require("../controllers/controller");
 const multer = require('multer');
-//const storage = multer.memoryStorage();
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.memoryStorage();
+const upload = multer({ storage:storage });
 
 const session = require("express-session");
 
@@ -53,7 +53,21 @@ const checkSignIn = (req, res, next) => { // note: does not work on redirect fro
 
 // router call for proected page, calls checksign in for authication before accessing protected page
 router.get('/protected', checkSignIn, (req, res) => {
-    res.render('protected_page', {id: req.session.user.id});
+    console.log(req.session.user);
+    const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
+    const profilePic = bufferData.toString('base64');
+    const contentType = req.session.user.profilepicture.contentType;
+    if(!profilePic){
+        console.log("pic not found");
+    }
+    console.log("Base64 Profile Picture:", `data:${contentType};base64,${profilePic}`);
+    console.log(profilePic.data);
+    console.log("Profile Picture Object:", req.session.user.profilepicture);
+
+
+    // ? `data:${req.session.user.profilepicture.contentType};base64,${req.session.user.profilepicture.data.toString('base64')}`
+    // : console.log("pic not found");
+    res.render('protected_page', {id: req.session.user.id, pic: `data:${contentType};base64,${profilePic}`});
 });
 
 router.delete("/:username/:password", Controller.deleteUser);

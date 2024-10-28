@@ -2,9 +2,9 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const multer = require('multer');
-//const storage = multer.memoryStorage();
+const storage = multer.memoryStorage();
 //const upload = multer({ storage: storage });
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage:storage });
 const session = require('express-session');
 
 const db = require('./config/db');

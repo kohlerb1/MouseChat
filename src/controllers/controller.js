@@ -24,7 +24,10 @@ const createUser = async (req,res) => {
         if (!req.file) {
             return res.status(400).json({ success: false, message: "No profile picture uploaded!" });
         }
-
+        console.log("############################################");
+        console.log(req.file);
+        console.log("############################################");
+        console.log(req.buffer);
         // Set up profile picture data
         const propic = { data: req.file.buffer, contentType: req.file.mimetype };
         // console.log(typeof(propic));
