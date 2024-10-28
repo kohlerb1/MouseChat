@@ -36,10 +36,6 @@ router.post('/signup', upload.single('profilepicture'), Controller.createUser);
 
 //check for authenticated to access protected page
 const checkSignIn = (req, res, next) => { // note: does not work on redirect from inital signup, but works on login
-    console.log(req);
-    console.log("-----------------------");
-    console.log(req.session);
-    console.log("-----------------------");
     console.log(req.session.user);
     
     if(req.session.user){

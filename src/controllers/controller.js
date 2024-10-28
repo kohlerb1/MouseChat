@@ -19,8 +19,8 @@ const createUser = async (req,res) => {
         //     body: 
         // })
 
-        console.log("File received:", req.file); // Debugging line
-        console.log("HERE");
+        //console.log("File received:", req.file); // Debugging line
+        //console.log("HERE");
         if (!req.file) {
             return res.status(400).json({ success: false, message: "No profile picture uploaded!" });
         }
@@ -41,12 +41,13 @@ const createUser = async (req,res) => {
                 return res.status(404).json({ success: false, message: "User creation failed", error: "Unable to get created User" });
 
             //res.status(201).json({ success: true, createdUser});
-            res.redirect('/protected');
+            const user = createdUser;
+            res.redirect('/login');
         })
 
         .catch( (error) => {
             //res.status(404).json({ success: false, error: error.message});
-            res.render("signup", {message: "User Already Exists"})
+            res.render("signup", {message: "User Does Not Exist"})
         });
     } catch (error) {
         //res.status(500).json({ success: false, message: "Internal server error"});
@@ -68,22 +69,6 @@ const getAllUsers = async (req,res) => {
         res.status(500).json({success: false, message: "Internal Server Error", error:error.message});
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
