@@ -7,7 +7,7 @@ html
         h2 Welcome to MouseChat! 
         h3 Please Fill out the Information Below to Complete the Sign Up Process.
         if(message)
-            h4 #{message} 
+            h4(style = "color:red") #{message} 
         form(action = "/signup" method = "POST")
             input(style = inputStyle,name = "username" type = "text" required placeholder = "Username")
             br
