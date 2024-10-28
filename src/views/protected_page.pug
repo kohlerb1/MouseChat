@@ -1,8 +1,9 @@
 html 
-    head 
+    head
+        include ./header.pug 
         title Protected Page (temp title)
 
-    body 
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") 
         div Hey #{id}, How are you doing today? 
         div Your favorite cheese is #{cheese}. 
         div Want to log out?
@@ -12,12 +13,17 @@ html
         div Want to change your cheese? 
         div 
           p 
-              a(href= "/updateUserCheese") Change Cheese 
-        div Want to change your profile picture?
-        div 
-          p
-            a(href="/updateUserPFP") Change Picture
-        div Want to delete your account?
-        div 
-          p
-            a(href="/deleteUser") Delete Account 
+            br
+            a(href="./deleteUser")
+                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Delete User
+            br
+            br
+            a(href="./updateUserCheese")
+                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Update Cheese
+            br
+            br
+            a(href="./updateUserPFP")
+                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Update PFP
+        br
+        br
+        include ./footer.pug
