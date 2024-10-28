@@ -99,6 +99,8 @@ router.get('/test', (req, res) => {
     res.render('test', { user, message });
 });
 
+router.get('/logout', checkSignIn, Controller.logout);
+
 //router.post('/uploadProfilePic', upload.single('profilepic'), Controller.uploadPic);
 
 module.exports = router;
