@@ -63,7 +63,7 @@ router.get('/protected', checkSignIn, (req, res) => {
 
     // ? `data:${req.session.user.profilepicture.contentType};base64,${req.session.user.profilepicture.data.toString('base64')}`
     // : console.log("pic not found");
-    res.render('protected_page', {id: req.session.user.id, pic: `data:${contentType};base64,${profilePic}`});
+    res.render('protected_page', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
 //router.delete("/:username/:password", Controller.deleteUser);
