@@ -1,6 +1,24 @@
 html 
     head 
-        title Update Favorite Cheese 
+        title Update Favorite Cheese
+        include ./header.pug
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
+        h1(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") Enter your newly realized Favorite Cheese!  
+        br
+        br
+        h3(style = "text-align:center; background:rgb(212, 191, 157); font-size:28px;color:rgb(46, 44, 39);") Have an account?
+        a(href="./login") 
+            button(style = "text-align:right; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Login Here!
+        br
+        br
+        h3(style = "text-align:center; background:rgb(212, 191, 157); font-size:28px;color:rgb(46, 44, 39);") New To MouseChat?
+        a(href="./signup")
+            button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Sign Up Here!
+        include ./footer.pug
+
+
+
+
     body 
         h2 Enter your newly realized Favorite Cheese! 
         if(message)
