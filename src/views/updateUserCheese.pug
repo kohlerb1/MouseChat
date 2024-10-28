@@ -1,0 +1,12 @@
+html 
+    head 
+        title Update Favorite Cheese 
+    body 
+        h2 Enter your newly realized Favorite Cheese! 
+        if(message)
+            h4 #{message} 
+        form(action = "/updateUserCheese" method = "POST")
+            input(name = "username" type = "text" required placeholder = "Username")
+            input(name = "password" type = "password" required placeholder = "Password")
+            input(name = "cheese" type = "text" required placeholder = "Favorite Cheese")
+            button(type = "Submit") Update

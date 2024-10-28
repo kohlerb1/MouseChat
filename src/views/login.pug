@@ -1,10 +1,18 @@
 html 
     head 
+        - const inputStyle = {"width":"25%","background":"rgb(177, 128, 83)", "margin":"18px","color":"rgb(46, 44, 39)", "padding":"12px 20px"};
         title MouseChat Login 
-    body 
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
+        include ./header.pug
         if(message)
             h4 #{message}
         form(action = "/login" method = "POST")
-            input(name = "username" type = "text" required placeholder = "User ID")
-            input(name = "password" type = "password" required placeholder = "Password")
-            button(type = "Submit") Log in 
+            input(style = inputStyle, name = "username" type = "text" required placeholder = "User ID")
+            br
+            input(style = inputStyle,name = "password" type = "password" required placeholder = "Password")
+            br
+            button(style = inputStyle,type = "Submit") Log in 
+        br
+        br
+        br
+        include ./footer.pug
