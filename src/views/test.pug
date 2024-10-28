@@ -1,0 +1,23 @@
+doctype html
+html
+    head
+        title User Profile Picture
+        // You may want to add some CSS or JavaScript here for styling or functionality
+    body
+        h2 Welcome to MouseChat!
+        h3 Please log in to view your profile picture.
+        
+        form(action=`/get/${username}/${password}` method="GET")
+            input(name="username" type="text" required placeholder="Username")
+            input(name="password" type="password" required placeholder="Password")
+            button(type="submit") Show Profile Picture
+
+        if user
+            h3 Your Profile Picture:
+            img(src=`/profilepicture/${user.id}`, alt="Profile Picture") // Correctly formatted as a self-closing tag
+        else
+            h4 No profile picture available.
+        
+        // Include error messages or status updates if needed
+        if message
+            h4 #{message}

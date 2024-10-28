@@ -17,23 +17,26 @@ const UserSchema = new mongoose.Schema({
         maxLength: 50
     },
     profilepicture: {
-        type: Number,
-        required: true,
+        data: Buffer,
+        contentType: String,
+
     },
 });
 
 UserSchema.statics.findByName = async function(query){
     return await this.findOne({username: query,});
+
 };
 
 UserSchema.statics.getAll = async function(){
     return await this.find({});
+
 };
 
 const UserModel = mongoose.model('User', UserSchema);
 
-module.exports = UserModel
 
+module.exports = UserModel
 
 
 
