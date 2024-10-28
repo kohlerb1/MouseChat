@@ -1,30 +1,21 @@
 html 
     head 
-        title Update Favorite Cheese
-        include ./header.pug
+        - const inputStyle = {"width":"25%","background":"rgb(177, 128, 83)", "margin":"18px","color":"rgb(46, 44, 39)", "padding":"12px 20px"};
+        title Update Favorite Cheese 
     body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
-        h1(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") Enter your newly realized Favorite Cheese!  
+        include ./header.pug
+        if(message)
+            h4 #{message}
+        form(action = "/updateUserCheese" method = "POST")
+            input(style = inputStyle, name = "username" type = "text" required placeholder = "User ID")
+            br
+            input(style = inputStyle,name = "password" type = "password" required placeholder = "Password")
+            br
+            input(style = inputStyle,name = "cheese" type = "text" required placeholder = "Favorite Cheese")
+            br
+            button(style = inputStyle,type = "Submit") Update Cheese 
         br
         br
-        h3(style = "text-align:center; background:rgb(212, 191, 157); font-size:28px;color:rgb(46, 44, 39);") Have an account?
-        a(href="./login") 
-            button(style = "text-align:right; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Login Here!
         br
-        br
-        h3(style = "text-align:center; background:rgb(212, 191, 157); font-size:28px;color:rgb(46, 44, 39);") New To MouseChat?
-        a(href="./signup")
-            button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Sign Up Here!
         include ./footer.pug
 
-
-
-
-    body 
-        h2 Enter your newly realized Favorite Cheese! 
-        if(message)
-            h4 #{message} 
-        form(action = "/updateUserCheese" method = "POST")
-            input(name = "username" type = "text" required placeholder = "Username")
-            input(name = "password" type = "password" required placeholder = "Password")
-            input(name = "cheese" type = "text" required placeholder = "Favorite Cheese")
-            button(type = "Submit") Update
