@@ -17,25 +17,31 @@ router.get('/login', (req, res) => {
 //router.post call function to do login
 router.post('/login', Controller.login);
 
-//router.post('/signup', upload.single('profilepicture'), Controller.createUser);
-router.post('/signup', upload.single('profilepicture'), Controller.createUser, (req,res) =>{  
-    console.log("<Signup> Find: ", user);
-    if (user === undefined || user === null) {
-        let newUser = {id: req.body.id, password: req.body.password};
-        Users.push(newUser);
-        req.session.user = newUser;
-        res.redirect('/protected');
-        return;
-    } else {
-    res.render('signup', { message: "User Already Exists! Login or choose another user id"});
-    return;
-    }
-});
+router.post('/signup', upload.single('profilepicture'), Controller.createUser);
+// router.post('/signup', upload.single('profilepicture'), Controller.createUser, (req,res) =>{  
+//     console.log("<Signup> Find: ", user);
+//     if (user === undefined || user === null) {
+//         let newUser = {id: req.body.id, password: req.body.password};
+//         Users.push(newUser);
+//         req.session.user = newUser;
+//         res.redirect('/protected');
+//         return;
+//     } else {
+//     res.render('signup', { message: "User Already Exists! Login or choose another user id"});
+//     return;
+//     }
+// });
 
 //protected page stuff here
 
 //check for authenticated to access protected page
 const checkSignIn = (req, res, next) => { // note: does not work on redirect from inital signup, but works on login
+    console.log(req);
+    console.log("-----------------------");
+    console.log(req.session);
+    console.log("-----------------------");
+    console.log(req.session.user);
+    
     if(req.session.user){
         return next() //If session exists, proceed to page
     } else{
