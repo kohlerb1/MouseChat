@@ -41,7 +41,8 @@ const createUser = async (req,res) => {
                 return res.status(404).json({ success: false, message: "User creation failed", error: "Unable to get created User" });
 
             //res.status(201).json({ success: true, createdUser});
-            res.redirect('/protected');
+            const user = createdUser;
+            res.redirect('/login');
         })
 
         .catch( (error) => {
