@@ -41,7 +41,7 @@ const checkSignIn = (req, res, next) => { // note: does not work on redirect fro
 
 // router call for proected page, calls checksign in for authication before accessing protected page
 router.get('/protected', checkSignIn, (req, res) => {
-    res.render('protected_page', {id: req.session.user.id});
+    res.render('protected_page', {id: req.session.user.username, cheese: req.session.user.cheese});
 });
 
 router.delete("/:username/:password", Controller.deleteUser);
