@@ -1,0 +1,11 @@
+html 
+    head 
+        title Delete User 
+    body 
+        h2 Confirm credentials to delete your account! 
+        if(message)
+            h4 #{message} 
+        form(action = "/deleteUser" method = "POST")
+            input(name = "username" type = "text" required placeholder = "Username")
+            input(name = "password" type = "password" required placeholder = "Password")
+            button(type = "Submit") Delete
