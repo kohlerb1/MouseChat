@@ -27,7 +27,26 @@ router.get('/', (req, res) => {
     res.render('homepage');
 });
 router.get("/all", Controller.getAllUsers);
-router.get("/get/:username/:password", Controller.showPic);
+router.get("/get/:username/:password", async (req, res) => {
+    try {
+        const uname = req.params.username;
+        const pword = req.params.password;
+
+        // Fetch user from the database
+        const user = await User.findOne({ username: uname, password: pword });
+
+        // Check if user exists
+        if (!user) {
+            return res.status(404).render('test', { message: 'User not found' });
+        }
+
+        // If user has a profile picture, render the Pug template
+        res.render('test', { user, message: '' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('test', { message: 'Internal server error' });
+    }
+});
 //
 router.get('/test', (req, res) => {
     res.render('test', { user, message });
