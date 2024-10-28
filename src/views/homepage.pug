@@ -2,15 +2,18 @@ doctype html
 html 
     head 
         title MouseChat Homepage
-    body 
-        h1 Welcome To MouseChat! 
+        include ./header.pug
+
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
+        h1(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") Welcome To MouseChat! 
         br
         br
-        h3 Have an account?
+        h3(style = "text-align:center; background:rgb(212, 191, 157); font-size:28px;color:rgb(46, 44, 39);") Have an account?
         a(href="./login") 
-            button Login Here!
+            button(style = "text-align:right; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Login Here!
         br
         br
-        h3 New To MouseChat?
+        h3(style = "text-align:center; background:rgb(212, 191, 157); font-size:28px;color:rgb(46, 44, 39);") New To MouseChat?
         a(href="./signup")
-            button Sign Up Here!
+            button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Sign Up Here!
+        include ./footer.pug

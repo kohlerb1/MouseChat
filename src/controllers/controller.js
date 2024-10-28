@@ -39,19 +39,19 @@ const createUser = async (req,res) => {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+const getAllUsers = async (req,res) => {
+    try{
+        User.find().sort('-date').then( (allUsers) => {
+            console.log(allUsers);
+            res.status(200).render('all',{success: true, allUsers});
+        })
+        .catch((error) => {
+            res.status(404).json({ success:false, message: "Can't find ", error});
+        })
+    } catch (error) {
+        res.status(500).json({success: false, message: "Internal Server Error", error:error.message});
+    }
+};
 
 
 
@@ -245,7 +245,6 @@ const getUser = async(req, res) => {
         res.status(500).json({success: false, message: "Internal Server Error"});
     }
 };
-
 
 
 
@@ -497,5 +496,8 @@ const getUser = async(req, res) => {
 
 
 
+
 //************LINE 500 *///////////////
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getUserByName};
+
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName};
+
