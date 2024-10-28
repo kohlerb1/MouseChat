@@ -213,7 +213,7 @@ const login = async(req, res) => {
     }   
     
     let user = await findUser(req.body.username, req.body.password);
-    getUser(req, res);
+    //getUser(req, res);
 
     console.log("<Login> Find: ", user);
     if(user === undefined || user === null) {
