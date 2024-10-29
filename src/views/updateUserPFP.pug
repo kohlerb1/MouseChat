@@ -7,9 +7,9 @@ html
         h2 Enter your new Profile Picture 
         if(message)
             h4(style = "color:red") #{message} 
-        form(action = "/updateUserPFP" method = "POST")
+        form(action = "/updateUserPFP" method = "POST" enctype="multipart/form-data")
             br
-            input(style = inputStyle name = "profilepicture" type = "number" required placeholder = "1")
+            input(name="profilepicture" type="file" accept="image/jpeg,image/jpg" required placeholder="Profile Picture")
             br
             button(style = inputStyle type = "Submit") Update
             br

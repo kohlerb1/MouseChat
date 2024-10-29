@@ -160,9 +160,17 @@ const updateUserPfp = async (req, res) => {
     try{
         let uname = req.session.user.username
         let pword = req.session.user.password
-        let pfp = req.body.profilepicture
+        
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No profile picture uploaded!" });
+        }
+        const propic = { data: req.file.buffer, contentType: req.file.mimetype };
+        console.log("propic made");
+
         let query = {username: uname, password: pword};
-        let update = {profilepicture: pfp};
+        console.log("query made");
+        let update = {profilepicture: propic};
+        console.log("update made");
 
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
             if (!foundUser)
