@@ -113,7 +113,7 @@ router.post("/updateUserCheese", Controller.updateUserCheese);
 router.get("/updateUserPFP", checkSignIn, (req, res) => {
     res.render("updateUserPFP", {id: req.session.user.id});
 })
-router.post("/updateUserPFP", Controller.updateUserPfp);
+router.post("/updateUserPFP", upload.single('profilepicture'), Controller.updateUserPfp);
 
 router.get("/deleteUser", checkSignIn, (req, res) => {
     res.render("deleteUser", {id: req.session.user.id});
