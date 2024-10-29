@@ -18,25 +18,11 @@ router.get('/login', (req, res) => {
 router.post('/login', Controller.login);
 
 router.post('/signup', upload.single('profilepicture'), Controller.createUser);
-// router.post('/signup', upload.single('profilepicture'), Controller.createUser, (req,res) =>{  
-//     console.log("<Signup> Find: ", user);
-//     if (user === undefined || user === null) {
-//         let newUser = {id: req.body.id, password: req.body.password};
-//         Users.push(newUser);
-//         req.session.user = newUser;
-//         res.redirect('/protected');
-//         return;
-//     } else {
-//     res.render('signup', { message: "User Already Exists! Login or choose another user id"});
-//     return;
-//     }
-// });
 
 //protected page stuff here
 
 //check for authenticated to access protected page
 const checkSignIn = (req, res, next) => { // note: does not work on redirect from inital signup, but works on login
-    console.log(req.session.user);
     
     if(req.session.user){
         return next() //If session exists, proceed to page
@@ -49,20 +35,10 @@ const checkSignIn = (req, res, next) => { // note: does not work on redirect fro
 
 // router call for proected page, calls checksign in for authication before accessing protected page
 router.get('/protected', checkSignIn, (req, res) => {
-    console.log(req.session.user);
     const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
     const profilePic = bufferData.toString('base64');
     const contentType = req.session.user.profilepicture.contentType;
-    if(!profilePic){
-        console.log("pic not found");
-    }
-    console.log("Base64 Profile Picture:", `data:${contentType};base64,${profilePic}`);
-    console.log(profilePic.data);
-    console.log("Profile Picture Object:", req.session.user.profilepicture);
 
-
-    // ? `data:${req.session.user.profilepicture.contentType};base64,${req.session.user.profilepicture.data.toString('base64')}`
-    // : console.log("pic not found");
     res.render('protected_page', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
