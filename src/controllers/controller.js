@@ -197,7 +197,7 @@ const internalUpdate = async(uname, pword, req, res) => {
 
 
 
-//************LINE 200 *///////////////  ME
+//************LINE 200 */////////////// 
 //const session = require('express-session');
 const findUser = async (uname, pword) => {
     const query = {username: uname, password: pword};
@@ -223,44 +223,26 @@ const login = async(req, res) => {
     }
 };
 
-const getUser = async(req, res) => {
-    try{
-        let uname = req.body.username
-        let pword = req.body.password 
+// const getUser = async(req, res) => {
+//     try{
+//         let uname = req.body.username
+//         let pword = req.body.password 
 
-        let query = {username: uname, password: pword};
+//         let query = {username: uname, password: pword};
 
-        await User.findOne(query).then( (foundUser) => {
-            if (!foundUser)
-                return res.status(404).json({success: false, message: "User retrieval failed", error: "Unable to find User"});
-            res.status(201).json({success: true, foundUser});
-            //do messaging stuff here, on success case, for next sprint
-        })
-        .catch( (error) => {
-            res.status(404).json({success: false, error: error.message});
-        });
-    } catch (error) {
-        res.status(500).json({success: false, message: "Internal Server Error"});
-    }
-};
-
-const showPic = async(req, res) => {
-    try {
-        let uname = req.params.username;
-        let pword = req.params.password ;
-        let query = {username: uname, password: pword};
-        const user = await User.findOne(query);
-        if (!user || !user.profilepicture) {
-            return res.status(404).send('Profile picture not found');
-        }
-
-        res.set('Content-Type', user.profilepicture.contentType);
-        res.send(user.profilepicture.data);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal server error');
-    }
-};
+//         await User.findOne(query).then( (foundUser) => {
+//             if (!foundUser)
+//                 return res.status(404).json({success: false, message: "User retrieval failed", error: "Unable to find User"});
+//             res.status(201).json({success: true, foundUser});
+//             //do messaging stuff here, on success case, for next sprint
+//         })
+//         .catch( (error) => {
+//             res.status(404).json({success: false, error: error.message});
+//         });
+//     } catch (error) {
+//         res.status(500).json({success: false, message: "Internal Server Error"});
+//     }
+// };
 
 const logout = async (req, res) => {
     let user = req.session.user.username;
@@ -499,5 +481,5 @@ const getUserByName = async(req, res) => {
 
 //************LINE 500 *///////////////
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, showPic, logout};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout};
 
