@@ -27,9 +27,7 @@ const checkSignIn = (req, res, next) => { // note: does not work on redirect fro
     if(req.session.user){
         return next() //If session exists, proceed to page
     } else{
-        const err = new Error("Not logged in!");
-        err.status = 400;
-        return next(err);   //Error, trying to access unauthorized page!
+       res.render('not_logged')
     }
 };
 
