@@ -88,35 +88,51 @@ const getAllUsers = async (req,res) => {
 
 
 
+
+
+
+
+
+
+
+
+
 //************LINE 100 *///////////////
-const session = require('express-session');
 const deleteUser = async (req, res) => {
     try{
         let unameCheck = req.session.user.username
         let pwordCheck = req.session.user.password
         let uname = req.body.username
         let pword = req.body.password
-        let query = {username: unameCheck, password: pwordCheck};
+        let query = {username: uname, password: pword};
 
         await User.findOneAndDelete(query).then( (foundUser) => {
             if (!foundUser || unameCheck != uname || pword!=pwordCheck) {
-                res.render("deleteUser", {message: "Invalid User Credentials"})
+                    maintainDelete(unameCheck, pwordCheck, req, res);
+                    res.render("deleteUser", {message: "Invalid user credentials"});
+                    return;
                 }
             //res.status(201).json({ success: true, foundUser});
-            let user = req.session.user.id;
-            req.session.destroy( () => {
-                console.log(`${user} logged out.`)
-            });
-            res.redirect('/');
+            //let user = req.session.user.username;
+            logout(req, res);
+            return;
+            //res.redirect('/');
         })
         .catch( (error) => {
-            res.render("deleteUser", {message: "Invalid User Credentials"})
-            //res.status(404).json({success: false, error: error.message});
+            maintainDelete(unameCheck, pwordCheck, req, res);
+            res.render("deleteUser", {message: "Invalid user credentials"});
+            return;
         });
     } catch (error) {
-        res.render("deleteUser", {message: "Internal server error"})
-        //res.status(500).json({ success: false, message: "Internal server error"});
+        maintainDelete(unameCheck, pwordCheck, req, res);
+        res.render("deleteUser", {message: "Internal server error"});
+        return;
     }
+};
+const maintainDelete = async(uname, pword, req, res) => {
+    let user = await findUser(uname, pword);
+    req.session.user = user;
+    return;
 };
 
 const updateUserCheese = async (req, res) => {
@@ -131,16 +147,15 @@ const updateUserCheese = async (req, res) => {
             if (!foundUser)
                 res.render("updateUserCheese", {message: "Not properly logged in"})
                 //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
-            //res.status(201).json({ success: true, foundUser});
-            res.redirect('/protected');
+        internalUpdate(uname, pword, req, res);
+        return;    
         })
         .catch ( (error) => {
             res.render("updateUserCheese", {message: "Not properly logged in"})
             //res.status(404).json({ success: false, error: error.message});
         })
     } catch (error){
-        res.render("updateUserCheese", {message: "Internal"})
-        //res.status(500).json({ success: false, message: "Internal server error"});
+        res.render("updateUserCheese", {message: "Internal server error"})
     }
 };
 const updateUserPfp = async (req, res) => {
@@ -159,8 +174,7 @@ const updateUserPfp = async (req, res) => {
             if (!foundUser)
                 res.render("updateUserPFP", {message: "Not properly logged in"})
                 //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
-            //res.status(201).json({ success: true, foundUser});
-            res.redirect('/protected');
+            internalUpdate(uname, pword, req, res);
         })
         .catch ( (error) => {
             res.render("updateUserPFP", {message: "Not properly logged in"})
@@ -171,30 +185,20 @@ const updateUserPfp = async (req, res) => {
         //res.status(500).json({ success: false, message: "Internal server error"});
     }
 };
-const getUserByName = async(req, res) => {
-    try{
-        let uname = req.body.username
-
-        let query = {username: uname};
-
-        await User.findOne(query).then( (foundUser) => {
-            if (!foundUser)
-                return res.status(404).json({success: false, message: "Unable to Find User", error: "User does not Exist"});
-            res.status(201).json({success: true, foundUser});
-        })
-        .catch( (error) => {
-            res.status(404).json({success: false, error: error.message});
-        });
-    } catch (error) {
-        res.status(500).json({success: false, message: "Internal Server Error"});
-    }
+const internalUpdate = async(uname, pword, req, res) => {
+    let user = await findUser(uname, pword);
+    req.session.user = user;
+    res.redirect('/protected');
 };
+
+
+
+
 
 
 
 //************LINE 200 *///////////////  ME
 //const session = require('express-session');
-
 const findUser = async (uname, pword) => {
     const query = {username: uname, password: pword};
     return await User.findOne(query);
@@ -293,40 +297,25 @@ const logout = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //************LINE 300 *///////////////
+const getUserByName = async(req, res) => {
+    try{
+        let uname = req.body.username
 
+        let query = {username: uname};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        await User.findOne(query).then( (foundUser) => {
+            if (!foundUser)
+                return res.status(404).json({success: false, message: "Unable to Find User", error: "User does not Exist"});
+            res.status(201).json({success: true, foundUser});
+        })
+        .catch( (error) => {
+            res.status(404).json({success: false, error: error.message});
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: "Internal Server Error"});
+    }
+};
 
 
 

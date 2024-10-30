@@ -6,16 +6,15 @@ html
     body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
         if(message)
             h4 #{message}
+        h3 Enter your newly realized favorite cheese
         form(action = "/updateUserCheese" method = "POST")
-            //input(style = inputStyle, name = "username" type = "text" required placeholder = "User ID")
-            //br
-            //input(style = inputStyle,name = "password" type = "password" required placeholder = "Password")
-            //br
+            br
             input(style = inputStyle,name = "cheese" type = "text" required placeholder = "Favorite Cheese")
             br
-            button(style = inputStyle,type = "Submit") Update Cheese 
+            button(style = inputStyle,name =  type = "Submit") Update Cheese 
         br
         br
         br
         include ./footer.pug
+
 
