@@ -1,4 +1,5 @@
 const User = require('../models/model');
+const bcrypt = require('bcryptjs');
 //const User = require('../models/temp_model');
 const userExists = async (uname) => {
     query = {username: uname};
@@ -25,7 +26,19 @@ const createUser = async (req,res) => {
             return;
         }
 
-        let db_data = {username: uname, password: pword, cheese: cheeze, profilepicture: propic};
+        //hash and salt the password, will change the data of input of db_data
+        const saltRounds = 10; // # of salt rounds
+
+        // a couple different hashings, looks like some external error b/c these work fine as far as actually hashing
+        
+        const hashed_pword = await bcrypt.hash(pword, saltRounds).then( function(hash) {
+            console.log('Hash:', hash)
+            return hash; 
+        })
+        .catch(err => console.error("hash error"))
+        
+        //enter data into the database
+        let db_data = {username: uname, password: hashed_pword, cheese: cheeze, profilepicture: propic}; //change pword to hashed_pword, returns 404 error User does not exist
         await User.create(db_data).then( (createdUser) => {
             if (!createdUser)
                 return res.status(404).json({ success: false, message: "User creation failed", error: "Unable to get created User" });
@@ -210,16 +223,29 @@ const login = async(req, res) => {
         return;
     }   
     
-    let user = await findUser(req.body.username, req.body.password);
+    //let user = await findUser(req.body.username, req.body.password); 
+    // add new findUsername
+    let user = await findUsername(req.body.username)
 
     console.log("<Login> Find: ", user);
     if(user === undefined || user === null) {
         res.render('login', {message: "Invalid credentials!"});
         return;
     } else {
-        req.session.user = user;
-        res.redirect('/protected');
-        return;
+        //check input password with hash in database
+        var hashPassword = user.password // get it from the database call from findUser
+        var pword = req.body.password //login attempt entered password
+        bcrypt.compare( pword, hashPassword)
+        .then(function(result) {
+            if (result == true){ // if true than successful login, start a session and redirect to protected page
+                req.session.user = user;
+                res.redirect('/protected');
+                return;
+            } else{ //return invalid credentials error
+                res.render('login', {message: "Invalid Credentials, Incorrect Password"});
+            }
+        })
+        
     }
 };
 
@@ -381,7 +407,12 @@ const getUserByName = async(req, res) => {
 
 //************LINE 400 *///////////////
 
+//variation of findUser that only returns username, in order to find and compare password seperately in login function
 
+const findUsername = async (uname) => {
+    const query = {username: uname};
+    return await User.findOne(query);
+};
 
 
 

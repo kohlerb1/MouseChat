@@ -3,6 +3,9 @@ const pword = "p9M9f2fmKNe7Thgb";
 const cluster = "messengerdb.y9swx";
 const dbname = "MouseChatDB";
 
+const bcrypt = require("bcryptjs") // adding bcrypt into the database, from sildes
+
+
 const uri = `mongodb+srv://${uname}:${pword}@${cluster}.mongodb.net/${dbname}?retryWrites=true&w=majority&appName=MessengerDB`;
 
 const mongoose = require('mongoose');
