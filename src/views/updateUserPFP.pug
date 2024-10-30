@@ -9,7 +9,7 @@ html
             h4(style = "color:red") #{message} 
         form(action = "/updateUserPFP" method = "POST" enctype="multipart/form-data")
             br
-            input(name="profilepicture" type="file" accept="image/jpeg,image/jpg" required placeholder="Profile Picture")
+            input(style = inputStyle, name="profilepicture" type="file" accept="image/jpeg,image/jpg" required placeholder="Profile Picture")
             br
             button(style = inputStyle type = "Submit") Update
             br
