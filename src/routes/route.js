@@ -33,6 +33,7 @@ const checkSignIn = (req, res, next) => { // note: does not work on redirect fro
 
 // router call for proected page, calls checksign in for authication before accessing protected page
 router.get('/protected', checkSignIn, (req, res) => {
+    // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
     const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
     const profilePic = bufferData.toString('base64');
     const contentType = req.session.user.profilepicture.contentType;
@@ -69,13 +70,8 @@ router.get("/get/:username/:password", async (req, res) => {
     }
 });
 //
-router.get('/test', (req, res) => {
-    res.render('test', { user, message });
-});
 
 router.get('/logout', checkSignIn, Controller.logout);
-
-//router.post('/uploadProfilePic', upload.single('profilepic'), Controller.uploadPic);
 
 module.exports = router;
 
