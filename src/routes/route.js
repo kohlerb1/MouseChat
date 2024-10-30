@@ -90,7 +90,9 @@ router.get("/deleteUser", checkSignIn, (req, res) => {
 })
 router.post("/deleteUser", Controller.deleteUser);
 
-
+router.get("/*", (req, res) => {
+    res.render('homepage');
+})
 
 /*
 curl -X PUT http://localhost:3000/"username"/"password"/cheese -H "Content-Type: application/json" -d "{\"cheese\": \"Swiss\"}"
