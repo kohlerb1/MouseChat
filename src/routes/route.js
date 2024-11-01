@@ -74,7 +74,8 @@ router.get("/get/:username/:password", async (req, res) => {
 router.get('/logout', checkSignIn, Controller.logout);
 
 module.exports = router;
-
+//all protected page-accessed pages, need to be signed in to reach
+//post functions are accessed by PUG files, called thru buttons
 router.get("/updateUserCheese", checkSignIn, (req, res) => {
     res.render("updateUserCheese", {id: req.session.user.id});
 })
@@ -90,6 +91,7 @@ router.get("/deleteUser", checkSignIn, (req, res) => {
 })
 router.post("/deleteUser", Controller.deleteUser);
 
+//catches anything not in website to redirect to the homepage
 router.get("/*", (req, res) => {
     res.render('homepage');
 })

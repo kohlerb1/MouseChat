@@ -103,43 +103,44 @@ const deleteUser = async (req, res) => {
          //login attempt entered password
         let uname = req.body.username;
         let pword = req.body.password;
-        
+        //password and username from established session
         let hashPassword = req.session.user.password;
         let unameCheck = req.session.user.username;
 
-        bcrypt.compare( pword, hashPassword)
-        .then(function(result) {
-            if (result == true && uname == unameCheck){ 
+        bcrypt.compare( pword, hashPassword) //compare two passwords 
+        .then(function(result) { //result if boolean, true if same
+            if (result == true && uname == unameCheck){ //if both username and password match session info
+                //make query and do delete
                 let query = {username: unameCheck, password: hashPassword};
-                doDelete(query, unameCheck, hashPassword, req, res);
-            } else {
+                doDelete(query, unameCheck, hashPassword, req, res); 
+            } else { //otherwise throw error and display
                 maintainDelete(unameCheck, hashPassword, req);
                 res.render("deleteUser", {message: "Invalid user credentials!!!"});
                 return;
             }})
-        } catch (error) {
+        } catch (error) {  //if caught, reload page and load error
         maintainDelete(unameCheck, hashPassword, req);
         res.render("deleteUser", {message: "Internal server error"});
         return;   
         };
 }
 const doDelete = async(query, unameCheck, hashPassword, req, res) => {
-    await User.findOneAndDelete(query).then( (foundUser) => {
-        if (!foundUser) {
+    await User.findOneAndDelete(query).then( (foundUser) => { //find delete user on matching password/user
+        if (!foundUser) { //if no match, throw and display user
               maintainDelete(unameCheck, hashPassword, req);
               res.render("deleteUser", {message: "Invalid user credentials!"});
                 return;
             }
         //res.status(201).json({ success: true, foundUser});
-        logout(req, res);
+        logout(req, res);  //on success logout, goes back to protected page
         return;
-        })
+        })  //when findOneDelete has error, catch, 
         .catch( (error) => {
             maintainDelete(unameCheck, hashPassword, req);
             res.render("deleteUser", {message: "Invalid user credentials!!"});
             return;
         });
-}
+} //ensures user session is maintained between failed attempts, used to not happen before this
 const maintainDelete = async(uname, pword, req) => {
     let user = await findUser(uname, pword);
     req.session.user = user;
@@ -148,39 +149,38 @@ const maintainDelete = async(uname, pword, req) => {
 
 
 const updateUserPfp = async (req, res) => {
-    try{
+    try{ 
+        //get username and password from the user session
         let uname = req.session.user.username
         let pword = req.session.user.password
-        
+        //if somehow no profiled picture is loaded, throw an error
         if (!req.file) {
             return res.status(400).json({ success: false, message: "No profile picture uploaded!" });
         }
+        //make pic, query, and set pic as the update value
         const propic = { data: req.file.buffer, contentType: req.file.mimetype };
         let query = {username: uname, password: pword};
         let update = {profilepicture: propic};
-
+        //do the update on query and update
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
-            if (!foundUser)
+            if (!foundUser) //if no matching user to session info
                 res.render("updateUserPFP", {message: "Not properly logged in"})
-                //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
-            internalUpdate(uname, pword, req, res);
-        })
+            internalUpdate(uname, pword, req, res); //on success, update user session with updated info
+        }) //on update and find catch error and redisplay/prompt
         .catch ( (error) => {
             res.render("updateUserPFP", {message: "Not properly logged in"})
             //res.status(404).json({ success: false, error: error.message});
         })
-    } catch (error){
+    } catch (error){ //on try catch error and redisplay/prompt
         res.render("updateUserPFP", {message: "Internal Server Error"})
         //res.status(500).json({ success: false, message: "Internal server error"});
     }
 };
 const internalUpdate = async(uname, pword, req, res) => {
-    let user = await findUser(uname, pword);
+    let user = await findUser(uname, pword); //finds matching username/password in database, updates session to it
     req.session.user = user;
-    res.redirect('/protected');
+    res.redirect('/protected'); //redirects to user protected page
 };
-
-
 
 
 
@@ -297,24 +297,8 @@ const logout = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //************LINE 300 *///////////////
+//FOR USE TO FIND USERS TO MESSAGE LATER, not in use yet, just a logic outline
 const getUserByName = async(req, res) => {
     try{
         let uname = req.body.username
@@ -336,31 +320,30 @@ const getUserByName = async(req, res) => {
 
 const updateUserCheese = async (req, res) => {
     try{
+        //get username password from user session
         let uname = req.session.user.username
         let pword = req.session.user.password
+        //get cheese from input cheese box
         let ch = req.body.cheese
+        //make query and update on approproate infromation
         let query = {username: uname, password: pword};
         let update = {cheese: ch};
-
+        //update cheese of user that matches user
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
-            if (!foundUser)
+            if (!foundUser) //if no user macthes session, rerender page and display error
                 res.render("updateUserCheese", {message: "Not properly logged in"})
                 //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
-        internalUpdate(uname, pword, req, res);
+        internalUpdate(uname, pword, req, res); //update session to be able to display cheese on homepage
         return;    
         })
-        .catch ( (error) => {
+        .catch ( (error) => { //catch find and update errors to display error to user
             res.render("updateUserCheese", {message: "Not properly logged in"})
             //res.status(404).json({ success: false, error: error.message});
         })
-    } catch (error){
+    } catch (error){ //catch big try block and display error
         res.render("updateUserCheese", {message: "Internal server error"})
     }
 };
-
-
-
-
 
 
 
