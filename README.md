@@ -27,4 +27,4 @@ To see how we connect and run everything, go to the src folder and go to index.j
 
 To see our library dependencies, go to our package.json file in the src folder
 
-To run the server, go to the src folder, and type in the console "nodemon index.js"
+To run the server, go to the src folder, and type in the console "nodemon index.js" 
