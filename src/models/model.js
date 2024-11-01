@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        maxLength: 25
+        maxLength: 60 //changed to account for bcrypt hash, so user is entered into database 
     },
     cheese: {
         type: String,
