@@ -16,7 +16,7 @@ router.get('/login', (req, res) => {
 });
 //router.post call function to do login
 router.post('/login', Controller.login);
-
+// router post call function to do sign up, takes a single file upload 
 router.post('/signup', upload.single('profilepicture'), Controller.createUser);
 
 //protected page stuff here
@@ -37,13 +37,14 @@ router.get('/protected', checkSignIn, (req, res) => {
     const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
     const profilePic = bufferData.toString('base64');
     const contentType = req.session.user.profilepicture.contentType;
-
+    // pass the user name, cheese, and profile picture data to the pug file 
     res.render('protected_page', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
 //router.delete("/:username/:password", Controller.deleteUser);
 //.put("/:username/:password/cheese", Controller.updateUserCheese);
 //router.put("/:username/:password/pfp", Controller.updateUserPfp);
+
 //home page here
 router.get('/', (req, res) => {
     res.render('homepage');
@@ -71,6 +72,7 @@ router.get("/get/:username/:password", async (req, res) => {
 });
 //
 
+// router get call to logout 
 router.get('/logout', checkSignIn, Controller.logout);
 
 module.exports = router;

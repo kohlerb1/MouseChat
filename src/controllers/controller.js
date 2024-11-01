@@ -204,21 +204,25 @@ const findUser = async (uname, pword) => {
     return await User.findOne(query);
 };
 
+// The below function handles login requests 
 const login = async(req, res) => {
+    // If no username or password is submitted, redirect back to the login page 
     if (!req.body.username || !req.body.password) {
         res.render('login', {message: "Please enter both your username and password"});
         return;
     }   
     
-    //let user = await findUser(req.body.username, req.body.password); 
-    // add new findUsername
+    // Get the corresponding user from mongodb
     let user = await findUsername(req.body.username)
 
     console.log("<Login> Find: ", user);
+
+    // if no user is found, send back to login with an invalid credentials message 
     if(user === undefined || user === null) {
         res.render('login', {message: "Invalid credentials!"});
         return;
     } else {
+        // user found 
         //check input password with hash in database
         var hashPassword = user.password // get it from the database call from findUser
         var pword = req.body.password //login attempt entered password
@@ -257,11 +261,14 @@ const login = async(req, res) => {
 //     }
 // };
 
+// function handles logging  out 
 const logout = async (req, res) => {
     let user = req.session.user.username;
+    // destroy the current user's session 
     await req.session.destroy( () => {
         console.log(`${user} logged out`);
     });
+    // send user back to the homepage 
     res.redirect('/');
 }
 
