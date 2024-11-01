@@ -97,80 +97,56 @@ const getAllUsers = async (req,res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //************LINE 100 *///////////////
 const deleteUser = async (req, res) => {
     try{
-        let unameCheck = req.session.user.username
-        let pwordCheck = req.session.user.password
-        let uname = req.body.username
-        let pword = req.body.password
-        let query = {username: uname, password: pword};
+         //login attempt entered password
+        let uname = req.body.username;
+        let pword = req.body.password;
+        
+        let hashPassword = req.session.user.password;
+        let unameCheck = req.session.user.username;
 
-        await User.findOneAndDelete(query).then( (foundUser) => {
-            if (!foundUser || unameCheck != uname || pword!=pwordCheck) {
-                    maintainDelete(unameCheck, pwordCheck, req, res);
-                    res.render("deleteUser", {message: "Invalid user credentials"});
-                    return;
-                }
-            //res.status(201).json({ success: true, foundUser});
-            //let user = req.session.user.username;
-            logout(req, res);
-            return;
-            //res.redirect('/');
+        bcrypt.compare( pword, hashPassword)
+        .then(function(result) {
+            if (result == true && uname == unameCheck){ 
+                let query = {username: unameCheck, password: hashPassword};
+                doDelete(query, unameCheck, hashPassword, req, res);
+            } else {
+                maintainDelete(unameCheck, hashPassword, req);
+                res.render("deleteUser", {message: "Invalid user credentials!!!"});
+                return;
+            }})
+        } catch (error) {
+        maintainDelete(unameCheck, hashPassword, req);
+        res.render("deleteUser", {message: "Internal server error"});
+        return;   
+        };
+}
+const doDelete = async(query, unameCheck, hashPassword, req, res) => {
+    await User.findOneAndDelete(query).then( (foundUser) => {
+        if (!foundUser) {
+              maintainDelete(unameCheck, hashPassword, req);
+              res.render("deleteUser", {message: "Invalid user credentials!"});
+                return;
+            }
+        //res.status(201).json({ success: true, foundUser});
+        logout(req, res);
+        return;
         })
         .catch( (error) => {
-            maintainDelete(unameCheck, pwordCheck, req, res);
-            res.render("deleteUser", {message: "Invalid user credentials"});
+            maintainDelete(unameCheck, hashPassword, req);
+            res.render("deleteUser", {message: "Invalid user credentials!!"});
             return;
         });
-    } catch (error) {
-        maintainDelete(unameCheck, pwordCheck, req, res);
-        res.render("deleteUser", {message: "Internal server error"});
-        return;
-    }
-};
-const maintainDelete = async(uname, pword, req, res) => {
+}
+const maintainDelete = async(uname, pword, req) => {
     let user = await findUser(uname, pword);
     req.session.user = user;
     return;
 };
 
-const updateUserCheese = async (req, res) => {
-    try{
-        let uname = req.session.user.username
-        let pword = req.session.user.password
-        let ch = req.body.cheese
-        let query = {username: uname, password: pword};
-        let update = {cheese: ch};
 
-        await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
-            if (!foundUser)
-                res.render("updateUserCheese", {message: "Not properly logged in"})
-                //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
-        internalUpdate(uname, pword, req, res);
-        return;    
-        })
-        .catch ( (error) => {
-            res.render("updateUserCheese", {message: "Not properly logged in"})
-            //res.status(404).json({ success: false, error: error.message});
-        })
-    } catch (error){
-        res.render("updateUserCheese", {message: "Internal server error"})
-    }
-};
 const updateUserPfp = async (req, res) => {
     try{
         let uname = req.session.user.username
@@ -203,6 +179,17 @@ const internalUpdate = async(uname, pword, req, res) => {
     req.session.user = user;
     res.redirect('/protected');
 };
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -305,6 +292,28 @@ const logout = async (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //************LINE 300 *///////////////
 const getUserByName = async(req, res) => {
     try{
@@ -325,29 +334,29 @@ const getUserByName = async(req, res) => {
     }
 };
 
+const updateUserCheese = async (req, res) => {
+    try{
+        let uname = req.session.user.username
+        let pword = req.session.user.password
+        let ch = req.body.cheese
+        let query = {username: uname, password: pword};
+        let update = {cheese: ch};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+            if (!foundUser)
+                res.render("updateUserCheese", {message: "Not properly logged in"})
+                //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
+        internalUpdate(uname, pword, req, res);
+        return;    
+        })
+        .catch ( (error) => {
+            res.render("updateUserCheese", {message: "Not properly logged in"})
+            //res.status(404).json({ success: false, error: error.message});
+        })
+    } catch (error){
+        res.render("updateUserCheese", {message: "Internal server error"})
+    }
+};
 
 
 
@@ -413,11 +422,6 @@ const findUsername = async (uname) => {
     const query = {username: uname};
     return await User.findOne(query);
 };
-
-
-
-
-
 
 
 
