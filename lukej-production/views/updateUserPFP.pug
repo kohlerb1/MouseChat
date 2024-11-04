@@ -1,0 +1,17 @@
+html 
+    head
+        - const inputStyle = {"width":"25%","background":"rgb(177, 128, 83)", "margin":"18px","color":"rgb(46, 44, 39)", "padding":"12px 20px"};
+        include ./header.pug
+        title Update Profile Picture
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") 
+        h2 Select your new Profile Picture 
+        if(message)
+            h4(style = "color:red") #{message} 
+        form(action = "/updateUserPFP" method = "POST" enctype="multipart/form-data")
+            br
+            input(style = inputStyle, name="profilepicture" type="file" accept="image/jpeg,image/jpg" required placeholder="Profile Picture")
+            br
+            button(style = inputStyle type = "Submit") Update
+            br
+            br
+            include ./footer.pug

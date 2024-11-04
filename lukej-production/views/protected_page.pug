@@ -1,0 +1,43 @@
+html 
+    head
+        include ./header.pug 
+        title Protected Page (temp title)
+
+
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") 
+        div(style="display:flex; align-items:left; justify-content:center;")
+            img(src=pic alt="Profile Picture" style='width:150px;height:150px;margin-right:20px;')
+            div(style="text-align:center;")
+                div Hey #{id}, How are you doing today? 
+                div Your favorite cheese is #{cheese}. 
+                br
+                br
+            br
+        br
+        
+        div Want to log out?
+        div 
+          p 
+              a(href="/logout") 
+                    button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Logout
+        br
+        div Want to change your cheese? 
+            br
+            br
+            a(href="./updateUserCheese")
+                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Update Cheese
+            br
+            br
+        br
+        div Want to Change your Profile Picture?
+          p
+            a(href="./updateUserPFP")
+                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Update PFP
+        br
+        div Want to Delete your MouseChat account?
+          p 
+            a(href="./deleteUser")
+                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Delete User
+        br
+        br
+        include ./footer.pug

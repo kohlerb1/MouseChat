@@ -1,0 +1,20 @@
+html 
+    head 
+        include ./header.pug
+        - const inputStyle = {"width":"25%","background":"rgb(177, 128, 83)", "margin":"18px","color":"rgb(46, 44, 39)", "padding":"12px 20px"};
+        title Update Favorite Cheese 
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
+        if(message)
+            h4 #{message}
+        h3 Enter your newly realized favorite cheese
+        form(action = "/updateUserCheese" method = "POST")
+            br
+            input(style = inputStyle,name = "cheese" type = "text" required placeholder = "Favorite Cheese")
+            br
+            button(style = inputStyle,name =  type = "Submit") Update Cheese 
+        br
+        br
+        br
+        include ./footer.pug
+
+

@@ -1,0 +1,12 @@
+html 
+    head 
+        title Not Logged In 
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
+        include ./header.pug 
+        h1 You aren't logged in! Please log in to continue! 
+        br 
+        a(href="./login") 
+            button(style = "text-align:right; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Login Here!
+        br
+        br
+        include ./footer.pug

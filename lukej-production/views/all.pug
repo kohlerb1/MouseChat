@@ -1,0 +1,13 @@
+html 
+    head 
+        title All Users
+    body(style = "text-align:center; background:rgb(212,191,157); font-size:20px; color:rgb(46, 44, 39):")
+        include ./header.pug
+        if(type == "error")
+            h3(style = "color:red") #{message} 
+        else 
+            h2(style = "color:blue") Below Are All Users in the Database: 
+            each user in allUsers
+                p 
+                    | Username: #{user.username} | Password: #{user.password} | Favorite Cheese: #{user.cheese} 
+        include ./footer.pug
