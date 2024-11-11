@@ -1,0 +1,20 @@
+html 
+    head 
+        include ./header.pug
+        - const inputStyle = {"width":"25%","background":"rgb(177, 128, 83)", "margin":"18px","color":"rgb(46, 44, 39)", "padding":"12px 20px"};
+        title Update Username 
+    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
+        if(message)
+            h4 #{message}
+        h3 Enter your new username
+        form(action = "/updateUserName" method = "POST")
+            br
+            input(style = inputStyle,name = "username" type = "text" required placeholder = "new username")
+            br
+            button(style = inputStyle,name =  type = "Submit") Update Name 
+        br
+        br
+        br
+        include ./footer.pug
+
+

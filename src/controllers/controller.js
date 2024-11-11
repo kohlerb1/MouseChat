@@ -146,8 +146,6 @@ const maintainDelete = async(uname, pword, req) => {
     req.session.user = user;
     return;
 };
-
-
 const updateUserPfp = async (req, res) => {
     try{ 
         //get username and password from the user session
@@ -176,27 +174,29 @@ const updateUserPfp = async (req, res) => {
         //res.status(500).json({ success: false, message: "Internal server error"});
     }
 };
+const getUserByName = async(req, res) => {
+    try{
+        let uname = req.body.username
+
+        let query = {username: uname};
+
+        await User.findOne(query).then( (foundUser) => {
+            if (!foundUser)
+                return res.status(404).json({success: false, message: "Unable to Find User", error: "User does not Exist"});
+            res.status(201).json({success: true, foundUser});
+        })
+        .catch( (error) => {
+            res.status(404).json({success: false, error: error.message});
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: "Internal Server Error"});
+    }
+};
 const internalUpdate = async(uname, pword, req, res) => {
     let user = await findUser(uname, pword); //finds matching username/password in database, updates session to it
     req.session.user = user;
     res.redirect('/protected'); //redirects to user protected page
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //************LINE 200 */////////////// 
 //const session = require('express-session');
 const findUser = async (uname, pword) => {
@@ -297,34 +297,7 @@ const logout = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
 //************LINE 300 *///////////////
-//FOR USE TO FIND USERS TO MESSAGE LATER, not in use yet, just a logic outline
-const getUserByName = async(req, res) => {
-    try{
-        let uname = req.body.username
-
-        let query = {username: uname};
-
-        await User.findOne(query).then( (foundUser) => {
-            if (!foundUser)
-                return res.status(404).json({success: false, message: "Unable to Find User", error: "User does not Exist"});
-            res.status(201).json({success: true, foundUser});
-        })
-        .catch( (error) => {
-            res.status(404).json({success: false, error: error.message});
-        });
-    } catch (error) {
-        res.status(500).json({success: false, message: "Internal Server Error"});
-    }
-};
-
 const updateUserCheese = async (req, res) => {
     try{
         //get username password from user session
@@ -351,48 +324,68 @@ const updateUserCheese = async (req, res) => {
         res.render("updateUserCheese", {message: "Internal server error"})
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const updateUserPassword = async (req, res) => {
+    try{
+        //get username password from user session
+        let uname = req.session.user.username;
+        let pword = req.session.user.password;
+        //get user from input username box
+        const saltRounds = 10;
+        let newPword = req.body.password;
+        const pwordHashed = await bcrypt.hash(newPword, saltRounds).then( function(hash) {
+            console.log('Hash:', hash)
+            return hash; 
+        })
+        .catch(err => console.error("hash error"))
+        //make query and update on approproate infromation
+        let query = {username: uname, password: pword};
+        let update = {password: pwordHashed};
+        //update cheese of user that matches user
+        await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+            if (!foundUser) //if no user macthes session, rerender page and display error
+                res.render("updateUserPassword", {message: "Not properly logged in"})
+                //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
+        internalUpdate(uname, pwordHashed, req, res); //update session to be able to display cheese on homepage
+        return;    
+        })
+        .catch ( (error) => { //catch find and update errors to display error to user
+            res.render("updateUserPassword", {message: "Not properly logged in"})
+            //res.status(404).json({ success: false, error: error.message});
+        })
+    } catch (error){ //catch big try block and display error
+        res.render("updateUserPassword", {message: "Internal server error"})
+    }
+};
+const updateUserName = async (req, res) => {
+    try{
+        //get username password from user session
+        let uname = req.session.user.username;
+        let pword = req.session.user.password;
+        //get user from input username box
+        if (await userExists(req.body.username)){
+            res.render("updateUserName", {message: "name already exists"});
+            return;
+        }
+        let newName = req.body.username;
+        //make query and update on approproate infromation
+        let query = {username: uname, password: pword};
+        let update = {username: newName};
+        //update cheese of user that matches user
+        await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+            if (!foundUser) //if no user macthes session, rerender page and display error
+                res.render("updateUserName", {message: "Not properly logged in"})
+                //return res.status(404).json({ success: false, message: "User update failed", error: "Unable to locate User"});
+        internalUpdate(newName, pword, req, res); //update session to be able to display cheese on homepage
+        return;    
+        })
+        .catch ( (error) => { //catch find and update errors to display error to user
+            res.render("updateUserName", {message: "Not properly logged in"})
+            //res.status(404).json({ success: false, error: error.message});
+        })
+    } catch (error){ //catch big try block and display error
+        res.render("updateUserName", {message: "Internal server error"})
+    }
+};
 
 
 
@@ -506,5 +499,5 @@ const findUsername = async (uname) => {
 
 //************LINE 500 *///////////////
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword};
 

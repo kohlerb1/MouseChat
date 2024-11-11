@@ -93,6 +93,16 @@ router.get("/deleteUser", checkSignIn, (req, res) => {
 })
 router.post("/deleteUser", Controller.deleteUser);
 
+router.get("/updateUserName", checkSignIn, (req, res) => {
+    res.render("updateUserName", {id: req.session.user.id});
+})
+router.post("/updateUserName", Controller.updateUserName);
+
+router.get("/updateUserPassword", checkSignIn, (req, res) => {
+    res.render("updateUserPassword", {id: req.session.user.id});
+})
+router.post("/updateUserPassword", Controller.updateUserPassword);
+
 //catches anything not in website to redirect to the homepage
 router.get("/*", (req, res) => {
     res.render('homepage');
