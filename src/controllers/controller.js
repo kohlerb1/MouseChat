@@ -1,6 +1,10 @@
 const User = require('../models/model');
 const bcrypt = require('bcryptjs');
 //const User = require('../models/temp_model');
+
+const fs = require('fs');
+
+
 const userExists = async (uname) => {
     query = {username: uname};
     return await User.exists(query);
@@ -14,13 +18,16 @@ const createUser = async (req,res) => {
         let uname = userData.username;
         let pword = userData.password;
         let cheeze = userData.cheese;
+        let propic;
 
         if (!req.file) {
-            return res.status(400).json({ success: false, message: "No profile picture uploaded!" });
+            img_file = fs.readFileSync('./views/images/defaultPic.jpg');
+            type = 'image/jpg';
+            propic = { data: img_file, contentType: type };
+        } else {
+            propic = { data: req.file.buffer, contentType: req.file.mimetype };
         }
-        // Set up profile picture data
-        const propic = { data: req.file.buffer, contentType: req.file.mimetype };
-
+        
         if (await userExists(uname)) {
             res.render("signup", {message: "User Already Exists"})
             return;
