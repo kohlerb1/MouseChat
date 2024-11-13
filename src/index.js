@@ -1,6 +1,6 @@
 const express = require('express');
-const { createServer } = require('node:http');
-const { Server } = require('socket.io');
+const http = require('http');
+const socketIo = require('socket.io');
 const path = require('path');
 
 
@@ -13,8 +13,8 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
 const session = require('express-session');
 
-const server = createServer(app);
-const io = new Server(server);
+const server = http.createServer(app);
+const io = socketIo(server);
 const db = require('./config/db');
 
 //const userSocket = require('./public/client.js')
@@ -24,6 +24,7 @@ app.set('views','./views');
 
 //app.use('views', express.static('views'));
 app.use('/public', express.static('public'));
+//app.use(express.static('public'));
 //app.use(express.static('public'));
 
 app.use(bodyParser.json());
@@ -68,6 +69,6 @@ const router = require('./routes');
 //app.use('/', router.Router);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
