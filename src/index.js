@@ -1,6 +1,7 @@
-const express= express();
-const createServer = node:http();
-const Server = socket.io();
+const express = require('express');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
+const path = require('path');
 
 const app = express();
 const bodyParser = require('body-parser');
@@ -26,10 +27,14 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(session( {secret: "Mellon"}));
 
 //************************************************ */
-app.get('/', (req, res) => {            
-    const basename = new URL('./index.html', import.meta.url).pathname;
+app.get('/', (req, res) => {  
+    /*          
+    const basename = new URL('./index.html', __filename);
+    console.log('basename: ' + basename);
     const trimmedname = basename.replace('/C:', '');
     res.sendFile(trimmedname);
+    */
+   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 io.on('connection', (socket) => {
