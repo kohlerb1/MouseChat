@@ -1,10 +1,11 @@
 html 
     head
+        link(rel='stylesheet' href='/styles/mainStyle.css')
         include ./header.pug 
         title Protected Page (temp title)
 
 
-    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") 
+    body
         div(style="display:flex; align-items:left; justify-content:center;")
             img(src=pic alt="Profile Picture" style='width:150px;height:150px;margin-right:20px;')
             div(style="text-align:center;")
@@ -19,13 +20,13 @@ html
         div 
           p 
               a(href="/logout") 
-                    button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Logout
+                    button Logout
         br
         div Want to change your cheese? 
             br
             br
             a(href="./updateUserCheese")
-                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Update Cheese
+                button Update Cheese
             br
             br
         br
@@ -33,7 +34,7 @@ html
             br
             br
             a(href="./updateUserName")
-                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Update Name
+                button Update Name
             br
             br
         br
@@ -41,19 +42,19 @@ html
             br
             br
             a(href="./updateUserPassword")
-                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Update Password
+                button Update Password
             br
             br
         br
         div Want to Change your Profile Picture?
           p
             a(href="./updateUserPFP")
-                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Update PFP
+                button Update PFP
         br
         div Want to Delete your MouseChat account?
           p 
             a(href="./deleteUser")
-                button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Delete User
+                button Delete User
         br
         br
         include ./footer.pug

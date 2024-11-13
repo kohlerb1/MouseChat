@@ -1,25 +1,25 @@
 html
     head 
-        - const inputStyle = {"width":"25%","background":"rgb(177, 128, 83)", "margin":"18px","color":"rgb(46, 44, 39)", "padding":"12px 20px"};
+        link(rel='stylesheet' href='/styles/mainStyle.css')
         title Signup 
-    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") 
+    body
         include ./header.pug
         h2 Welcome to MouseChat! 
         h3 Please Fill out the Information Below to Complete the Sign Up Process.
         if(message)
             h4(style = "color:red") #{message} 
         form(action = "/signup" method = "POST" enctype="multipart/form-data")
-            input(style = inputStyle,name = "username" type = "text" required placeholder = "Username")
+            input(name = "username" type = "text" required placeholder = "Username")
             br
-            input(style = inputStyle,name = "password" type = "password" required placeholder = "Password")
+            input(name = "password" type = "password" required placeholder = "Password")
             br
-            input(style = inputStyle,name = "cheese" type = "text" required placeholder = "Favorite Cheese")
+            input(name = "cheese" type = "text" required placeholder = "Favorite Cheese")
             br
             div Select a profile picture (Optional, jpg/jpeg only)
             br
-            input(style = inputStyle, name="profilepicture" type="file" accept="image/jpeg,image/jpg" placeholder="Profile Picture")
+            input(name="profilepicture" type="file" accept="image/jpeg,image/jpg" placeholder="Profile Picture")
             br
-            button(style = inputStyle,type = "Submit") Sign Up!
+            button(type = "Submit") Sign Up!
             br
             br
             br

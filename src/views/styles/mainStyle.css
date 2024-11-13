@@ -1,0 +1,53 @@
+/* General Body Styling */
+body {
+    text-align: center;
+    background: rgb(212, 191, 157);
+    font-size: 32px;
+    color: rgb(46, 44, 39);
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: center;
+    background-color: rgb(177, 128, 83);
+    padding: 20px;
+    text-decoration: none;
+}
+header img {
+    width: 350px;
+    height: 150px;
+}
+
+button {
+    background: rgb(177, 128, 83);
+    font-size: 28px;
+    color: rgb(46, 44, 39);
+    padding: 12px 20px;
+    margin: 18px;
+    text-align: center;
+}
+input[type='text'] {
+    background: rgb(177, 128, 83);
+    font-size: 18px;
+    color: rgb(46, 44, 39);
+    padding: 12px 20px;
+    margin: 18px;
+    text-align: center;
+}
+input[type='password'] {
+    background: rgb(177, 128, 83);
+    font-size: 18px;
+    color: rgb(46, 44, 39);
+    padding: 12px 20px;
+    margin: 18px;
+    text-align: center;
+}
+input[type='file'] {
+    background: rgb(177, 128, 83);
+    font-size: 18px;
+    color: rgb(46, 44, 39);
+    padding: 12px 20px;
+    margin: 18px;
+    text-align: center;
+}
