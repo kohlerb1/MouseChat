@@ -1,8 +1,10 @@
 const socket = io();
 
+console.log('CLIENT RUNNING');
 const form = document.getElementById('form');
 const input = document.getElementById('input');
 const messages = document.getElementById('messages');
+console.log('consts declared');
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -12,6 +14,8 @@ form.addEventListener('submit', (e) => {
     }
 });
 
+console.log('event listener added');
+
 socket.on('chat message', (msg) => {
     const item = document.createElement('li');
     item.textContent = msg;
@@ -19,3 +23,4 @@ socket.on('chat message', (msg) => {
     window.scrollTo(0, document.body.scrollHeight);
 });
 
+console.log('end reached');
