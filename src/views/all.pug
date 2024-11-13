@@ -3,6 +3,7 @@ html
         link(rel='stylesheet' href='/styles/mainStyle.css')
         title All Users
     body
+        script(src="/styles/themes.js")
         include ./header.pug
         if(type == "error")
             h3(style = "color:red") #{message} 
