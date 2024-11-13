@@ -1,5 +1,5 @@
 #ignore all the node modules
 **/node_modules
 src/package-lock.json
-/luke-production
+/lukej-production
 /lukej-docker
