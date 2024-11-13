@@ -29,23 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(session( {secret: "Mellon"}));
 
 //************************************************ */
-app.get('/socket-test', (req, res) => {  
-    const name = path.join(__dirname, 'views/index.html');
-    res.sendFile(name);
-});
-
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.broadcast.emit('hi');
-
-    socket.on('disconnect', () => {
-        console.log('a user disconnected');
-    });
-
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
-});
+module.exports = io ;
 //*********************************************** */
 
 
