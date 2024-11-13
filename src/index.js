@@ -1,6 +1,6 @@
-import express from 'express';
-import { createServer } from 'node:http';
-import { Server } from 'socket.io';
+const express= express();
+const createServer = node:http();
+const Server = socket.io();
 
 const app = express();
 const bodyParser = require('body-parser');
