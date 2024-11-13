@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs');
 
 const fs = require('fs');
 
-
 const userExists = async (uname) => {
     query = {username: uname};
     return await User.exists(query);
@@ -221,7 +220,6 @@ const login = async(req, res) => {
     
     // Get the corresponding user from mongodb
     let user = await findUsername(req.body.username)
-
     console.log("<Login> Find: ", user);
 
     // if no user is found, send back to login with an invalid credentials message 

@@ -1,7 +1,7 @@
 html 
     head
         include ./header.pug 
-        title Protected Page (temp title)
+        title Protected Page
 
 
     body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);") 
@@ -15,6 +15,13 @@ html
             br
         br
         
+        ul#messages
+
+        form#form(action="")
+            input#input(autocomplete="off")
+            button Send
+
+
         div Want to log out?
         div 
           p 
@@ -56,4 +63,6 @@ html
                 button(style = "text-align:center; background:rgb(177, 128, 83); font-size:28px;color:rgb(46, 44, 39);") Delete User
         br
         br
+        script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+        script(src="/public/client.js")
         include ./footer.pug
