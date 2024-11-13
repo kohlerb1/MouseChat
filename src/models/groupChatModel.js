@@ -25,4 +25,4 @@ groupChatSchema.statics.getAll = async function(){
 const groupChatModel = mongoose.model('groupChat', groupChatSchema);
 
 
-module.exports = {groupChatModel};
+module.exports = groupChatModel;

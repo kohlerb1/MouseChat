@@ -28,4 +28,4 @@ messageSchema.statics.getAll = async function(){
 
 const messageModel = mongoose.model('message', messageSchema);
 
-module.exports = {messageModel};
+module.exports = messageModel;
