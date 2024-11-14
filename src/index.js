@@ -45,6 +45,46 @@ io.on('connection', (socket) => {
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
     });
+
+    // Adapted from ChatGPT
+    socket.on('joinGroupChat', async ({ userId, groupName}) => {
+
+        // Gets the groupChat object for the specified groupChat name and populates the data for each allowed User in the allowedUsers field
+        const groupChat = await groupChatModel.findOne({ name: groupName}).populate('allowedUsers');
+
+        // If the groupChat exists 
+        if (groupChat) {
+            const user = await UserModel.findById(userId);
+
+
+        }
+
+
+
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 });
 //*********************************************** */
 

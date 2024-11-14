@@ -279,6 +279,13 @@ const logout = async (req, res) => {
     res.redirect('/');
 }
 
+async function getChatHistory(chatId) {
+    const groupChat = await groupChatModel.findByID(chatId).populate('chatHistory');
+    if(groupChat){
+        return groupChat;
+    }
+    return [];
+}
 
 
 
@@ -506,5 +513,5 @@ const findUsername = async (uname) => {
 
 //************LINE 500 *///////////////
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory};
 
