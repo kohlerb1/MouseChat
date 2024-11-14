@@ -1,3 +1,6 @@
+const { getChatHistory } = require("../controllers/controller");
+const groupChatModel = require("../models/groupChatModel");
+
 const socket = io();
 
 console.log('CLIENT RUNNING');
@@ -24,3 +27,29 @@ socket.on('chat message', (msg) => {
 });
 
 console.log('end reached');
+
+// ChatGPT Code 
+//Testing code//
+const userId = 'user123'
+const user = await UserModel.findById(userId);
+
+const test_group = new groupChatModel({
+    name: 'Group A',
+    allowedUsers: [user],
+    chatHistory: [],
+});
+
+
+socket.emit('joinGroup', {userId: 'user123', groupName: 'Group A'});
+//////////////////////////////////////////////////////////////////////
+
+socket.on('chatHistory', chatHistory => {
+    console.log('Chat History', chatHistory);
+});
+
+socket.on('newMessage', message => {
+    console.log('New message:', message);
+})
+
+socket.emit('sendMessage', {userId: 'user123', groupName: 'Group A', content: 'Hello World'});
+/////////////////////////////////////////////////////////////////////
