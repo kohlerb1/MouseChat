@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    meta(name="viewport" content="width=device-width,initial-scale=1.0")
+    link(rel='stylesheet' href='/styles/mainStyle.css') 
+    title Socket.IO chat
+  body
+    script(src="/styles/themes.js")
+    include ./header.pug
+    ul#messages
+    form#form(action="")
+      input#input(autocomplete="off")
+      button Send
+      
+    script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+    script(src="/public/client.js")
+    include ./footer.pug

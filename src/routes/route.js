@@ -109,6 +109,11 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
+// ****************************** Deugging code **********************************
+router.get('/messages', (req, res) => {
+    res.render('individual_message');
+})
+//********************************************************************************
 
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
