@@ -3,7 +3,7 @@ const User = require('./model.js');
 const message = require('./messageModels.js')
 
 
-const groupChatSchema = new mongoose.Schema({
+const mouseHoleSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -12,17 +12,17 @@ const groupChatSchema = new mongoose.Schema({
     chatHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "message"}],
 })
 
-groupChatSchema.statics.findByName = async function(query){
+mouseHoleSchema.statics.findByName = async function(query){
     return await this.findOne({username: query,});
 
 };
 
-groupChatSchema.statics.getAll = async function(){
+mouseHoleSchema.statics.getAll = async function(){
     return await this.find({});
 
 };
 
-const groupChatModel = mongoose.model('groupChat', groupChatSchema);
+const mouseHoleModel = mongoose.model('mouseHole', mouseHoleSchema);
 
 
 module.exports = groupChatModel;
