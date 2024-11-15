@@ -28,9 +28,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(session( {secret: "Mellon"}));
 
-//************************************************ */
+
 module.exports = io ;
-//*********************************************** */
+
 app.use(express.static('views'));
 
 const router = require('./routes');
@@ -40,4 +40,3 @@ const port = process.env.PORT || 3000;
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
-
