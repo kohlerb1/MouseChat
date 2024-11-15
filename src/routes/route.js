@@ -1,8 +1,14 @@
 const router = require("express").Router();
+
 const Controller= require("../controllers/controller");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
+
+//const socketIo = require('socket.io');
+//const server = require('../index');
+let io = require('../index.js');
+const path = require('path');
 
 const session = require("express-session");
 
@@ -103,14 +109,36 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
+router.get('/settings', (req, res) => {
+    res.render('settings');
+});
+//************SOCKET DIRECTS************************** */
+router.get('/socket-test', (req, res) => {  
+    const name = path.join(__dirname, '../views/index.html');
+    res.sendFile(name);
+});
+
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.broadcast.emit('hi');
+
+    socket.on('disconnect', () => {
+        console.log('a user disconnected');
+    });
+
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg);
+    });
+});
+
+
+
+
+
 //catches anything not in website to redirect to the homepage
 router.get("/*", (req, res) => {
     res.render('homepage');
 })
 
-/*
-curl -X PUT http://localhost:3000/"username"/"password"/cheese -H "Content-Type: application/json" -d "{\"cheese\": \"Swiss\"}"
-curl -X PUT http://localhost:3000/"username"/"password"/pfp -H "Content-Type: application/json" -d "{\"profilepicture\": 20}"
 
-curl -X DELETE http://localhost:3000/"username"/"password"
-*/
+

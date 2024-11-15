@@ -1,20 +1,21 @@
 html 
     head
-        - const inputStyle = {"width":"25%","background":"rgb(177, 128, 83)", "margin":"18px","color":"rgb(46, 44, 39)", "padding":"12px 20px"};
+        link(rel='stylesheet' href='/styles/mainStyle.css')
         include ./header.pug
         title Delete User 
-    body(style = "text-align:center; background:rgb(212, 191, 157); font-size:32px;color:rgb(46, 44, 39);")
+    body
+        script(src="/styles/themes.js")
         h2 Confirm credentials to delete your account! 
         if(message)
             h4(style = "color:red") #{message} 
         form(action = "/deleteUser" method = "POST")
-            input(style = inputStyle name = "username" type = "text" required placeholder = "Username")
+            input(name = "username" type = "text" required placeholder = "Username")
             br
             br
-            input(style = inputStyle name = "password" type = "password" required placeholder = "Password")
+            input(name = "password" type = "password" required placeholder = "Password")
             br
             br
-            button(style = inputStyle type = "Submit") Delete
+            button(type = "Submit") Delete
             br
             br
         include ./footer.pug

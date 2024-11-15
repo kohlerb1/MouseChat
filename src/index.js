@@ -24,15 +24,11 @@ app.set('views','./views');
 //app.use('views', express.static('views'));
 app.use('/public', express.static('public'));
 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(session( {secret: "Mellon"}));
 
-//************************************************ */
-app.get('/socket-test', (req, res) => {  
-    const name = path.join(__dirname, 'views/index.html');
-    res.sendFile(name);
-});
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -101,7 +97,9 @@ io.on('connection', (socket) => {
     });
 });
 //*********************************************** */
+module.exports = io ;
 
+app.use(express.static('views'));
 
 const router = require('./routes');
 const { group } = require('console');

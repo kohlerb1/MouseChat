@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const privateSqueek = require('./privateSqueakModel.js');
+const mouseHole = require('./mouseHole.js');
 
 const UserSchema = new mongoose.Schema({
     username: {
@@ -21,6 +23,18 @@ const UserSchema = new mongoose.Schema({
         contentType: String,
 
     },
+    contacts:{
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'privateSqueak' }],
+        required:true
+    },
+    groups:{
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'mouseHole' }],
+        required:true
+    },
+    isOnline:{
+        type:Boolean,
+        required:true
+    }
 });
 
 UserSchema.statics.findByName = async function(query){

@@ -6,6 +6,10 @@ const messageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
         required: true
     },
+    recipient: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+        required: true
+    },
     content: {
         type: String,
         required: true
@@ -17,7 +21,7 @@ const messageSchema = new mongoose.Schema({
 })
 
 messageSchema.statics.findByName = async function(query){
-    return await this.findOne({username: query,});
+    return await this.findOne({sender: query,});
 
 };
 

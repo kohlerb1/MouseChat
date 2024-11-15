@@ -1,0 +1,89 @@
+:root {
+    --bg-color: rgb(212, 191, 157);
+    --header-color: rgb(177, 128, 83);
+    --text-color: rgb(46, 44, 39);
+    --button-bg-color: rgb(177, 128, 83);
+}
+
+a{
+    background: var(--header-color);
+}
+/* General Body Styling */
+body {
+    text-align: center;
+    background: var(--bg-color);
+    font-size: 32px;
+    color: var(--text-color);
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: center;
+    background: var(--header-color);
+    padding: 20px;
+    text-decoration: none;
+}
+header img {
+    width: 350px;
+    height: 150px;
+}
+
+button {
+    background: var(--button-bg-color);
+    font-size: 28px;
+    color: var(--text-color);
+    padding: 12px 20px;
+    margin: 18px;
+    text-align: center;
+    width:300px;
+}
+input[type='text'] {
+    background: var(--bg-color);
+    font-size: 18px;
+    color: var(--text-color);
+    padding: 12px 20px;
+    margin: 18px;
+    text-align: center;
+}
+input[type='password'] {
+    background: var(--bg-color);
+    font-size: 18px;
+    color: var(--text-color);
+    padding: 12px 20px;
+    margin: 18px;
+    text-align: center;
+}
+input[type='file'] {
+    background: var(--bg-color);
+    font-size: 18px;
+    color: var(--text-color);
+    padding: 12px 20px;
+    margin: 18px;
+    text-align: center;
+}
+
+:root:has(#Mouse:checked){
+    --bg-color: rgb(212, 191, 157);
+    --header-color: rgb(177, 128, 83);
+    --text-color: rgb(46, 44, 39);
+    --button-bg-color: rgb(177, 128, 83);
+}
+:root:has(#Rat:checked){
+    --bg-color: grey;
+    --header-color: rgb(102, 99, 99);
+    --text-color: rgb(252, 184, 184);
+    --button-bg-color: darkgrey;
+}
+:root:has(#Cheese:checked){
+    --bg-color: rgb(222, 196, 54);
+    --header-color: rgb(234, 215, 105);
+    --text-color: rgb(114, 77, 48);
+    --button-bg-color: rgb(246, 220, 73);
+}
+:root:has(#Field:checked){
+    --bg-color: rgb(74, 124, 52);
+    --header-color: rgb(66, 102, 51);
+    --text-color: rgb(101, 164, 85);
+    --button-bg-color: rgb(39, 79, 22);
+}
