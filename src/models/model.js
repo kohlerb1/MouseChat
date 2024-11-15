@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const privateSqueek = require('./privteSqueakModel.js');
+const privateSqueek = require('./privateSqueakModel.js');
 const mouseHole = require('./mouseHole.js');
 
 const UserSchema = new mongoose.Schema({

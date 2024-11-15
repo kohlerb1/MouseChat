@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('./model.js');
-const message = require('./messageModels.js')
+const message = require('./messageModel.js')
 
 
 const mouseHoleSchema = new mongoose.Schema({
@@ -25,4 +25,4 @@ mouseHoleSchema.statics.getAll = async function(){
 const mouseHoleModel = mongoose.model('mouseHole', mouseHoleSchema);
 
 
-module.exports = groupChatModel;
+module.exports = mouseHoleModel;
