@@ -4,11 +4,13 @@ const User = require('./model.js');
 const messageSchema = new mongoose.Schema({
     sender: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
-        required: true
+        //***************CHANGE THIS LATER*************** */
+        required: false
     },
     recipient: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
-        required: true
+         //***************CHANGE THIS LATER*************** */
+        required: false
     },
     content: {
         type: String,

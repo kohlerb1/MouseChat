@@ -4,7 +4,8 @@ const Controller= require("../controllers/controller");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
-
+const Message = require("../models/messageModel.js")
+const Hoard = require("../models/hoard.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
 let io = require('../index.js');
@@ -113,11 +114,13 @@ router.get('/settings', (req, res) => {
     res.render('settings');
 });
 
-// ****************************** Deugging code **********************************
-router.get('/messages', (req, res) => {
+// ****************************** Deugging code, will be changed when message selector is made**********************************
+router.get('/message', (req, res) => {
     res.render('individual_message');
 })
 //********************************************************************************
+
+
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
     const name = path.join(__dirname, '../views/index.html');
@@ -126,15 +129,39 @@ router.get('/socket-test', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.broadcast.emit('hi');
 
     socket.on('disconnect', () => {
         console.log('a user disconnected');
     });
 
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
+    socket.on('hoard message', async (msgData) => {
+        console.log("I'm in routes")
+        try {
+          const message = new Message({
+            sender: msgData.sender,
+            recipient: msgData.recipient, 
+            content: msgData.content,
+            attachment: msgData.attachment,
+          });
+    
+          const savedMessage = await message.save();
+          
+          const hoard = await Hoard.findOne();
+          if (!hoard) {
+            // Create and save a new Hoard document if it doesn't exist
+            const newHoard = new Hoard({ chatHistory: [] });
+            await newHoard.save();
+            console.log('New Hoard created');
+          }
+          hoard.chatHistory.push(savedMessage._id);
+          await hoard.save();
+
+          // Emit the saved message back to all connected clients
+          io.emit('hoard message', savedMessage);
+        } catch (error) {
+          console.error('Error saving message:', error);
+        }
+      });
 });
 
 

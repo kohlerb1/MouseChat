@@ -1,46 +1,68 @@
-const { getChatHistory } = require("../controllers/controller");
-const groupChatModel = require("../models/groupChatModel");
+// const { getChatHistory } = require("../controllers/controller");
+// const MouseHold = require("../models/mouseHold");
 
 const socket = io();
 
 console.log('CLIENT RUNNING');
 const form = document.getElementById('form');
-const input = document.getElementById('input');
+const contentInput = document.getElementById('content');
+const attachmentInput = document.getElementById('attachment');
 const messages = document.getElementById('messages');
 console.log('consts declared');
 
+//Adapted from ChatGPT Code
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (input.value) {
-        socket.emit('chat message', input.value);
-        input.value = '';
+    const content = contentInput.value.trim();
+    if (!content) {
+        console.error('Message content cannot be empty.');
+        return;
     }
+
+    // Read attachment file if any
+    const attachment = attachmentInput.files[0] 
+        ? {
+            name: attachmentInput.files[0].name,
+            data: attachmentInput.files[0],
+            type: attachmentInput.files[0].type,
+        }
+        : null;
+
+    // Emit hoard message
+    socket.emit('hoard message', { content, attachment });
+
+    contentInput.value = '';
+    attachmentInput.value = '';
 });
 
 console.log('event listener added');
 
-socket.on('chat message', (msg) => {
+socket.on('hoard message', (msg) => {
     const item = document.createElement('li');
-    item.textContent = msg;
+    item.textContent = `From: ${msg.sender}\n Message: ${msg.content}`;
+    if(msg.attachment) {
+        //********Currently Does Not Work ********************/
+        item.textContent += `| Attachment: ${msg.attachment}`;
+    }
     messages.appendChild(item);
-    window.scrollTo(0, document.body.scrollHeight);
+  
 });
 
 console.log('end reached');
 
 // ChatGPT Code 
 //Testing code//
-const userId = 'user123'
-const user = await UserModel.findById(userId);
+//const userId = 'user123'
+//const user = await UserModel.findById(userId);
 
-const test_group = new groupChatModel({
-    name: 'Group A',
-    allowedUsers: [user],
-    chatHistory: [],
-});
+// const test_group = new groupChatModel({
+//     name: 'Group A',
+//     allowedUsers: [user],
+//     chatHistory: [],
+// });
 
 
-socket.emit('joinGroup', {userId: 'user123', groupName: 'Group A'});
+//socket.emit('joinGroup', {userId: 'user123', groupName: 'Group A'});
 //////////////////////////////////////////////////////////////////////
 
 socket.on('chatHistory', chatHistory => {
