@@ -24,6 +24,7 @@ app.set('views','./views');
 //app.use('views', express.static('views'));
 app.use('/public', express.static('public'));
 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(session( {secret: "Mellon"}));
