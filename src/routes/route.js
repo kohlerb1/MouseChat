@@ -109,12 +109,15 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
+router.get('/settings', (req, res) => {
+    res.render('settings');
+});
+
 // ****************************** Deugging code **********************************
 router.get('/messages', (req, res) => {
     res.render('individual_message');
 })
 //********************************************************************************
-
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
     const name = path.join(__dirname, '../views/index.html');
