@@ -8,8 +8,8 @@ const mouseHoleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    allowedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    chatHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "message"}],
+    allowedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' , required:true}],
+    chatHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "message", required:true}],
 })
 
 mouseHoleSchema.statics.findByName = async function(query){

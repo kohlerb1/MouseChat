@@ -3,7 +3,7 @@ const message = require('./messageModels.js')
 
 
 const hoardSchema = new mongoose.Schema({
-    chatHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "message"}],
+    chatHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "message", required:true}],
 })
 
 
