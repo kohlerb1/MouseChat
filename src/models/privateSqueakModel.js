@@ -18,7 +18,7 @@ psSchema.statics.getAll = async function(){
 
 };
 
-const psModel = mongoose.model('privateSqueek', psSchema);
+const psModel = mongoose.model('privateSqueak', psSchema);
 
 
 module.exports = psModel;
