@@ -1,7 +1,9 @@
 html 
     head 
+        link(rel='stylesheet' href='/styles/mainStyle.css')
         title All Users
-    body(style = "text-align:center; background:rgb(212,191,157); font-size:20px; color:rgb(46, 44, 39):")
+    body
+        script(src="/styles/themes.js")
         include ./header.pug
         if(type == "error")
             h3(style = "color:red") #{message} 

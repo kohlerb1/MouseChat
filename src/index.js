@@ -28,10 +28,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(session( {secret: "Mellon"}));
 
-//************************************************ */
-module.exports = io ;
-//*********************************************** */
 
+module.exports = io ;
+
+app.use(express.static('views'));
 
 const router = require('./routes');
 app.use('/', router.Router);
