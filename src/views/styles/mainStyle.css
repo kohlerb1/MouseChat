@@ -82,8 +82,8 @@ input[type='file'] {
     --button-bg-color: rgb(246, 220, 73);
 }
 :root:has(#Field:checked){
-    --bg-color: rgb(68, 134, 39);
-    --header-color: rgb(79, 120, 61);
-    --text-color: rgb(114, 184, 96);
+    --bg-color: rgb(74, 124, 52);
+    --header-color: rgb(66, 102, 51);
+    --text-color: rgb(101, 164, 85);
     --button-bg-color: rgb(39, 79, 22);
 }
