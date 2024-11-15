@@ -17,7 +17,7 @@ const messageSchema = new mongoose.Schema({
 })
 
 messageSchema.statics.findByName = async function(query){
-    return await this.findOne({username: query,});
+    return await this.findOne({sender: query,});
 
 };
 
