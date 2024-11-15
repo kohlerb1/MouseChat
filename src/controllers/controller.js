@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 //const User = require('../models/temp_model');
 
 const fs = require('fs');
+const UserModel = require('../models/model');
+const groupChatModel = require('../models/groupChatModel');
 
 
 const userExists = async (uname) => {
@@ -278,6 +280,29 @@ const logout = async (req, res) => {
     // send user back to the homepage 
     res.redirect('/');
 }
+ 
+// Name is the string name of the group chat you wish to create 
+// users is an array of username strings 
+// Method creates a groupchat given the name of the chat and an array of the users, will fail to create the chat if any of the specified users don't exist
+const createMouseHole = async(name, users) => {
+
+    const groupChat = new groupChatModel({
+        name: name,
+        allowedUsers: [], 
+        chatHistory: [],
+    })
+    for (let i = 0; i < users.length; i++){
+        u = await UserModel.findOne({name: users[i]});
+        if(u){
+            groupChat.allowedUsers.push(u._id);
+        } else {
+            console.log("Mousehole unable to be made!");
+            console.log(`${u.username} not found!`);
+            return;
+        }
+    }
+    await groupChat.save();
+}
 
 async function getChatHistory(chatId) {
     const groupChat = await groupChatModel.findByID(chatId).populate('chatHistory');
@@ -513,5 +538,5 @@ const findUsername = async (uname) => {
 
 //************LINE 500 *///////////////
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole};
 
