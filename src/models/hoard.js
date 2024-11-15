@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const message = require('./messageModels.js')
+const message = require('./messageModel.js')
 
 
 const hoardSchema = new mongoose.Schema({

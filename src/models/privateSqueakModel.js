@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('./model.js');
-const message = require('./messageModels.js')
+const message = require('./messageModel.js')
 
 
 const psSchema = new mongoose.Schema({
