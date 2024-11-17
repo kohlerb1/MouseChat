@@ -392,6 +392,37 @@ const changeActive = async(active, username, password) =>{
 };
 
 
+//###############################################
+// messaging functions ##########################
+//###############################################
+const fetchPSChatHistory = async(sender, reciever) =>{
+    try{
+        //make query and update on approproate infromation
+        let query = {Users: sender, Users: receiever};
+        
+        await privateSqueak.find(query).then( (foundPS) => {
+            if (!PS){ //if no ps macthes session, error
+                console.log("one of two users doesnt exist")
+                return;
+            }
+         
+        const history = foundPS.chatHistory
+        return history;
+        })
+        .catch ( (error) => { 
+            return;
+        }) 
+    } catch (error){ //catch big try block and display error
+        console.log("no such user")
+        return;
+    }
+};
+
+
+
+
+
+
 
 //###############################################
 // commented out functions ######################
