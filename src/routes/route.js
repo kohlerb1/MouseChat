@@ -13,12 +13,12 @@ const path = require('path');
 const session = require("express-session");
 
 router.get('/signup', (req, res) => {
-    res.render('signup');
+    res.render('signup.pug');
 });
 //router.post call function to go to do signup
 
 router.get('/login', (req, res) => {
-    res.render('login');
+    res.render('login.pug');
 });
 //router.post call function to do login
 router.post('/login', Controller.login);
@@ -33,7 +33,7 @@ const checkSignIn = (req, res, next) => { // note: does not work on redirect fro
     if(req.session.user){
         return next() //If session exists, proceed to page
     } else{
-       res.render('not_logged')
+       res.render('not_logged.pug')
     }
 };
 
@@ -44,7 +44,7 @@ router.get('/protected', checkSignIn, (req, res) => {
     const profilePic = bufferData.toString('base64');
     const contentType = req.session.user.profilepicture.contentType;
     // pass the user name, cheese, and profile picture data to the pug file 
-    res.render('protected_page', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
+    res.render('protected_page.pug', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
 //router.delete("/:username/:password", Controller.deleteUser);
@@ -53,7 +53,7 @@ router.get('/protected', checkSignIn, (req, res) => {
 
 //home page here
 router.get('/', (req, res) => {
-    res.render('homepage');
+    res.render('homepage.pug');
 });
 router.get("/all", Controller.getAllUsers);
 router.get("/get/:username/:password", async (req, res) => {
@@ -85,36 +85,41 @@ module.exports = router;
 //all protected page-accessed pages, need to be signed in to reach
 //post functions are accessed by PUG files, called thru buttons
 router.get("/updateUserCheese", checkSignIn, (req, res) => {
-    res.render("updateUserCheese", {id: req.session.user.id});
+    res.render("updateUserCheese.pug", {id: req.session.user.id});
 })
 router.post("/updateUserCheese", Controller.updateUserCheese);
 
 router.get("/updateUserPFP", checkSignIn, (req, res) => {
-    res.render("updateUserPFP", {id: req.session.user.id});
+    res.render("updateUserPFP.pug", {id: req.session.user.id});
 })
 router.post("/updateUserPFP", upload.single('profilepicture'), Controller.updateUserPfp);
 
 router.get("/deleteUser", checkSignIn, (req, res) => {
-    res.render("deleteUser", {id: req.session.user.id});
+    res.render("deleteUser.pug", {id: req.session.user.id});
 })
 router.post("/deleteUser", Controller.deleteUser);
 
 router.get("/updateUserName", checkSignIn, (req, res) => {
-    res.render("updateUserName", {id: req.session.user.id});
+    res.render("updateUserName.pug", {id: req.session.user.id});
 })
 router.post("/updateUserName", Controller.updateUserName);
 
 router.get("/updateUserPassword", checkSignIn, (req, res) => {
-    res.render("updateUserPassword", {id: req.session.user.id});
+    res.render("updateUserPassword.pug", {id: req.session.user.id});
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
 router.get('/settings', (req, res) => {
-    res.render('settings');
+    res.render('settings.pug');
 });
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
-    const name = path.join(__dirname, '../views/index.html');
+    const name = path.join(__dirname, '../storage/index.html');
+    res.sendFile(name);
+});
+
+router.get("/message/:username", async (req, res) => {
+    const name = path.join(__dirname, '../storage/PS.html');
     res.sendFile(name);
 });
 
@@ -129,6 +134,10 @@ io.on('connection', (socket) => {
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
     });
+
+    socket.on('privateSqueak', (msg, rcv) => {
+        io.emit('chat message', msg);
+    });
 });
 
 
@@ -137,7 +146,7 @@ io.on('connection', (socket) => {
 
 //catches anything not in website to redirect to the homepage
 router.get("/*", (req, res) => {
-    res.render('homepage');
+    res.render('homepage.pug');
 })
 
 

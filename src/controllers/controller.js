@@ -418,6 +418,17 @@ const fetchPSChatHistory = async(sender, reciever) =>{
     }
 };
 
+const fetchUserSocket = async (uname) => {
+    const query = {username: uname};
+    await User.findOne(query).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("no such user")
+            return;
+        } 
+    return foundUser.socketID;
+    }
+)};
+
 
 
 
@@ -450,5 +461,5 @@ const fetchPSChatHistory = async(sender, reciever) =>{
 // };
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, fetchPSChatHistory, fetchUserSocket};
 
