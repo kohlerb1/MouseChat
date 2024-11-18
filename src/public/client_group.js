@@ -8,8 +8,8 @@ const form = document.getElementById('form');
 const contentInput = document.getElementById('content');
 const attachmentInput = document.getElementById('attachment');
 const messages = document.getElementById('messages');
-const user = document.getElementById('user');
-const group = document.getElementById('group');
+const user_element = document.getElementById('user');
+const group_element = document.getElementById('group');
 console.log('consts declared');
 
 // socket.emit('joinGroup', {userId: 'user123', groupName: 'Group A'})
@@ -33,6 +33,8 @@ form.addEventListener('submit', (e) => {
         }
         : null;
 
+    const user = user_element.value.trim();
+    const group = group_element.value.trim();
     // Emit hoard message
     console.log("-----------");
     console.log(user);
@@ -40,8 +42,9 @@ form.addEventListener('submit', (e) => {
     console.log("-----------");
 
     socket.emit('joinGroupChat', {user, group});
-    socket.emit('sendGroupMesage', { user, group, content });
-
+    console.log("Sending message ...")
+    socket.emit('sendGroupMessage', { user, group, content });
+    console.log("Message sent");
     contentInput.value = '';
     attachmentInput.value = '';
 });

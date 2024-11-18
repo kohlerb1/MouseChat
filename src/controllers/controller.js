@@ -196,9 +196,11 @@ const createMouseHole = async(name, users) => {
 }
 
 async function getChatHistory(chatId) {
-    const groupChat = await groupChatModel.findByID(chatId).populate('chatHistory');
+    //const groupChat = await groupChatModel.findById(chatId).populate('chatHistory');
+    const groupChat = await groupChatModel.findById(chatId);
+    //console.log(groupChat.chatHistory);
     if(groupChat){
-        return groupChat;
+        return groupChat.chatHistory;
     }
     return [];
 }

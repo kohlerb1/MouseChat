@@ -44,7 +44,7 @@ app.use('/', router.Router);
 
 /////////////////
 const {createMouseHole} = require('./controllers/controller')
-createMouseHole("TestGroup", ["LukeC", "poopoo", "JSilly"]);
+//createMouseHole("TestGroup", ["LukeC", "poopoo", "JSilly"]);
 
 ////////////////
 

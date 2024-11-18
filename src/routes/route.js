@@ -12,7 +12,11 @@ const path = require('path');
 
 const session = require("express-session");
 const mouseHoleModel = require("../models/mouseHole.js");
+const UserModel = require('../models/model.js');
+const messageModel = require("../models/messageModel.js");
 
+const {getChatHistory} = require('../controllers/controller.js');
+const { group } = require("console");
 
 router.get('/signup', (req, res) => {
     res.render('signup');
@@ -139,22 +143,26 @@ io.on('connection', (socket) => {
     //socket.on('mousehole')
 
     // Adapted from ChatGPT
-    socket.on('joinGroupChat', async ({ userId, groupName}) => {
-        console.log(groupName);
+    socket.on('joinGroupChat', async (msg) => {
+        userId = msg.user;
+        groupName = msg.group;
         console.log(userId);
+        console.log(groupName);
         // Gets the groupChat object for the specified groupChat name and populates the data for each allowed User in the allowedUsers field of the groupChat object 
         const groupChat = await mouseHoleModel.findOne({ name: groupName}).populate('allowedUsers');
 
         // If the groupChat exists 
         if (groupChat) {
             console.log("groupchat found");
-            const user = await UserModel.findById(userId);
+            const user = await UserModel.findOne({username: userId});
+            console.log(user);
             // If there is a user in the allowed users that matches the current user
             if (groupChat.allowedUsers.some(u => u._id.equals(user._id))) {
                 socket.join(groupName)
                 console.log(`${user.username} joined the group ${groupName}`);
                 // Get the chat history for the group chat
                 const chatHistory = await getChatHistory(groupChat._id);
+                console.log(chatHistory);
                 socket.emit('chatHistory', chatHistory);
             } else {
                 console.log("you arent in this one bud");
@@ -166,14 +174,22 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('sendGroupMessage', async ({ userId, groupName, content }) => {
+    socket.on('sendGroupMessage', async (msg) => {
+        const userId = msg.user;
+        const groupName = msg.group;
+        const content = msg.content;
+        console.log(userId);
+        console.log(groupName);
+        console.log(content);
         // Find group chat by name
         const groupChat = await mouseHoleModel.findOne({name: groupName});
+        const user_objID = await UserModel.findOne({username: userId});
 
         // Create the message object
         if(groupChat){
+            console.log("Groupchat found");
             const message = new messageModel({
-                sender: userId,
+                sender: user_objID._id,
                 content: content,
             });
 
@@ -192,6 +208,10 @@ io.on('connection', (socket) => {
         } else {
             socket.emit('error', 'Groupchat not found');
         }
+    });
+
+    socket.on('chatHistory', chatHistory => {
+        console.log('Chat History:', chatHistory);
     });
 
     socket.on('disconnect', () => {
