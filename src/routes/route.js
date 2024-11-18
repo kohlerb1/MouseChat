@@ -80,7 +80,7 @@ router.get("/get/:username/:password", async (req, res) => {
 //
 
 // router get call to general message page
-router.get('/message', (req, res) =>{
+router.get('/message', checkSignIn, (req, res) =>{
     res.render('message');
 });
 
