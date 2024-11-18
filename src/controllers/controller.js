@@ -119,6 +119,21 @@ const createUser = async (req,res) => {
     }
 };
 
+
+const getAllUsers = async (req,res) => {
+    try{
+        User.find().sort('-date').then( (allUsers) => {
+            console.log(allUsers);
+            res.status(200).render('all',{success: true, allUsers});
+        })
+        .catch((error) => {
+            res.status(404).json({ success:false, message: "Can't find ", error});
+        })
+    } catch (error) {
+        res.status(500).json({success: false, message: "Internal Server Error", error:error.message});
+    }
+};
+
 // The below function handles login requests 
 const login = async(req, res) => {
     // If no username or password is submitted, redirect back to the login page 
@@ -207,6 +222,31 @@ async function getChatHistory(chatId) {
 // DELETE ACCOUNT ######################
 //###############################################
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//************LINE 100 *///////////////
 const deleteUser = async (req, res) => {
     try{
          //login attempt entered password
@@ -293,6 +333,103 @@ const updateUserPfp = async (req, res) => {
         //res.status(500).json({ success: false, message: "Internal server error"});
     }
 };
+const getUserByName = async(req, res) => {
+    try{
+        let uname = req.body.username
+
+        let query = {username: uname};
+
+        await User.findOne(query).then( (foundUser) => {
+            if (!foundUser)
+                return res.status(404).json({success: false, message: "Unable to Find User", error: "User does not Exist"});
+            res.status(201).json({success: true, foundUser});
+        })
+        .catch( (error) => {
+            res.status(404).json({success: false, error: error.message});
+        });
+    } catch (error) {
+        res.status(500).json({success: false, message: "Internal Server Error"});
+    }
+};
+const internalUpdate = async(uname, pword, req, res) => {
+    let user = await findUser(uname, pword); //finds matching username/password in database, updates session to it
+    req.session.user = user;
+    res.redirect('/protected'); //redirects to user protected page
+};
+//************LINE 200 */////////////// 
+//const session = require('express-session');
+const findUser = async (uname, pword) => {
+    const query = {username: uname, password: pword};
+    return await User.findOne(query);
+};
+
+// The below function handles login requests 
+const login = async(req, res) => {
+    // If no username or password is submitted, redirect back to the login page 
+    if (!req.body.username || !req.body.password) {
+        res.render('login', {message: "Please enter both your username and password"});
+        return;
+    }   
+    
+    // Get the corresponding user from mongodb
+    let user = await findUsername(req.body.username)
+
+    console.log("<Login> Find: ", user);
+
+    // if no user is found, send back to login with an invalid credentials message 
+    if(user === undefined || user === null) {
+        res.render('login', {message: "Invalid credentials!"});
+        return;
+    } else {
+        // user found 
+        //check input password with hash in database
+        var hashPassword = user.password // get it from the database call from findUser
+        var pword = req.body.password //login attempt entered password
+        bcrypt.compare( pword, hashPassword)
+        .then(function(result) {
+            if (result == true){ // if true than successful login, start a session and redirect to protected page
+                req.session.user = user;
+                res.redirect('/protected');
+                return;
+            } else{ //return invalid credentials error
+                res.render('login', {message: "Invalid Credentials, Incorrect Password"});
+            }
+        })
+        
+    }
+};
+
+// const getUser = async(req, res) => {
+//     try{
+//         let uname = req.body.username
+//         let pword = req.body.password 
+
+//         let query = {username: uname, password: pword};
+
+//         await User.findOne(query).then( (foundUser) => {
+//             if (!foundUser)
+//                 return res.status(404).json({success: false, message: "User retrieval failed", error: "Unable to find User"});
+//             res.status(201).json({success: true, foundUser});
+//             //do messaging stuff here, on success case, for next sprint
+//         })
+//         .catch( (error) => {
+//             res.status(404).json({success: false, error: error.message});
+//         });
+//     } catch (error) {
+//         res.status(500).json({success: false, message: "Internal Server Error"});
+//     }
+// };
+
+// function handles logging  out 
+const logout = async (req, res) => {
+    let user = req.session.user.username;
+    // destroy the current user's session 
+    await req.session.destroy( () => {
+        console.log(`${user} logged out`);
+    });
+    // send user back to the homepage 
+    res.redirect('/');
+}
 
 
 
@@ -301,7 +438,25 @@ const updateUserPfp = async (req, res) => {
 
 
 
-/// Line 300
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+//************LINE 300 *///////////////
 const updateUserCheese = async (req, res) => {
     try{
         //get username password from user session
@@ -456,6 +611,28 @@ const changeActive = async(active, username, password) =>{
 //         res.status(500).json({success: false, message: "Internal Server Error"});
 //     }
 // };
+
+
+
+
+
+
+
+
+
+
+//************LINE 400 *///////////////
+
+//variation of findUser that only returns username, in order to find and compare password seperately in login function
+
+const findUsername = async (uname) => {
+    const query = {username: uname};
+    return await User.findOne(query);
+};
+
+
+
+
 
 
 
