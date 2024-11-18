@@ -136,7 +136,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('privateSqueak', (msg, rcv) => {
-        io.emit('chat message', msg);
+        io.emit('privateSqueak', msg);
+        //io.sockets.socket(socketId).emit(msg);
     });
 });
 
