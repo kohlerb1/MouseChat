@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const User = require('../models/model');
 
 const Controller= require("../controllers/controller");
 const multer = require('multer');
@@ -118,7 +119,7 @@ router.get('/socket-test', (req, res) => {
     res.sendFile(name);
 });
 
-router.get("/message/:username", async (req, res) => {
+router.get("/message/:sndrcv", (req,res) => { 
     const name = path.join(__dirname, '../storage/PS.html');
     res.sendFile(name);
 });
@@ -127,21 +128,50 @@ io.on('connection', (socket) => {
     console.log('a user connected');
     socket.broadcast.emit('hi');
 
+    socket.on('establishSocketPS', (sender) => {
+        console.log("#############");
+        console.log(sender);
+        console.log(socket.id);
+        console.log("#############");
+        Controller.updateUserSocket(sender, socket.id);
+    });
+
     socket.on('disconnect', () => {
         console.log('a user disconnected');
+        Controller.resetUserSocket(socket.id);
     });
 
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
     });
 
-    socket.on('privateSqueak', (msg, rcv) => {
-        io.emit('privateSqueak', msg);
-        //io.sockets.socket(socketId).emit(msg);
+    socket.on('privateSqueak', async(msg, rcv) => { //rcv is user name as string
+        const query = {username: rcv};
+        let socketid = 0;
+        await User.findOne(query).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("no such user")
+            return;
+        } 
+        socketid = foundUser.socketID
+        })
+        io.to(socketid).emit("privateSqueak", msg);
+        io.to(socket.id).emit("privateSqueak", msg);
     });
 });
 
-
+const fetchUserSocket = async (uname) => {
+    const query = {username: uname};
+    await User.findOne(query).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("no such user")
+            return;
+        } 
+    console.log("CONTROLLER ");
+    console.log(foundUser.socketID);
+    return foundUser.socketID;
+    }
+)};
 
 
 

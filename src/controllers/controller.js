@@ -1,5 +1,6 @@
 const User = require('../models/model');
 const bcrypt = require('bcryptjs');
+const path = require('path');
 //const User = require('../models/temp_model');
 
 const fs = require('fs');
@@ -395,6 +396,8 @@ const changeActive = async(active, username, password) =>{
 //###############################################
 // messaging functions ##########################
 //###############################################
+
+
 const fetchPSChatHistory = async(sender, reciever) =>{
     try{
         //make query and update on approproate infromation
@@ -425,7 +428,33 @@ const fetchUserSocket = async (uname) => {
             console.log("no such user")
             return;
         } 
+    console.log("CONTROLLER ");
+    console.log(foundUser.socketID);
     return foundUser.socketID;
+    }
+)};
+
+const updateUserSocket = async (uname, socketid) => { //set socketid to 0 to indicate person isnt connected
+    const query = {username: uname};
+    const update = {socketID: socketid}
+    await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("no such user")
+            return;
+        } 
+    return;
+    }
+)};
+
+const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate person isnt connected
+    const query = {socketID: socketid};
+    const update = {socketID: "0"}
+    await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("no such user")
+            return;
+        } 
+    return;
     }
 )};
 
@@ -461,5 +490,5 @@ const fetchUserSocket = async (uname) => {
 // };
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, fetchPSChatHistory, fetchUserSocket};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, fetchPSChatHistory, updateUserSocket, resetUserSocket};
 
