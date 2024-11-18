@@ -135,7 +135,15 @@ router.post("/updateUserPassword", Controller.updateUserPassword);
 
 router.get('/settings', (req, res) => {
     res.render('settings');
+router.get('/settings', checkSignIn, (req, res) => {
+        // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
+        const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
+        const profilePic = bufferData.toString('base64');
+        const contentType = req.session.user.profilepicture.contentType;
+        // pass the user name, cheese, and profile picture data to the pug file 
+    res.render('settings', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
+
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
     const name = path.join(__dirname, '../views/index.html');
