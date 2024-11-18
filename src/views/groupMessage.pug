@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    meta(name="viewport" content="width=device-width,initial-scale=1.0")
+    link(rel='stylesheet' href='/styles/mainStyle.css') 
+    title Mousehole Messaging
+  body
+    script(src="/styles/themes.js")
+    include ./header.pug
+    ul#messages
+    form#form(enctype="multipart/form-data")
+
+      label(for="user") Username:
+      input#group(type="text" name="user" required placeholder="Enter your User Name...")
+
+      label(for="group") Mousehole:
+      input#group(type="text" name="group" required placeholder="Enter your Mousehole Name...")
+  
+      label(for="content") Message:
+      input#content(type="text" name="content" required placeholder="Type your message here...")
+
+      label(for="attachment") Attachment (optional):
+      input#attachment(type="file" name="attachment" accept="image/jpeg,image/jpg")
+  
+      button(type="submit") Send Message
+    include ./footer.pug
+    script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+    script(src="/public/client_group.js")

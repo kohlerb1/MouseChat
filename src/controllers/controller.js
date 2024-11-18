@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const fs = require('fs');
 const UserModel = require('../models/model');
-const groupChatModel = require('../models/groupChatModel');
+const groupChatModel = require('../models/mouseHole');
 
 //###############################################
 // UTILITY FUNCTIONS #######################
@@ -175,6 +175,7 @@ const logout = async (req, res) => {
 // users is an array of username strings 
 // Method creates a groupchat given the name of the chat and an array of the users, will fail to create the chat if any of the specified users don't exist
 const createMouseHole = async(name, users) => {
+    console.log(users);
 
     const groupChat = new groupChatModel({
         name: name,
@@ -182,7 +183,7 @@ const createMouseHole = async(name, users) => {
         chatHistory: [],
     })
     for (let i = 0; i < users.length; i++){
-        u = await UserModel.findOne({name: users[i]});
+        u = await UserModel.findByName(users[i]);
         if(u){
             groupChat.allowedUsers.push(u._id);
         } else {

@@ -7,10 +7,12 @@ const upload = multer({ storage:storage });
 
 //const socketIo = require('socket.io');
 //const server = require('../index');
-let io = require('../index.js');
+const io = require('../index.js');
 const path = require('path');
 
 const session = require("express-session");
+const mouseHoleModel = require("../models/mouseHole.js");
+
 
 router.get('/signup', (req, res) => {
     res.render('signup');
@@ -118,6 +120,10 @@ router.get('/socket-test', (req, res) => {
     res.sendFile(name);
 });
 
+router.get('/message', (req, res) => {
+    res.render('groupMessage');
+})
+
 io.on('connection', (socket) => {
     console.log('a user connected');
     socket.broadcast.emit('hi');
@@ -128,6 +134,68 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
+    });
+
+    //socket.on('mousehole')
+
+    // Adapted from ChatGPT
+    socket.on('joinGroupChat', async ({ userId, groupName}) => {
+        console.log(groupName);
+        console.log(userId);
+        // Gets the groupChat object for the specified groupChat name and populates the data for each allowed User in the allowedUsers field of the groupChat object 
+        const groupChat = await mouseHoleModel.findOne({ name: groupName}).populate('allowedUsers');
+
+        // If the groupChat exists 
+        if (groupChat) {
+            console.log("groupchat found");
+            const user = await UserModel.findById(userId);
+            // If there is a user in the allowed users that matches the current user
+            if (groupChat.allowedUsers.some(u => u._id.equals(user._id))) {
+                socket.join(groupName)
+                console.log(`${user.username} joined the group ${groupName}`);
+                // Get the chat history for the group chat
+                const chatHistory = await getChatHistory(groupChat._id);
+                socket.emit('chatHistory', chatHistory);
+            } else {
+                console.log("you arent in this one bud");
+                socket.emit('error', 'You are not a part of this groupChat');
+            }
+        } else {
+            console.log("schizo");
+            socket.emit('error', 'Groupchat does not exist');
+        }
+    });
+
+    socket.on('sendGroupMessage', async ({ userId, groupName, content }) => {
+        // Find group chat by name
+        const groupChat = await mouseHoleModel.findOne({name: groupName});
+
+        // Create the message object
+        if(groupChat){
+            const message = new messageModel({
+                sender: userId,
+                content: content,
+            });
+
+            console.log(message);
+
+            // Save the message
+            await message.save();
+            // Update the chat history 
+            groupChat.chatHistory.push(message._id);
+            await groupChat.save();
+
+            io.to(groupName).emit('newMessage', {
+                sender: userId,
+                content: message.content,
+            });
+        } else {
+            socket.emit('error', 'Groupchat not found');
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
     });
 });
 
