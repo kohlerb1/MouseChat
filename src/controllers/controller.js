@@ -97,7 +97,7 @@ const createUser = async (req,res) => {
         .catch(err => console.error("hash error"))
         
         //enter data into the database
-        let db_data = {username: uname, password: hashed_pword, cheese: cheeze, profilepicture: propic, contacts: [], groups: [], isOnline: false}; //change pword to hashed_pword, returns 404 error User does not exist
+        let db_data = {username: uname, password: hashed_pword, cheese: cheeze, profilepicture: propic, contacts: [], groups: [], isOnline: false, socketID: "0"}; //change pword to hashed_pword, returns 404 error User does not exist
         await User.create(db_data).then( (createdUser) => {
             if (!createdUser)
                 return res.status(404).json({ success: false, message: "User creation failed", error: "Unable to get created User" });
@@ -109,7 +109,7 @@ const createUser = async (req,res) => {
 
         .catch( (error) => {
             //res.status(404).json({ success: false, error: error.message});
-            res.render("signup", {message: "User Does Not Exist"})
+            res.render("signup", {message: "failure"})
         });
     } catch (error) {
         //res.status(500).json({ success: false, message: "Internal server error"});
