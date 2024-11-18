@@ -144,6 +144,8 @@ const login = async(req, res) => {
         bcrypt.compare( pword, hashPassword)
         .then(function(result) {
             if (result == true){ // if true than successful login, start a session and redirect to protected page
+                changeActive(true, user.username, user.password);
+                user.isOnline = true
                 req.session.user = user;
                 res.redirect('/protected');
                 return;
@@ -158,8 +160,10 @@ const login = async(req, res) => {
 // function handles logging  out 
 const logout = async (req, res) => {
     let user = req.session.user.username;
+    let pword = req.session.user.password;
     // destroy the current user's session 
     await req.session.destroy( () => {
+        changeActive(false, user, pword)
         console.log(`${user} logged out`);
     });
     // send user back to the homepage 
@@ -395,6 +399,36 @@ const internalUpdate = async(uname, pword, req, res) => {
     res.redirect('/protected'); //redirects to user protected page
 };
 
+
+//###############################################
+// active status updaters ######################
+//###############################################
+const changeActive = async(active, username, password) =>{
+    try{
+        //get username password from call, password should be hashed variety
+        let uname = username;
+        let pword = password;
+        //make query and update on approproate infromation
+        let query = {username: uname, password: pword};
+        let update = {isOnline: active};
+        //update cheese of user that matches user
+        await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+            if (!foundUser){ //if no user macthes session, rerender page and display error
+                console.log("no such user")
+                return;
+            }
+        //req.session.user = foundUser;  
+        return;
+        })
+        .catch ( (error) => { //catch find and update errors to display error to user
+            console.log("no such user")
+            return;
+        }) 
+    } catch (error){ //catch big try block and display error
+        console.log("no such user")
+        return;
+    }
+};
 
 
 

@@ -63,6 +63,9 @@ input[type='file'] {
     text-align: center;
 }
 
+input[type="radio"] {
+    margin-right: 20px;
+}
 :root:has(#Mouse:checked){
     --bg-color: rgb(212, 191, 157);
     --header-color: rgb(177, 128, 83);
@@ -86,4 +89,16 @@ input[type='file'] {
     --header-color: rgb(66, 102, 51);
     --text-color: rgb(101, 164, 85);
     --button-bg-color: rgb(39, 79, 22);
+}
+:root:has(#Space:checked){
+    --bg-color: rgb(53, 0, 52);
+    --header-color: rgb(42, 2, 41);
+    --text-color: rgb(130, 34, 129);
+    --button-bg-color: rgb(74, 18, 73);
+}
+:root:has(#Lab:checked){
+    --bg-color: rgb(255, 255, 255);
+    --header-color: rgb(221, 218, 221);
+    --text-color: rgb(255, 0, 0);
+    --button-bg-color: rgb(202, 202, 202);
 }
