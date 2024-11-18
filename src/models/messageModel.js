@@ -4,7 +4,6 @@ const User = require('./model.js');
 const messageSchema = new mongoose.Schema({
     sender: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
-        //***************CHANGE THIS LATER*************** */
         required: true
     },
     senderUname: {
@@ -13,7 +12,6 @@ const messageSchema = new mongoose.Schema({
     },
     recipient: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
-         //***************CHANGE THIS LATER*************** */
         required: false
     },
     content: {

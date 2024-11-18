@@ -7,9 +7,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         maxLength: 25,
+        //From ChatGPT
         validate: {
             validator: function(value) {
-                // Regular expression to disallow spaces and '~'
                 return /^[^\s~]+$/.test(value);
             },
             message: props => `${props.value} is not a valid username. It cannot contain spaces or the '~' character.`

@@ -144,11 +144,11 @@ router.get('/settings', checkSignIn, (req, res) => {
     res.render('settings', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
-// ****************************** Deugging code, will be changed when message selector is made**********************************
+
 router.get('/message/horde/:sender', (req, res) => {
     res.render('horde_message');
 })
-//********************************************************************************
+
 
 
 //************SOCKET DIRECTS************************** */
