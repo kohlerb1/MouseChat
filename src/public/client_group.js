@@ -10,7 +10,19 @@ const attachmentInput = document.getElementById('attachment');
 const messages = document.getElementById('messages');
 const user_element = document.getElementById('user');
 const group_element = document.getElementById('group');
+const url_info = window.location.pathname;
+console.log(url_info);
+const user_info = url_info.split("/")[3];
+const user = user_info.split("~")[1];
+const group = user_info.split("~")[0];
+
+console.log(user);
+console.log(group);
+
+
 console.log('consts declared');
+
+socket.emit('joinGroupChat', {user, group});
 
 // socket.emit('joinGroup', {userId: 'user123', groupName: 'Group A'})
 
@@ -33,15 +45,13 @@ form.addEventListener('submit', (e) => {
         }
         : null;
 
-    const user = user_element.value.trim();
-    const group = group_element.value.trim();
     // Emit hoard message
     console.log("-----------");
     console.log(user);
     console.log(group);
     console.log("-----------");
 
-    socket.emit('joinGroupChat', {user, group});
+    //socket.emit('joinGroupChat', {user, group});
     console.log("Sending message ...")
     socket.emit('sendGroupMessage', { user, group, content });
     console.log("Message sent");
@@ -51,15 +61,18 @@ form.addEventListener('submit', (e) => {
 
 console.log('event listener added');
 
-socket.on('hoard message', (msg) => {
+socket.on('groupChatMessage', (msg) => {
+    console.log("####################");
+    console.log("msg: " + msg);
     const item = document.createElement('li');
-    item.textContent = `From: ${msg.sender}\n Message: ${msg.content}`;
+    item.textContent = `${msg.sender}: ${msg.content}`;
     if(msg.attachment) {
         //********Currently Does Not Work ********************/
-        item.textContent += `| Attachment: ${msg.attachment}`;
+        item.textContent += ` | Attachment: ${msg.attachment}`;
     }
     messages.appendChild(item);
   
+    item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 });
 
 console.log('end reached');

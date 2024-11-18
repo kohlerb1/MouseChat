@@ -124,7 +124,7 @@ router.get('/socket-test', (req, res) => {
     res.sendFile(name);
 });
 
-router.get('/message', (req, res) => {
+router.get('/message/mousehole/:groupName~:username', (req, res) => {
     res.render('groupMessage');
 })
 
@@ -179,7 +179,9 @@ io.on('connection', (socket) => {
         const groupName = msg.group;
         const content = msg.content;
         console.log(userId);
+        console.log("%%%%%%%%%%%%%%%");
         console.log(groupName);
+        console.log("%%%%%%%%%%%%%%%");
         console.log(content);
         // Find group chat by name
         const groupChat = await mouseHoleModel.findOne({name: groupName});
@@ -187,13 +189,15 @@ io.on('connection', (socket) => {
 
         // Create the message object
         if(groupChat){
-            console.log("Groupchat found");
+            console.log("Groupchat found!!!!!!!");
             const message = new messageModel({
                 sender: user_objID._id,
                 content: content,
             });
-
+            console.log("----------------");
             console.log(message);
+            console.log(message.content);
+            console.log("-------------");
 
             // Save the message
             await message.save();
@@ -201,14 +205,16 @@ io.on('connection', (socket) => {
             groupChat.chatHistory.push(message._id);
             await groupChat.save();
 
-            io.to(groupName).emit('newMessage', {
+            io.to(groupName).emit('groupChatMessage', {
                 sender: userId,
                 content: message.content,
             });
+            console.log("Group message signal sent");
         } else {
             socket.emit('error', 'Groupchat not found');
         }
     });
+
 
     socket.on('chatHistory', chatHistory => {
         console.log('Chat History:', chatHistory);
