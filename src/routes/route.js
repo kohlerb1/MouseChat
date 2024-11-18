@@ -6,6 +6,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
 const Message = require("../models/messageModel.js")
 const Hoard = require("../models/hoard.js");
+const User = require("../models/model.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
 let io = require('../index.js');
@@ -115,7 +116,7 @@ router.get('/settings', (req, res) => {
 });
 
 // ****************************** Deugging code, will be changed when message selector is made**********************************
-router.get('/message/horde', (req, res) => {
+router.get('/message/horde/:sender', (req, res) => {
     res.render('horde_message');
 })
 //********************************************************************************
@@ -136,8 +137,15 @@ io.on('connection', (socket) => {
 
     socket.on('hoard message', async (msgData) => {
         try {
-          const message = new Message({
-            sender: msgData.sender,
+            const user = await Controller.findUsername(msgData.sender);
+            if(!user) {
+                console.log("No User Found");
+            }
+
+
+            const message = new Message({
+            sender: user._id,
+            senderUname: msgData.sender,
             recipient: msgData.recipient, 
             content: msgData.content,
             attachment: msgData.attachment,
@@ -155,8 +163,10 @@ io.on('connection', (socket) => {
           hoard.chatHistory.push(savedMessage._id);
           await hoard.save();
 
+          message.sender = msgData.sender;
+          console.log("Sender: " + message.sender);
           // Emit the saved message back to all connected clients
-          io.emit('hoard message', savedMessage);
+          io.emit('hoard message', message);
         } catch (error) {
           console.error('Error saving message:', error);
         }

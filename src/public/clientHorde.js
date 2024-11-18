@@ -9,10 +9,13 @@ const contentInput = document.getElementById('content');
 const attachmentInput = document.getElementById('attachment');
 const messages = document.getElementById('messages');
 console.log('consts declared');
-
+const reciever = window.location.pathname;
+const [path1, path2, path3, uname] = reciever.split("/");
+console.log("Uname: " + uname);
 //Adapted from ChatGPT Code
 form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const sender = uname;
     const content = contentInput.value.trim();
     if (!content) {
         console.error('Message content cannot be empty.');
@@ -29,7 +32,7 @@ form.addEventListener('submit', (e) => {
         : null;
 
     // Emit hoard message
-    socket.emit('hoard message', { content, attachment });
+    socket.emit('hoard message', {sender, content, attachment});
 
     contentInput.value = '';
     attachmentInput.value = '';
@@ -38,8 +41,9 @@ form.addEventListener('submit', (e) => {
 console.log('event listener added');
 
 socket.on('hoard message', (msg) => {
+    console.log("msg: " + msg);
     const item = document.createElement('li');
-    item.textContent = `From: ${msg.sender}\n Message: ${msg.content}`;
+    item.textContent = `From: ${msg.senderUname} Message: ${msg.content}`;
     if(msg.attachment) {
         //********Currently Does Not Work ********************/
         item.textContent += ` | Attachment: ${msg.attachment}`;

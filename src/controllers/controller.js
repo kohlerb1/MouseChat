@@ -546,5 +546,5 @@ const changeActive = async(active, username, password) =>{
 
 //************LINE 500 *///////////////
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername};
 
