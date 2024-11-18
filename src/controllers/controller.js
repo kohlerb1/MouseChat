@@ -1,4 +1,5 @@
 const User = require('../models/model');
+const privateSqueak = require('../models/privateSqueakModel');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 //const User = require('../models/temp_model');
@@ -437,19 +438,18 @@ const changeActive = async(active, username, password) =>{
 //###############################################
 
 
-const fetchPSChatHistory = async(sender, reciever) =>{
+const fetchPS = async(sender, receiver) =>{
     try{
         //make query and update on approproate infromation
-        let query = {Users: sender, Users: receiever};
+        let query = {Users: sender, Users: receiver};
         
         await privateSqueak.find(query).then( (foundPS) => {
-            if (!PS){ //if no ps macthes session, error
+            if (!foundPS){ //if no ps macthes session, error
                 console.log("one of two users doesnt exist")
                 return;
             }
          
-        const history = foundPS.chatHistory
-        return history;
+        return foundPS;
         })
         .catch ( (error) => { 
             return;
@@ -460,18 +460,14 @@ const fetchPSChatHistory = async(sender, reciever) =>{
     }
 };
 
-const fetchUserSocket = async (uname) => {
-    const query = {username: uname};
-    await User.findOne(query).then( (foundUser) => {
-        if (!foundUser){ //if no user macthes session, rerender page and display error
-            console.log("no such user")
-            return;
-        } 
-    console.log("CONTROLLER ");
-    console.log(foundUser.socketID);
-    return foundUser.socketID;
-    }
-)};
+const createPS = async(sender, receiver) =>{ //sender rec are usernames
+    const user1 = findUser(sender);
+    const user2 = findUser(receiver);
+    let db_data = {Users: [user1, user2], chatHistory:[]}; //change pword to hashed_pword, returns 404 error User does not exist
+    await privateSqueak.create(db_data);
+};
+
+
 
 const updateUserSocket = async (uname, socketid) => { //set socketid to 0 to indicate person isnt connected
     const query = {username: uname};
@@ -530,4 +526,4 @@ const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate pe
 
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, fetchPSChatHistory, updateUserSocket, resetUserSocket};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, fetchPS, updateUserSocket, resetUserSocket, createPS, findUsername};

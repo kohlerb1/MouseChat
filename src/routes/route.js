@@ -129,8 +129,9 @@ router.get('/socket-test', (req, res) => {
 });
 
 router.get("/message/:sndrcv", (req,res) => { 
-    const name = path.join(__dirname, '../storage/PS.html');
-    res.sendFile(name);
+    res.render('PS');
+    //const name = path.join(__dirname, '../storage/PS.html');
+    //res.sendFile(name);
 });
 
 io.on('connection', (socket) => {
@@ -153,20 +154,45 @@ io.on('connection', (socket) => {
         io.emit('chat message', msg);
     });
 
-    socket.on('privateSqueak', async(msg, rcv) => { //rcv is user name as string
-        const query = {username: rcv};
+    socket.on('privateSqueak', async(msgData) => { //rcv is user name as string
+        const query = {username: msgData.recipient};
         let socketid = 0;
-        await User.findOne(query).then( (foundUser) => {
-        if (!foundUser){ //if no user macthes session, rerender page and display error
-            console.log("no such user")
-            return;
-        } 
-        socketid = foundUser.socketID
-        })
-        io.to(socketid).emit("privateSqueak", msg);
-        io.to(socket.id).emit("privateSqueak", msg);
+        const sndObject = await Controller.findUsername(msgData.sender);
+        const rcvObject = await Controller.findUsername(msgData.recipient);
+        if (sndObject == null){
+            console.log("could not find ");
+            console.log(msgData.sender)
+        }
+        socketid = foundUser.socketID;
+        try {
+            
+            const message = new Message({
+                sender: sndObject,
+                recipient: rcvObject, 
+                content: msgData.content,
+                attachment: msgData.attachment,
+              });
+      
+            const savedMessage = await message.save();
+            
+            const PS = await Controller.fetchPS(sndObject, rcvObject);
+            if (!PS) {
+              // Create and save a new Hoard document if it doesn't exist
+              await Controller.createPS(sndObject, rcvObject);
+              console.log('New PS created');
+            }
+            PS.chatHistory.push(savedMessage._id);
+            await PS.save();
+
+            io.to(socketid).emit("privateSqueak", message);
+            io.to(socket.id).emit("privateSqueak", message);
+        } catch (error) {
+            console.error('Error saving message:', error);
+        }
+  
     });
-    
+
+
     socket.on('hoard message', async (msgData) => {
         try {
           const message = new Message({
@@ -198,12 +224,7 @@ io.on('connection', (socket) => {
 
 
 
-
-
 //catches anything not in website to redirect to the homepage
 router.get("/*", (req, res) => {
     res.render('homepage.pug');
-})
-
-
-
+});
