@@ -75,6 +75,16 @@ socket.on('groupChatMessage', (msg) => {
     item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 });
 
+socket.on('chatHistory', chatHistory => {
+    for (i = 0; i < chatHistory.length; i++){
+        message_object = chatHistory[i]
+        sender = message_object.sender;
+        content = message_object.content;
+        socket.emit('groupChatMesssage', {sender, content});
+    }
+    console.log('Chat History:', chatHistory);
+});
+
 console.log('end reached');
 
 // ChatGPT Code 
@@ -92,13 +102,6 @@ console.log('end reached');
 //socket.emit('joinGroup', {userId: 'user123', groupName: 'Group A'});
 //////////////////////////////////////////////////////////////////////
 
-socket.on('chatHistory', chatHistory => {
-    console.log('Chat History', chatHistory);
-});
-
-socket.on('newMessage', message => {
-    console.log('New message:', message);
-})
 
 //socket.emit('sendMessage', {userId: 'user123', groupName: 'Group A', content: 'Hello World'});
 /////////////////////////////////////////////////////////////////////
