@@ -96,3 +96,9 @@ input[type="radio"] {
     --text-color: rgb(130, 34, 129);
     --button-bg-color: rgb(74, 18, 73);
 }
+:root:has(#Lab:checked){
+    --bg-color: rgb(255, 255, 255);
+    --header-color: rgb(221, 218, 221);
+    --text-color: rgb(255, 0, 0);
+    --button-bg-color: rgb(202, 202, 202);
+}
