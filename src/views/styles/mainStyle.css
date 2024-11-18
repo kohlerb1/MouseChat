@@ -80,10 +80,28 @@ ul#messages {
     background-color:var(--header-color);
     padding: 1rem;
   }
+  form#form input[type="text"] {
+    flex: 1; /* Take up available horizontal space */
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  form#form input[type="file"] {
+    flex: 0.5; /* Adjust width of file input */
+  }
+  
+  form#form button {
+    flex: 0; /* Keep button width fixed */
+    padding: 0.5rem 1rem;
+    background-color:var(--button-bg-color);
+    color: var(--text-color);;
+    border: solid;
+    border-radius: 4px;
+    text-align:center;
+  }
   
   form#form label,
-  form#form input,
-  form#form button {
+  form#form input {
     text-align:left;
     display: block;
     width: 80%;
