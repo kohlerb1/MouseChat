@@ -85,7 +85,7 @@ router.get('/message', (req, res) =>{
 });
 
 
-// router get call to specific user
+// router get call to specific user, changing this comment so github will stop yelling at me
 //router.get("/message/:username", Controller.findUsername, (req,res))
 router.get("/message/private", (req,res) => { //test route for pug file
     res.render('private_message')
