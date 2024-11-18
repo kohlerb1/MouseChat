@@ -16,7 +16,7 @@ html
         br
         h2 message a single user 
         input(name = "username" type = "text" required placeholder = "Username")
-        a(href=`/message/:private`)
+        a(href=`/message/${id}~${username}`)
             button Message User 
         br
         h2 message the horde
