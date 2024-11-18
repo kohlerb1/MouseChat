@@ -9,17 +9,17 @@ html
         script(src="/styles/themes.js")
         h1 Welcome To MouseChat 
         br
-        h2 message a group
+        h2 Message A Group
         input(name = "groupname" type = "text" required placeholder = "Group name")
         a(href=`/message/group`)
-            button Message group 
+            button Message Group 
         br
-        h2 message a single user 
+        h2 Message A Single User 
         input(name = "username" type = "text" required placeholder = "Username")
         a(href=`/message/:private`)
             button Message User 
         br
-        h2 message the horde
+        h2 Message The Horde (Global Messaging)
         a(href=`/message/horde/${id}`)
             button The Horde 
         br
