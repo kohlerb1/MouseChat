@@ -216,9 +216,7 @@ io.on('connection', (socket) => {
     });
 
 
-    socket.on('chatHistory', chatHistory => {
-        console.log('Chat History:', chatHistory);
-    });
+    
 
     socket.on('disconnect', () => {
         console.log('A user disconnected');
