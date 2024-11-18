@@ -4,7 +4,9 @@ const Controller= require("../controllers/controller");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
-
+const Message = require("../models/messageModel.js")
+const Hoard = require("../models/hoard.js");
+const User = require("../models/model.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
 let io = require('../index.js');
@@ -81,7 +83,7 @@ router.get("/get/:username/:password", async (req, res) => {
 
 // router get call to general message page
 router.get('/message', checkSignIn, (req, res) =>{
-    res.render('message');
+    res.render('message',{id: req.session.user.username});
 });
 
 
@@ -142,6 +144,13 @@ router.get('/settings', checkSignIn, (req, res) => {
     res.render('settings', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
+// ****************************** Deugging code, will be changed when message selector is made**********************************
+router.get('/message/horde/:sender', (req, res) => {
+    res.render('horde_message');
+})
+//********************************************************************************
+
+
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
     const name = path.join(__dirname, '../views/index.html');
@@ -150,15 +159,47 @@ router.get('/socket-test', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.broadcast.emit('hi');
 
     socket.on('disconnect', () => {
         console.log('a user disconnected');
     });
 
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
+    socket.on('hoard message', async (msgData) => {
+        try {
+            const user = await Controller.findUsername(msgData.sender);
+            if(!user) {
+                console.log("No User Found");
+            }
+
+
+            const message = new Message({
+            sender: user._id,
+            senderUname: msgData.sender,
+            recipient: msgData.recipient, 
+            content: msgData.content,
+            attachment: msgData.attachment,
+          });
+    
+          const savedMessage = await message.save();
+          
+          const hoard = await Hoard.findOne();
+          if (!hoard) {
+            // Create and save a new Hoard document if it doesn't exist
+            const newHoard = new Hoard({ chatHistory: [] });
+            await newHoard.save();
+            console.log('New Hoard created');
+          }
+          hoard.chatHistory.push(savedMessage._id);
+          await hoard.save();
+
+          message.sender = msgData.sender;
+          console.log("Sender: " + message.sender);
+          // Emit the saved message back to all connected clients
+          io.emit('hoard message', message);
+        } catch (error) {
+          console.error('Error saving message:', error);
+        }
+      });
 });
 
 

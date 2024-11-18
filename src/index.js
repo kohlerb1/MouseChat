@@ -29,12 +29,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(session( {secret: "Mellon"}));
 
-
+//*********************************************** */
 module.exports = io ;
 
 app.use(express.static('views'));
 
 const router = require('./routes');
+const { group } = require('console');
+const { getChatHistory } = require('./controllers/controller');
 app.use('/', router.Router);
 
 const port = process.env.PORT || 3000;

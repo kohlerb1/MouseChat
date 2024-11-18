@@ -63,9 +63,56 @@ input[type='file'] {
     text-align: center;
 }
 
-input[type="radio"] {
-    margin-right: 20px;
-}
+ul#messages {
+    flex: 1; /* Allows the message list to expand and fill available space */
+    overflow-y: auto; /* Adds scrolling if messages overflow */
+    max-height: 35vh; /* Optional: Set a max height for the message area */
+    margin: 0;
+    padding: 1rem;
+    list-style-type: none;
+    text-align:left;
+  }
+  
+  form#form {
+    text-align:left;
+    font-size:20px;
+    position:relative;
+    bottom: 100px;
+    width: 97.75%;
+    background-color:var(--header-color);
+    padding: 1rem;
+  }
+  form#form input[type="text"] {
+    font-size:20px;
+    flex: 1; /* Take up available horizontal space */
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  form#form input[type="file"] {
+    font-size:20px;
+    flex: 0.5; /* Adjust width of file input */
+  }
+  
+  form#form button {
+    font-size:20px;
+    flex: 0; /* Keep button width fixed */
+    padding: 0.5rem 1rem;
+    background-color:var(--button-bg-color);
+    color: var(--text-color);;
+    border: solid;
+    border-radius: 4px;
+    text-align:center;
+  }
+  
+  form#form label,
+  form#form input {
+    text-align:left;
+    display: block;
+    width: 80%;
+   
+  }
+
 :root:has(#Mouse:checked){
     --bg-color: rgb(212, 191, 157);
     --header-color: rgb(177, 128, 83);
