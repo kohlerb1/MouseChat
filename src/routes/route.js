@@ -133,8 +133,6 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
-router.get('/settings', (req, res) => {
-    res.render('settings');
 router.get('/settings', checkSignIn, (req, res) => {
         // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
         const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
@@ -170,7 +168,4 @@ io.on('connection', (socket) => {
 //catches anything not in website to redirect to the homepage
 router.get("/*", (req, res) => {
     res.render('homepage');
-})
-
-
-
+});
