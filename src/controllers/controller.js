@@ -151,7 +151,7 @@ const login = async(req, res) => {
                 changeActive(true, user.username, user.password);
                 user.isOnline = true
                 req.session.user = user;
-                res.redirect('/protected');
+                res.redirect('/message');
                 return;
             } else{ //return invalid credentials error
                 res.render('login', {message: "Invalid Credentials, Incorrect Password"});
