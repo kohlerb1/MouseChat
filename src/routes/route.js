@@ -5,7 +5,8 @@ const Controller= require("../controllers/controller");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
-
+const Message = require("../models/messageModel.js")
+const Hoard = require("../models/hoard.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
 let io = require('../index.js');
@@ -113,6 +114,14 @@ router.post("/updateUserPassword", Controller.updateUserPassword);
 router.get('/settings', (req, res) => {
     res.render('settings.pug');
 });
+
+// ****************************** Deugging code, will be changed when message selector is made**********************************
+router.get('/message/horde', (req, res) => {
+    res.render('horde_message');
+})
+//********************************************************************************
+
+
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
     const name = path.join(__dirname, '../storage/index.html');
@@ -126,7 +135,6 @@ router.get("/message/:sndrcv", (req,res) => {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.broadcast.emit('hi');
 
     socket.on('establishSocketPS', (sender) => {
         console.log("#############");
@@ -158,20 +166,37 @@ io.on('connection', (socket) => {
         io.to(socketid).emit("privateSqueak", msg);
         io.to(socket.id).emit("privateSqueak", msg);
     });
+    
+    socket.on('hoard message', async (msgData) => {
+        try {
+          const message = new Message({
+            sender: msgData.sender,
+            recipient: msgData.recipient, 
+            content: msgData.content,
+            attachment: msgData.attachment,
+          });
+    
+          const savedMessage = await message.save();
+          
+          const hoard = await Hoard.findOne();
+          if (!hoard) {
+            // Create and save a new Hoard document if it doesn't exist
+            const newHoard = new Hoard({ chatHistory: [] });
+            await newHoard.save();
+            console.log('New Hoard created');
+          }
+          hoard.chatHistory.push(savedMessage._id);
+          await hoard.save();
+
+          // Emit the saved message back to all connected clients
+          io.emit('hoard message', savedMessage);
+        } catch (error) {
+          console.error('Error saving message:', error);
+        }
+      });
 });
 
-const fetchUserSocket = async (uname) => {
-    const query = {username: uname};
-    await User.findOne(query).then( (foundUser) => {
-        if (!foundUser){ //if no user macthes session, rerender page and display error
-            console.log("no such user")
-            return;
-        } 
-    console.log("CONTROLLER ");
-    console.log(foundUser.socketID);
-    return foundUser.socketID;
-    }
-)};
+
 
 
 
