@@ -145,7 +145,7 @@ router.get('/settings', checkSignIn, (req, res) => {
 });
 
 
-router.get('/message/horde/:sender', (req, res) => {
+router.get('/message/horde/:sender', checkSignIn,  (req, res) => {
     res.render('horde_message');
 })
 
