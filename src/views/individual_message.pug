@@ -4,10 +4,15 @@ html
     meta(name="viewport" content="width=device-width,initial-scale=1.0")
     link(rel='stylesheet' href='/styles/mainStyle.css') 
     title Hoard Messaging
-  body
+  body(style = "height: 35vh;")
     script(src="/styles/themes.js")
     include ./header.pug
+   
     ul#messages
+    br
+    br
+    br
+
     form#form(enctype="multipart/form-data")
   
       label(for="content") Message:

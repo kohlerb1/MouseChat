@@ -66,6 +66,7 @@ input[type='file'] {
 ul#messages {
     flex: 1; /* Allows the message list to expand and fill available space */
     overflow-y: auto; /* Adds scrolling if messages overflow */
+    max-height: 35vh; /* Optional: Set a max height for the message area */
     margin: 0;
     padding: 1rem;
     list-style-type: none;
@@ -74,23 +75,27 @@ ul#messages {
   
   form#form {
     text-align:left;
-    position: sticky;
+    font-size:20px;
+    position:relative;
     bottom: 100px;
     width: 97.75%;
     background-color:var(--header-color);
     padding: 1rem;
   }
   form#form input[type="text"] {
+    font-size:20px;
     flex: 1; /* Take up available horizontal space */
     padding: 0.5rem;
     font-size: 1rem;
   }
   
   form#form input[type="file"] {
+    font-size:20px;
     flex: 0.5; /* Adjust width of file input */
   }
   
   form#form button {
+    font-size:20px;
     flex: 0; /* Keep button width fixed */
     padding: 0.5rem 1rem;
     background-color:var(--button-bg-color);
