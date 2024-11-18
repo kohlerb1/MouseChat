@@ -1,4 +1,5 @@
 const User = require('../models/model');
+const Group = require('../models/model'); //constant for group
 const bcrypt = require('bcryptjs');
 //const User = require('../models/temp_model');
 
@@ -56,6 +57,11 @@ const getUserByName = async(req, res) => {
     }
 };
 
+// find groupname fucntion for getting group chat url
+const findGroupname = async (req, res) => {
+    const query = {groupname: group};
+    return await Group.findOne(query);
+};
 
 
 //###############################################

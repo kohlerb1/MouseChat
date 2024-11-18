@@ -11,6 +11,7 @@ let io = require('../index.js');
 const path = require('path');
 
 const session = require("express-session");
+const { get } = require("http");
 
 router.get('/signup', (req, res) => {
     res.render('signup');
@@ -77,6 +78,29 @@ router.get("/get/:username/:password", async (req, res) => {
     }
 });
 //
+
+// router get call to general message page
+router.get('/message', (req, res) =>{
+    res.render('message');
+});
+
+
+// router get call to specific user
+//router.get("/message/:username", Controller.findUsername, (req,res))
+router.get("/message/private", (req,res) => { //test route for pug file
+    res.render('private_message')
+})
+
+// router get call to specific group, need to make a findGroup in controller
+router.get('/message/group', (req,res) =>{ //test route for pug file
+    res.render('group_message')
+}); 
+//router.get("/message/:groupname",Controller.findGroupname)
+
+//router get call to global chat
+router.get("/message/horde", (req, res) => {
+    res.render('global_message');
+});
 
 // router get call to logout 
 router.get('/logout', checkSignIn, Controller.logout);
