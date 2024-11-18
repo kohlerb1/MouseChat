@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    include ./header.pug
+    link(rel='stylesheet' href='/styles/mainStyle.css')
+    title Create MouseHole
+    script.
+      function addInput() {
+        const container = document.getElementById('input-container');
+        input.type = 'text';
+        input.name = 'members'; // Ensure all inputs are grouped as an array
+        input.placeholder = 'Enter an existing user';
+        container.appendChild(input);
+      }
+  body
+    script(src="/styles/themes.js")
+    h1 Enter Strings
+    form(action="/group" method="POST")
+      input(type="text" name="GName" placeholder="Enter your group name" required)
+      div#input-container
+        input(type="text" name="members" value=id readonly)
+        input(type="text" name="members" placeholder="Enter an existing user" required)
+        input(type="text" name="members" placeholder="Enter an existing user" required)
+        br
+      button(type="button" onclick="addInput()") Add Another User
+      button(type="submit") Submit
+    include ./footer.pug 

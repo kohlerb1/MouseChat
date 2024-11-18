@@ -192,6 +192,7 @@ const createMouseHole = async(name, users) => {
             return;
         }
     }
+    console.log('i believe it worked' + groupChat.allowedUsers + groupChat.name);
     await groupChat.save();
 }
 

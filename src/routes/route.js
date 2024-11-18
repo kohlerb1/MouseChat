@@ -118,6 +118,10 @@ router.post("/updateUserPassword", Controller.updateUserPassword);
 router.get('/settings', (req, res) => {
     res.render('settings');
 });
+//generate group page
+router.get("/createMousehole", checkSignIn, (req, res) => {
+    res.render("createMH", {id: req.session.user.username});
+})
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
     const name = path.join(__dirname, '../views/index.html');
@@ -235,4 +239,11 @@ router.get("/*", (req, res) => {
 })
 
 
-
+router.post('/group', (req, res) => {
+    const members = req.body.members; // Access the array of strings
+    const name = req.body.GName;
+    console.log(members); // Log the array of strings
+    console.log(name);
+    res.send(`Received strings: ${members.join(', ')}`);
+    Controller.createMouseHole(name,members);
+  });
