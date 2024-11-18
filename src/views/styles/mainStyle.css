@@ -63,6 +63,33 @@ input[type='file'] {
     text-align: center;
 }
 
+ul#messages {
+    flex: 1; /* Allows the message list to expand and fill available space */
+    overflow-y: auto; /* Adds scrolling if messages overflow */
+    margin: 0;
+    padding: 1rem;
+    list-style-type: none;
+    text-align:left;
+  }
+  
+  form#form {
+    text-align:left;
+    position: sticky;
+    bottom: 100px;
+    width: 97.75%;
+    background-color:var(--header-color);
+    padding: 1rem;
+  }
+  
+  form#form label,
+  form#form input,
+  form#form button {
+    text-align:left;
+    display: block;
+    width: 80%;
+   
+  }
+
 :root:has(#Mouse:checked){
     --bg-color: rgb(212, 191, 157);
     --header-color: rgb(177, 128, 83);
