@@ -43,7 +43,7 @@ console.log('event listener added');
 socket.on('hoard message', (msg) => {
     console.log("msg: " + msg);
     const item = document.createElement('li');
-    item.textContent = `From: ${msg.senderUname} Message: ${msg.content}`;
+    item.textContent = `${msg.senderUname}: ${msg.content}`;
     if(msg.attachment) {
         //********Currently Does Not Work ********************/
         item.textContent += ` | Attachment: ${msg.attachment}`;

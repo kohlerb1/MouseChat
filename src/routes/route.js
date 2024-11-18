@@ -83,7 +83,7 @@ router.get("/get/:username/:password", async (req, res) => {
 
 // router get call to general message page
 router.get('/message', checkSignIn, (req, res) =>{
-    res.render('message');
+    res.render('message',{id: req.session.user.username});
 });
 
 
