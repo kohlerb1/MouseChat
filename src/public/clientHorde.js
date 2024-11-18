@@ -42,10 +42,11 @@ socket.on('hoard message', (msg) => {
     item.textContent = `From: ${msg.sender}\n Message: ${msg.content}`;
     if(msg.attachment) {
         //********Currently Does Not Work ********************/
-        item.textContent += `| Attachment: ${msg.attachment}`;
+        item.textContent += ` | Attachment: ${msg.attachment}`;
     }
     messages.appendChild(item);
   
+    item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 });
 
 console.log('end reached');

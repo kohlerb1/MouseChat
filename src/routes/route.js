@@ -115,8 +115,8 @@ router.get('/settings', (req, res) => {
 });
 
 // ****************************** Deugging code, will be changed when message selector is made**********************************
-router.get('/message', (req, res) => {
-    res.render('individual_message');
+router.get('/message/horde', (req, res) => {
+    res.render('horde_message');
 })
 //********************************************************************************
 
@@ -135,7 +135,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('hoard message', async (msgData) => {
-        console.log("I'm in routes")
         try {
           const message = new Message({
             sender: msgData.sender,
