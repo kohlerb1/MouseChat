@@ -1,5 +1,6 @@
 const User = require('../models/model');
 const privateSqueak = require('../models/privateSqueakModel');
+const Group = require('../models/model'); //constant for group
 const bcrypt = require('bcryptjs');
 const path = require('path');
 //const User = require('../models/temp_model');
@@ -60,6 +61,11 @@ const getUserByName = async(req, res) => {
     }
 };
 
+// find groupname fucntion for getting group chat url
+const findGroupname = async (req, res) => {
+    const query = {groupname: group};
+    return await Group.findOne(query);
+};
 
 
 //###############################################
@@ -113,7 +119,7 @@ const createUser = async (req,res) => {
 
         .catch( (error) => {
             //res.status(404).json({ success: false, error: error.message});
-            res.render("signup", {message: "failure"})
+            res.render("signup", {message: error.message})
         });
     } catch (error) {
         //res.status(500).json({ success: false, message: "Internal server error"});
@@ -149,7 +155,7 @@ const login = async(req, res) => {
                 changeActive(true, user.username, user.password);
                 user.isOnline = true
                 req.session.user = user;
-                res.redirect('/protected');
+                res.redirect('/message');
                 return;
             } else{ //return invalid credentials error
                 res.render('login', {message: "Invalid Credentials, Incorrect Password"});
@@ -526,4 +532,5 @@ const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate pe
 
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, fetchPS, updateUserSocket, resetUserSocket, createPS, findUsername};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, fetchPS, updateUserSocket, resetUserSocket, createPS, findUsername};
+

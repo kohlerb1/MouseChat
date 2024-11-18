@@ -7,12 +7,14 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
 const Message = require("../models/messageModel.js")
 const Hoard = require("../models/hoard.js");
+const User = require("../models/model.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
 let io = require('../index.js');
 const path = require('path');
 
 const session = require("express-session");
+const { get } = require("http");
 
 router.get('/signup', (req, res) => {
     res.render('signup.pug');
@@ -80,6 +82,29 @@ router.get("/get/:username/:password", async (req, res) => {
 });
 //
 
+// router get call to general message page
+router.get('/message', checkSignIn, (req, res) =>{
+    res.render('message',{id: req.session.user.username});
+});
+
+
+// router get call to specific user, changing this comment so github will stop yelling at me
+//router.get("/message/:username", Controller.findUsername, (req,res))
+router.get("/message/private", (req,res) => { //test route for pug file
+    res.render('private_message')
+})
+
+// router get call to specific group, need to make a findGroup in controller
+router.get('/message/group', (req,res) =>{ //test route for pug file
+    res.render('group_message')
+}); 
+//router.get("/message/:groupname",Controller.findGroupname)
+
+//router get call to global chat
+router.get("/message/horde", (req, res) => {
+    res.render('global_message');
+});
+
 // router get call to logout 
 router.get('/logout', checkSignIn, Controller.logout);
 
@@ -111,15 +136,21 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
-router.get('/settings', (req, res) => {
-    res.render('settings.pug');
+
+router.get('/settings', checkSignIn, (req, res) => {
+        // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
+        const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
+        const profilePic = bufferData.toString('base64');
+        const contentType = req.session.user.profilepicture.contentType;
+        // pass the user name, cheese, and profile picture data to the pug file 
+    res.render('settings', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
-// ****************************** Deugging code, will be changed when message selector is made**********************************
-router.get('/message/horde', (req, res) => {
+
+router.get('/message/horde/:sender', (req, res) => {
     res.render('horde_message');
 })
-//********************************************************************************
+
 
 
 //************SOCKET DIRECTS************************** */
@@ -195,8 +226,15 @@ io.on('connection', (socket) => {
 
     socket.on('hoard message', async (msgData) => {
         try {
-          const message = new Message({
-            sender: msgData.sender,
+            const user = await Controller.findUsername(msgData.sender);
+            if(!user) {
+                console.log("No User Found");
+            }
+
+
+            const message = new Message({
+            sender: user._id,
+            senderUname: msgData.sender,
             recipient: msgData.recipient, 
             content: msgData.content,
             attachment: msgData.attachment,
@@ -214,8 +252,10 @@ io.on('connection', (socket) => {
           hoard.chatHistory.push(savedMessage._id);
           await hoard.save();
 
+          message.sender = msgData.sender;
+          console.log("Sender: " + message.sender);
           // Emit the saved message back to all connected clients
-          io.emit('hoard message', savedMessage);
+          io.emit('hoard message', message);
         } catch (error) {
           console.error('Error saving message:', error);
         }
@@ -226,5 +266,5 @@ io.on('connection', (socket) => {
 
 //catches anything not in website to redirect to the homepage
 router.get("/*", (req, res) => {
-    res.render('homepage.pug');
+    res.render('homepage');
 });
