@@ -6,7 +6,7 @@ const [sender, recipient] = sndrcv.split("~");
 
 console.log(sndrcv);
 console.log(sender);
-console.log(rcv);
+console.log(recipient);
 console.log('CLIENT RUNNING');
 const form = document.getElementById('form');
 const contentInput = document.getElementById('content');
@@ -15,6 +15,7 @@ const messages = document.getElementById('messages');
 socket.emit('establishSocketPS', sender);
 console.log('consts declared');
 
+//Adapted from ChatGPT Code
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     const content = contentInput.value.trim();
@@ -32,16 +33,17 @@ form.addEventListener('submit', (e) => {
         }
         : null;
 
-    e.preventDefault();
-    socket.emit('privateSqueak', { sender, recipient, content, attachment });
+    // Emit squeak message
+    socket.emit('privateSqueak', {sender, recipient, content, attachment});
 
     contentInput.value = '';
     attachmentInput.value = '';
 });
 
 socket.on('privateSqueak', (msg) => {
+    console.log("msg: " + msg);
     const item = document.createElement('li');
-    item.textContent = `From: ${msg.sender}\n Message: ${msg.content}`;
+    item.textContent = `${msg.senderUname}: ${msg.content}`;
     if(msg.attachment) {
         //********Currently Does Not Work ********************/
         item.textContent += ` | Attachment: ${msg.attachment}`;
@@ -50,3 +52,7 @@ socket.on('privateSqueak', (msg) => {
   
     item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 });
+
+console.log('end reached');
+
+

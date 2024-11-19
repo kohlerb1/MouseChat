@@ -5,9 +5,11 @@ const Controller= require("../controllers/controller");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
+const mongoose = require('mongoose');
 const Message = require("../models/messageModel.js")
 const Hoard = require("../models/hoard.js");
 const User = require("../models/model.js");
+const PrivateSqueak = require("../models/privateSqueakModel.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
 let io = require('../index.js');
@@ -178,7 +180,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('a user disconnected');
-        Controller.resetUserSocket(socket.id);
+        //Controller.resetUserSocket(socket.id);
     });
 
     socket.on('chat message', (msg) => {
@@ -186,39 +188,91 @@ io.on('connection', (socket) => {
     });
 
     socket.on('privateSqueak', async(msgData) => { //rcv is user name as string
-        const query = {username: msgData.recipient};
-        let socketid = 0;
+        
+        let socketid = "0";
+        console.log("before objects made")
         const sndObject = await Controller.findUsername(msgData.sender);
         const rcvObject = await Controller.findUsername(msgData.recipient);
+        console.log("senderobj: " + sndObject);
+        console.log("rcvobj: " + rcvObject);
+
+        console.log("senderobj: " + sndObject.id);
+        console.log("rcvobj: " + rcvObject.id);
         if (sndObject == null){
-            console.log("could not find ");
-            console.log(msgData.sender)
+            console.log("could not find: " + msgData.sender);
+            return;
         }
-        socketid = foundUser.socketID;
-        try {
+        console.log("after objects made");
+        console.log("reciever: " + msgData.recipient);
+        
+        const query = {username: msgData.recipient};
+       /* await User.find(query).then( (foundUser) => {
+            if (!foundUser){ //if no ps macthes session, error
+                console.log("one of two users doesnt exist")
+                return;
+            }
+            socketid = foundUser.socketID;
             
+        }); */
+        socketid = rcvObject.socketID;
+        console.log("after socketID updated to " + socketid);
+        try {
+            console.log("before message object made");
             const message = new Message({
-                sender: sndObject,
-                recipient: rcvObject, 
+                sender: sndObject.id,
+                senderUname: msgData.sender,
+                recipient: rcvObject.id, 
                 content: msgData.content,
                 attachment: msgData.attachment,
               });
-      
+            console.log("after message object made");
+
             const savedMessage = await message.save();
             
-            const PS = await Controller.fetchPS(sndObject, rcvObject);
-            if (!PS) {
+            let PS = PrivateSqueak({
+                Users: [],
+                chatHistory: []
+            });
+
+            let query = { Users: {$all: [sndObject, rcvObject]} };
+            await PrivateSqueak.findOne(query).then( (foundPS) => {
+                if (!foundPS){ //if no ps macthes session, error
+                    console.log("one of two users doesnt exist")
+                    console.log("FoundPS: " + foundPS);
+                }
+                else{
+                console.log("FoundPS Here: " + foundPS);
+                const query = {id: PS.id};
+                Controller.updatePS(PS.id, foundUser);
+                PS.Users.push(foundUser.Users[0]);
+                PS.save();
+                PS.Users.push(foundUser.Users[1]);
+                PS.save();
+                console.log("PS HERE: " + PS);
+                }
+            }); 
+
+
+            console.log("privatesquak: ", PS);
+            if (PS.Users.length == 0) {
               // Create and save a new Hoard document if it doesn't exist
-              await Controller.createPS(sndObject, rcvObject);
+              //await Controller.createPS(sndObject, rcvObject);
+              PS.Users.push(sndObject);
+              PS.Users.push(rcvObject);
               console.log('New PS created');
+              //PS = await Controller.fetchPS(sndObject, rcvObject);
             }
             PS.chatHistory.push(savedMessage._id);
             await PS.save();
 
-            io.to(socketid).emit("privateSqueak", message);
-            io.to(socket.id).emit("privateSqueak", message);
+            try{
+                io.to(socketid).emit("privateSqueak", message);
+                io.to(socket.id).emit("privateSqueak", message);
+            } catch {
+                io.to(socket.id).emit("privateSqueak", message);
+            }
         } catch (error) {
-            console.error('Error saving message:', error);
+            console.error('Error saving message:');
         }
   
     });

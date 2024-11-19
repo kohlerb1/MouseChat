@@ -1,5 +1,5 @@
 const User = require('../models/model');
-const privateSqueak = require('../models/privateSqueakModel');
+const PrivateSqueak = require('../models/privateSqueakModel');
 const Group = require('../models/model'); //constant for group
 const bcrypt = require('bcryptjs');
 const path = require('path');
@@ -422,18 +422,18 @@ const changeActive = async(active, username, password) =>{
         //update cheese of user that matches user
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
             if (!foundUser){ //if no user macthes session, rerender page and display error
-                console.log("no such user")
+                console.log("could not find user to update active statuc")
                 return;
             }
         //req.session.user = foundUser;  
         return;
         })
         .catch ( (error) => { //catch find and update errors to display error to user
-            console.log("no such user")
+            console.log("update status small catch")
             return;
         }) 
     } catch (error){ //catch big try block and display error
-        console.log("no such user")
+        console.log("update status big catch")
         return;
     }
 };
@@ -447,40 +447,57 @@ const changeActive = async(active, username, password) =>{
 const fetchPS = async(sender, receiver) =>{
     try{
         //make query and update on approproate infromation
-        let query = {Users: sender, Users: receiver};
-        
-        await privateSqueak.find(query).then( (foundPS) => {
+        //let query = { Users: { $all: [sender, receiver] } };
+        //let query = {Users: [sender, receiver]};
+        //let query = { Users: { $in: [sender.id] }, Users: { $in: [receiver.id]} };
+        let query = { Users: {$all: [sender, receiver]} };
+        //let query = { Users: { $all: [sender.id, receiver.id] } };
+
+        //{ Users: {$all: [ObjectId('673b81c84450096e7f35b105'), ObjectId('673b7710e64b037d6a732421')]} }
+
+        await PrivateSqueak.findOne(query).then( (foundPS) => {
             if (!foundPS){ //if no ps macthes session, error
                 console.log("one of two users doesnt exist")
-                return;
+                console.log("FoundPS: " + foundPS);
+                return null;
             }
-         
-        return foundPS;
+            console.log("FoundPS: " + foundPS);
+            return foundPS;
         })
         .catch ( (error) => { 
-            return;
-        }) 
+            console.log("about to return null");
+            return null;
+        }); 
     } catch (error){ //catch big try block and display error
-        console.log("no such user")
-        return;
+        console.log("no such private squeak")
+        return null;
     }
 };
 
 const createPS = async(sender, receiver) =>{ //sender rec are usernames
-    const user1 = findUser(sender);
-    const user2 = findUser(receiver);
-    let db_data = {Users: [user1, user2], chatHistory:[]}; //change pword to hashed_pword, returns 404 error User does not exist
-    await privateSqueak.create(db_data);
+    let db_data = {Users: [sender, receiver], chatHistory:[]}; //change pword to hashed_pword, returns 404 error User does not exist
+    await PrivateSqueak.create(db_data);
 };
 
-
+const updatePS = async (PSid, passedPS) => { //set socketid to 0 to indicate person isnt connected
+    const update = {Users: passedPS.Users, chatHistory: passedPS.chatHistory};
+    const query = {id: PSid};
+    console.log("work");
+    await PrivateSqueak.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("could PS to update");
+            return;
+        } 
+    return;
+    }
+)};
 
 const updateUserSocket = async (uname, socketid) => { //set socketid to 0 to indicate person isnt connected
     const query = {username: uname};
     const update = {socketID: socketid}
     await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
         if (!foundUser){ //if no user macthes session, rerender page and display error
-            console.log("no such user")
+            console.log("could not find user to update socket")
             return;
         } 
     return;
@@ -492,7 +509,7 @@ const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate pe
     const update = {socketID: "0"}
     await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
         if (!foundUser){ //if no user macthes session, rerender page and display error
-            console.log("no such user")
+            console.log("could not find user to reset socket")
             return;
         } 
     return;
@@ -532,5 +549,5 @@ const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate pe
 
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, fetchPS, updateUserSocket, resetUserSocket, createPS, findUsername};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, fetchPS, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS};
 
