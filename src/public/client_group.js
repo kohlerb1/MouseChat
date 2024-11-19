@@ -16,6 +16,7 @@ const user_info = url_info.split("/")[3];
 const user = user_info.split("~")[1];
 const group = user_info.split("~")[0];
 
+
 console.log(user);
 console.log(group);
 
@@ -76,13 +77,15 @@ socket.on('groupChatMessage', (msg) => {
 });
 
 socket.on('chatHistory', chatHistory => {
+    console.log(chatHistory);
+    
     for (i = 0; i < chatHistory.length; i++){
-        message_object = chatHistory[i]
-        sender = message_object.sender;
-        content = message_object.content;
-        socket.emit('groupChatMesssage', {sender, content});
+        const item = document.createElement('li');
+        item.textContent = chatHistory[i];
+        messages.appendChild(item);
     }
-    console.log('Chat History:', chatHistory);
+    item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+
 });
 
 console.log('end reached');

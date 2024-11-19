@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const UserModel = require('../models/model');
 const groupChatModel = require('../models/mouseHole');
+const messageModel = require('../models/messageModel');
 
 //###############################################
 // UTILITY FUNCTIONS #######################
@@ -13,6 +14,11 @@ const groupChatModel = require('../models/mouseHole');
 const userExists = async (uname) => {
     query = {username: uname};
     return await User.exists(query);
+};
+
+const mouseholeExists = async (gname) => {
+    query = {name: gname};
+    return await groupChatModel.exists(query);
 };
 
 const findUsername = async (uname) => {
@@ -177,6 +183,11 @@ const logout = async (req, res) => {
 const createMouseHole = async(name, users) => {
     console.log(users);
 
+    if (await mouseholeExists(name)) {
+        console.log("Group Chat Already Exists!!");
+        return;
+    }
+
     const groupChat = new groupChatModel({
         name: name,
         allowedUsers: [], 
@@ -199,11 +210,30 @@ const createMouseHole = async(name, users) => {
 async function getChatHistory(chatId) {
     //const groupChat = await groupChatModel.findById(chatId).populate('chatHistory');
     const groupChat = await groupChatModel.findById(chatId);
+    console.log(groupChat);
     //console.log(groupChat.chatHistory);
-    if(groupChat){
-        return groupChat.chatHistory;
+    if(!groupChat){
+        return [];
     }
-    return [];
+    const chatHistory = groupChat.chatHistory;
+    let mouseHoleHistory = [];
+
+    for (let i = 0; i < chatHistory.length; i++){
+        console.log("===========");
+        console.log(chatHistory[i]);
+        msg = await messageModel.findById(chatHistory[i]._id);
+        if(!msg){
+            console.log("not found");
+            continue;
+        }  
+        sender = await UserModel.findById(msg.sender._id);
+        mouseHoleHistory.push(`${sender.username}: ${msg.content}`);
+    }
+    console.log("----------------")
+    console.log(chatHistory);
+    console.log("-------------");
+    console.log(mouseHoleHistory);
+    return(mouseHoleHistory);
 }
 
 
