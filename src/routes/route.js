@@ -229,48 +229,32 @@ io.on('connection', (socket) => {
 
             const savedMessage = await message.save();
             
-            let PS = PrivateSqueak({
-                Users: [],
-                chatHistory: []
-            });
+            //makes PS ONLY if it doesnt already exist
+            await Controller.createPS(sndObject, rcvObject);
 
             let query = { Users: {$all: [sndObject, rcvObject]} };
             await PrivateSqueak.findOne(query).then( (foundPS) => {
                 if (!foundPS){ //if no ps macthes session, error
-                    console.log("one of two users doesnt exist")
-                    console.log("FoundPS: " + foundPS);
+                    console.log("significant error");
+                    console.log("nothing to do");
                 }
-                else{
-                console.log("FoundPS Here: " + foundPS);
-                const query = {id: PS.id};
-                Controller.updatePS(PS.id, foundUser);
-                PS.Users.push(foundUser.Users[0]);
-                PS.save();
-                PS.Users.push(foundUser.Users[1]);
-                PS.save();
-                console.log("PS HERE: " + PS);
+                console.log("privatesquak: ", foundPS);
+                // Create and save a new Hoard document if it doesn't exist
+                //await Controller.createPS(sndObject, rcvObject);
+            
+                //PS = await Controller.fetchPS(sndObject, rcvObject);
+                
+                foundPS.chatHistory.push(savedMessage._id);
+                foundPS.save();
+                try{
+                    io.to(socketid).emit("privateSqueak", message);
+                    io.to(socket.id).emit("privateSqueak", message);
+                } catch {
+                    io.to(socket.id).emit("privateSqueak", message);
                 }
+                
             }); 
 
-
-            console.log("privatesquak: ", PS);
-            if (PS.Users.length == 0) {
-              // Create and save a new Hoard document if it doesn't exist
-              //await Controller.createPS(sndObject, rcvObject);
-              PS.Users.push(sndObject);
-              PS.Users.push(rcvObject);
-              console.log('New PS created');
-              //PS = await Controller.fetchPS(sndObject, rcvObject);
-            }
-            PS.chatHistory.push(savedMessage._id);
-            await PS.save();
-
-            try{
-                io.to(socketid).emit("privateSqueak", message);
-                io.to(socket.id).emit("privateSqueak", message);
-            } catch {
-                io.to(socket.id).emit("privateSqueak", message);
-            }
         } catch (error) {
             console.error('Error saving message:');
         }

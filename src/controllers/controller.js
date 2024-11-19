@@ -444,40 +444,36 @@ const changeActive = async(active, username, password) =>{
 //###############################################
 
 
-const fetchPS = async(sender, receiver) =>{
+const createPS = async(sender, receiver) =>{
     try{
         //make query and update on approproate infromation
         //let query = { Users: { $all: [sender, receiver] } };
         //let query = {Users: [sender, receiver]};
         //let query = { Users: { $in: [sender.id] }, Users: { $in: [receiver.id]} };
-        let query = { Users: {$all: [sender, receiver]} };
+        const query = { Users: {$all: [sender, receiver]} };
         //let query = { Users: { $all: [sender.id, receiver.id] } };
 
         //{ Users: {$all: [ObjectId('673b81c84450096e7f35b105'), ObjectId('673b7710e64b037d6a732421')]} }
 
         await PrivateSqueak.findOne(query).then( (foundPS) => {
             if (!foundPS){ //if no ps macthes session, error
-                console.log("one of two users doesnt exist")
-                console.log("FoundPS: " + foundPS);
-                return null;
+                console.log("creating PS in controller");
+                makePS(sender, receiver);
+                return;
             }
-            console.log("FoundPS: " + foundPS);
-            return foundPS;
+            console.log("PS Exists do not create");
+            return;
         })
-        .catch ( (error) => { 
-            console.log("about to return null");
-            return null;
-        }); 
     } catch (error){ //catch big try block and display error
-        console.log("no such private squeak")
-        return null;
+        console.log("major error in creating PS")
+        return;
     }
 };
 
-const createPS = async(sender, receiver) =>{ //sender rec are usernames
-    let db_data = {Users: [sender, receiver], chatHistory:[]}; //change pword to hashed_pword, returns 404 error User does not exist
+const makePS = async(sender, receiver) =>{ //sender rec are usernames
+    let db_data = {Users: [sender, receiver], chatHistory:[]}; 
     await PrivateSqueak.create(db_data);
-};
+}; 
 
 const updatePS = async (PSid, passedPS) => { //set socketid to 0 to indicate person isnt connected
     const update = {Users: passedPS.Users, chatHistory: passedPS.chatHistory};
@@ -549,5 +545,5 @@ const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate pe
 
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, fetchPS, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS};
 
