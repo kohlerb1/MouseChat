@@ -83,7 +83,10 @@ router.get("/get/:username/:password", async (req, res) => {
 
 // router get call to general message page
 router.get('/message', checkSignIn, (req, res) =>{
-    res.render('message',{id: req.session.user.username});
+    const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
+    const profilePic = bufferData.toString('base64');
+    const contentType = req.session.user.profilepicture.contentType;
+    res.render('message',{id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
 
