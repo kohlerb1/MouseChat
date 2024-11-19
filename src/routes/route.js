@@ -12,10 +12,15 @@ const User = require("../models/model.js");
 const PrivateSqueak = require("../models/privateSqueakModel.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
-let io = require('../index.js');
+const io = require('../index.js');
 const path = require('path');
 
 const session = require("express-session");
+const MouseHole = require("../models/mouseHole.js");
+const UserModel = require('../models/model.js');
+
+const {getChatHistory} = require('../controllers/controller.js');
+const { group } = require("console");
 const { get } = require("http");
 
 router.get('/signup', (req, res) => {
@@ -86,7 +91,10 @@ router.get("/get/:username/:password", async (req, res) => {
 
 // router get call to general message page
 router.get('/message', checkSignIn, (req, res) =>{
-    res.render('message',{id: req.session.user.username});
+    const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
+    const profilePic = bufferData.toString('base64');
+    const contentType = req.session.user.profilepicture.contentType;
+    res.render('message',{id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
 
@@ -147,10 +155,15 @@ router.get('/settings', checkSignIn, (req, res) => {
         // pass the user name, cheese, and profile picture data to the pug file 
     res.render('settings', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
+//generate group page
+router.get("/createMousehole", checkSignIn, (req, res) => {
+    res.render("createMH", {id: req.session.user.username});
+})
 
 
-router.get('/message/horde/:sender', (req, res) => {
-    res.render('horde_message');
+router.get('/message/horde/:sender', checkSignIn, async (req, res) => {
+    const hordeHistory = await Controller.getHordeHistory();
+    res.render('horde_message', { hordeHistory });
 })
 
 
@@ -166,6 +179,9 @@ router.get("/message/:sndrcv", (req,res) => {
     //const name = path.join(__dirname, '../storage/PS.html');
     //res.sendFile(name);
 });
+router.get('/message/mousehole/:groupName~:username', (req, res) => {
+    res.render('groupMessage');
+})
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -188,7 +204,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('privateSqueak', async(msgData) => { //rcv is user name as string
-        
         let socketid = "0";
         console.log("before objects made")
         const sndObject = await Controller.findUsername(msgData.sender);
@@ -263,6 +278,87 @@ io.on('connection', (socket) => {
     });
 
 
+    //socket.on('mousehole')
+
+    // Adapted from ChatGPT
+    socket.on('joinGroupChat', async (msg) => {
+        userId = msg.user;
+        groupName = msg.group;
+        console.log(userId);
+        console.log(groupName);
+        // Gets the groupChat object for the specified groupChat name and populates the data for each allowed User in the allowedUsers field of the groupChat object 
+        const groupChat = await MouseHole.findOne({ name: groupName}).populate('allowedUsers');
+
+        // If the groupChat exists 
+        if (groupChat) {
+            console.log("groupchat found");
+            const user = await UserModel.findOne({username: userId});
+            console.log(user);
+            // If there is a user in the allowed users that matches the current user
+            if (groupChat.allowedUsers.some(u => u._id.equals(user._id))) {
+                socket.join(groupName)
+                console.log(`${user.username} joined the group ${groupName}`);
+                // Get the chat history for the group chat
+                const chatHistory = await getChatHistory(groupChat._id);
+                console.log(chatHistory);
+                socket.emit('chatHistory', chatHistory);
+            } else {
+                console.log("you arent in this one bud");
+                socket.emit('error', 'You are not a part of this groupChat');
+            }
+        } else {
+            console.log("schizo");
+            socket.emit('error', 'Groupchat does not exist');
+        }
+    });
+
+    socket.on('sendGroupMessage', async (msg) => {
+        const userId = msg.user;
+        const groupName = msg.group;
+        const content = msg.content;
+        console.log(userId);
+        console.log("%%%%%%%%%%%%%%%");
+        console.log(groupName);
+        console.log("%%%%%%%%%%%%%%%");
+        console.log(content);
+        // Find group chat by name
+        const groupChat = await MouseHole.findOne({name: groupName});
+        const user_objID = await UserModel.findOne({username: userId});
+
+        // Create the message object
+        if(groupChat){
+            console.log("Groupchat found!!!!!!!");
+            const message = new Message({
+                sender: user_objID._id,
+                content: content,
+            });
+            console.log("----------------");
+            console.log(message);
+            console.log(message.content);
+            console.log("-------------");
+
+            // Save the message
+            await message.save();
+            // Update the chat history 
+            groupChat.chatHistory.push(message._id);
+            await groupChat.save();
+
+            io.to(groupName).emit('groupChatMessage', {
+                sender: userId,
+                content: message.content,
+            });
+            console.log("Group message signal sent");
+        } else {
+            socket.emit('error', 'Groupchat not found');
+        }
+    });
+
+
+    
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
     socket.on('hoard message', async (msgData) => {
         try {
             const user = await Controller.findUsername(msgData.sender);
@@ -276,7 +372,6 @@ io.on('connection', (socket) => {
             senderUname: msgData.sender,
             recipient: msgData.recipient, 
             content: msgData.content,
-            attachment: msgData.attachment,
           });
     
           const savedMessage = await message.save();
@@ -307,3 +402,13 @@ io.on('connection', (socket) => {
 router.get("/*", (req, res) => {
     res.render('homepage');
 });
+
+
+router.post('/group', (req, res) => {
+    const members = req.body.members; // Access the array of strings
+    const name = req.body.GName;
+    console.log(members); // Log the array of strings
+    console.log(name);
+    res.send(`Received strings: ${members.join(', ')}`);
+    Controller.createMouseHole(name,members);
+  });

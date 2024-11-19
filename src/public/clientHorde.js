@@ -13,6 +13,8 @@ console.log('consts declared');
 const reciever = window.location.pathname;
 const [path1, path2, path3, uname] = reciever.split("/");
 console.log("Uname: " + uname);
+
+
 //Adapted from ChatGPT Code
 
 form.addEventListener('submit', (e) => {
@@ -24,20 +26,11 @@ form.addEventListener('submit', (e) => {
         return;
     }
 
-    // Read attachment file if any
-    const attachment = attachmentInput.files[0] 
-        ? {
-            name: attachmentInput.files[0].name,
-            data: attachmentInput.files[0],
-            type: attachmentInput.files[0].type,
-        }
-        : null;
 
     // Emit hoard message
-    socket.emit('hoard message', {sender, content, attachment});
+    socket.emit('hoard message', {sender, content});
 
     contentInput.value = '';
-    attachmentInput.value = '';
 });
 
 console.log('event listener added');

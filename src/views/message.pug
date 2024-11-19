@@ -9,17 +9,26 @@ html
         script(src="/styles/themes.js")
         h1 Welcome To MouseChat 
         br
-        h2 message a group
+        div(style="display:flex; align-items:left; justify-content:center;")
+            img(src=pic alt="Profile Picture" style='width:150px;height:150px;margin-right:20px;')
+            div(style="text-align:center;")
+                div Hey #{id}, How are you doing today? 
+                div Your favorite cheese is #{cheese}. 
+                br
+                br
+            br
+        br
+        h2 Message A MouseHole (Group Messaging)
         input(name = "groupname" type = "text" required placeholder = "Group name")
         a(href=`/message/group`)
-            button Message group 
+            button Message Group 
         br
-        h2 message a single user 
+        h2 Send A Private Squeak (Individual Messaging) 
         input(name = "username" type = "text" required placeholder = "Username")
         a(href=`/message/${id}~${username}`)
             button Message User 
         br
-        h2 message the horde
+        h2 Message The Horde (Global Messaging)
         a(href=`/message/horde/${id}`)
             button The Horde 
         br

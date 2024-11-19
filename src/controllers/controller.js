@@ -4,11 +4,11 @@ const Group = require('../models/model'); //constant for group
 const bcrypt = require('bcryptjs');
 const path = require('path');
 //const User = require('../models/temp_model');
-
+const Horde = require("../models/hoard");
 const fs = require('fs');
 const UserModel = require('../models/model');
 const MouseHole = require('../models/mouseHole');
-
+const Message = require('../models/messageModel');
 //###############################################
 // UTILITY FUNCTIONS #######################
 //###############################################
@@ -16,6 +16,11 @@ const MouseHole = require('../models/mouseHole');
 const userExists = async (uname) => {
     query = {username: uname};
     return await User.exists(query);
+};
+
+const mouseholeExists = async (gname) => {
+    query = {name: gname};
+    return await MouseHole.exists(query);
 };
 
 const findUsername = async (uname) => {
@@ -127,6 +132,7 @@ const createUser = async (req,res) => {
     }
 };
 
+
 // The below function handles login requests 
 const login = async(req, res) => {
     // If no username or password is submitted, redirect back to the login page 
@@ -182,14 +188,20 @@ const logout = async (req, res) => {
 // users is an array of username strings 
 // Method creates a groupchat given the name of the chat and an array of the users, will fail to create the chat if any of the specified users don't exist
 const createMouseHole = async(name, users) => {
+    console.log(users);
 
-    const mousehole = new MouseHole({
+    if (await mouseholeExists(name)) {
+        console.log("Group Chat Already Exists!!");
+        return;
+    }
+
+    const groupChat = new MouseHole({
         name: name,
         allowedUsers: [], 
         chatHistory: [],
     })
     for (let i = 0; i < users.length; i++){
-        u = await UserModel.findOne({name: users[i]});
+        u = await UserModel.findByName(users[i]);
         if(u){
             mousehole.allowedUsers.push(u._id);
         } else {
@@ -198,15 +210,37 @@ const createMouseHole = async(name, users) => {
             return;
         }
     }
-    await mousehole.save();
+    console.log('i believe it worked' + groupChat.allowedUsers + groupChat.name);
+    await groupChat.save();
 }
 
 async function getChatHistory(chatId) {
-    const mousehole = await MouseHole.findByID(chatId).populate('chatHistory');
-    if(mousehole){
-        return mousehole;
+    //const groupChat = await groupChatModel.findById(chatId).populate('chatHistory');
+    const groupChat = await MouseHole.findById(chatId);
+    console.log(groupChat);
+    //console.log(groupChat.chatHistory);
+    if(!groupChat){
+        return [];
     }
-    return [];
+    const chatHistory = groupChat.chatHistory;
+    let mouseHoleHistory = [];
+
+    for (let i = 0; i < chatHistory.length; i++){
+        console.log("===========");
+        console.log(chatHistory[i]);
+        msg = await Message.findById(chatHistory[i]._id);
+        if(!msg){
+            console.log("not found");
+            continue;
+        }  
+        sender = await UserModel.findById(msg.sender._id);
+        mouseHoleHistory.push(`${sender.username}: ${msg.content}`);
+    }
+    console.log("----------------")
+    console.log(chatHistory);
+    console.log("-------------");
+    console.log(mouseHoleHistory);
+    return(mouseHoleHistory);
 }
 
 
@@ -215,6 +249,31 @@ async function getChatHistory(chatId) {
 // DELETE ACCOUNT ######################
 //###############################################
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//************LINE 100 *///////////////
 const deleteUser = async (req, res) => {
     try{
          //login attempt entered password
@@ -302,6 +361,35 @@ const updateUserPfp = async (req, res) => {
     }
 };
 
+const internalUpdate = async(uname, pword, req, res) => {
+    let user = await findUser(uname, pword); //finds matching username/password in database, updates session to it
+    req.session.user = user;
+    res.redirect('/protected'); //redirects to user protected page
+};
+//************LINE 200 */////////////// 
+
+
+
+// const getUser = async(req, res) => {
+//     try{
+//         let uname = req.body.username
+//         let pword = req.body.password 
+
+//         let query = {username: uname, password: pword};
+
+//         await User.findOne(query).then( (foundUser) => {
+//             if (!foundUser)
+//                 return res.status(404).json({success: false, message: "User retrieval failed", error: "Unable to find User"});
+//             res.status(201).json({success: true, foundUser});
+//             //do messaging stuff here, on success case, for next sprint
+//         })
+//         .catch( (error) => {
+//             res.status(404).json({success: false, error: error.message});
+//         });
+//     } catch (error) {
+//         res.status(500).json({success: false, message: "Internal Server Error"});
+//     }
+// };
 
 
 
@@ -309,7 +397,27 @@ const updateUserPfp = async (req, res) => {
 
 
 
-/// Line 300
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+//************LINE 300 *///////////////
 const updateUserCheese = async (req, res) => {
     try{
         //get username password from user session
@@ -399,12 +507,6 @@ const updateUserName = async (req, res) => {
     } catch (error){ //catch big try block and display error
         res.render("updateUserName", {message: "Internal server error"})
     }
-};
-
-const internalUpdate = async(uname, pword, req, res) => {
-    let user = await findUser(uname, pword); //finds matching username/password in database, updates session to it
-    req.session.user = user;
-    res.redirect('/protected'); //redirects to user protected page
 };
 
 
@@ -517,6 +619,28 @@ const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate pe
 
 
 
+async function getHordeHistory() {
+    const horde = await Horde.findOne();
+    if(horde == null) {
+        return [];
+    }
+    const chat = horde.chatHistory;
+    const messages = []
+    if(chat){
+        for (let i = 0; i < chat.length; i++) {
+            const this_chat = await Message.findById(chat[i]._id);
+            const message = {
+                sender: this_chat.senderUname,
+                content: this_chat.content,
+            };
+            messages.push(message);
+        }
+        return messages;
+    }
+    else{
+        return [];
+    }
+}
 
 //###############################################
 // commented out functions ######################
@@ -544,6 +668,5 @@ const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate pe
 // };
 
 
-
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory};
 
