@@ -7,8 +7,12 @@ html
   body(style = "height: 35vh;")
     script(src="/styles/themes.js")
     include ./header.pug
+    
+
    
     ul#messages
+      each chat in hordeHistory
+        li #{chat.sender}: #{chat.content}
     br
     br
     br
@@ -18,8 +22,6 @@ html
       label(for="content") Message:
       input#content(type="text" name="content" required placeholder="Type your message here...")
 
-      label(for="attachment") Attachment (optional):
-      input#attachment(type="file" name="attachment" accept="image/jpeg,image/jpg")
   
       button(type="submit") Send Message
     include ./footer.pug
