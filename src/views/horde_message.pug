@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    meta(name="viewport" content="width=device-width,initial-scale=1.0")
+    link(rel='stylesheet' href='/styles/mainStyle.css') 
+    title Horde Messaging
+  body(style = "height: 35vh;")
+    script(src="/styles/themes.js")
+    include ./header.pug
+    
+
+   
+    ul#messages
+      each chat in hordeHistory
+        li #{chat.sender}: #{chat.content}
+    br
+    br
+    br
+
+    form#form(enctype="multipart/form-data")
+  
+      label(for="content") Message:
+      input#content(type="text" name="content" required placeholder="Type your message here...")
+
+  
+      button(type="submit") Send Message
+    include ./footer.pug
+    script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+    script(src="/public/clientHorde.js")

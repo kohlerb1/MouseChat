@@ -1,0 +1,27 @@
+doctype html 
+html 
+    head 
+        link(rel='stylesheet' href='/styles/mainStyle.css')
+        title Message
+        include ./header.pug
+
+
+    body 
+    h1 This is the private message page
+    br
+    br
+    h2 send a message 
+    ul messages
+    form 
+      input#input(autocomplete="off")
+      button Send
+    script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+    script(src = "/public/client.js")
+    br
+    h2 Would you like to logout?
+    a(href="/logout")
+        button Logout
+    br
+    br
+    include ./footer.pug
+

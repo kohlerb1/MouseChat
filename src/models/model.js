@@ -6,7 +6,14 @@ const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        maxLenngth: 25
+        maxLength: 25,
+        //From ChatGPT
+        validate: {
+            validator: function(value) {
+                return /^[^\s~]+$/.test(value);
+            },
+            message: props => `${props.value} is not a valid username. It cannot contain spaces or the '~' character.`
+        }
     },
     password: {
         type: String,
@@ -33,6 +40,10 @@ const UserSchema = new mongoose.Schema({
     },
     isOnline:{
         type:Boolean,
+        required:true
+    },
+    socketID:{
+        type: String,
         required:true
     }
 });

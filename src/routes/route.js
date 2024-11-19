@@ -4,19 +4,22 @@ const Controller= require("../controllers/controller");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
-
+const Message = require("../models/messageModel.js")
+const Hoard = require("../models/hoard.js");
+const User = require("../models/model.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
 const io = require('../index.js');
 const path = require('path');
 
 const session = require("express-session");
-const mouseHoleModel = require("../models/mouseHole.js");
+const MouseHole = require("../models/mouseHole.js");
 const UserModel = require('../models/model.js');
-const messageModel = require("../models/messageModel.js");
+const Message = require("../models/messageModel.js");
 
 const {getChatHistory} = require('../controllers/controller.js');
 const { group } = require("console");
+const { get } = require("http");
 
 router.get('/signup', (req, res) => {
     res.render('signup');
@@ -84,6 +87,29 @@ router.get("/get/:username/:password", async (req, res) => {
 });
 //
 
+// router get call to general message page
+router.get('/message', checkSignIn, (req, res) =>{
+    res.render('message',{id: req.session.user.username});
+});
+
+
+// router get call to specific user, changing this comment so github will stop yelling at me
+//router.get("/message/:username", Controller.findUsername, (req,res))
+router.get("/message/private", (req,res) => { //test route for pug file
+    res.render('private_message')
+})
+
+// router get call to specific group, need to make a findGroup in controller
+router.get('/message/group', (req,res) =>{ //test route for pug file
+    res.render('group_message')
+}); 
+//router.get("/message/:groupname",Controller.findGroupname)
+
+//router get call to global chat
+router.get("/message/horde", (req, res) => {
+    res.render('global_message');
+});
+
 // router get call to logout 
 router.get('/logout', checkSignIn, Controller.logout);
 
@@ -115,13 +141,27 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
-router.get('/settings', (req, res) => {
-    res.render('settings');
+router.get('/settings', checkSignIn, (req, res) => {
+        // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
+        const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
+        const profilePic = bufferData.toString('base64');
+        const contentType = req.session.user.profilepicture.contentType;
+        // pass the user name, cheese, and profile picture data to the pug file 
+    res.render('settings', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 //generate group page
 router.get("/createMousehole", checkSignIn, (req, res) => {
     res.render("createMH", {id: req.session.user.username});
 })
+
+
+router.get('/message/horde/:sender', checkSignIn, async (req, res) => {
+    const hordeHistory = await Controller.getHordeHistory();
+    res.render('horde_message', { hordeHistory });
+})
+
+
+
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
     const name = path.join(__dirname, '../views/index.html');
@@ -134,7 +174,6 @@ router.get('/message/mousehole/:groupName~:username', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.broadcast.emit('hi');
 
     socket.on('disconnect', () => {
         console.log('a user disconnected');
@@ -153,7 +192,7 @@ io.on('connection', (socket) => {
         console.log(userId);
         console.log(groupName);
         // Gets the groupChat object for the specified groupChat name and populates the data for each allowed User in the allowedUsers field of the groupChat object 
-        const groupChat = await mouseHoleModel.findOne({ name: groupName}).populate('allowedUsers');
+        const groupChat = await MouseHole.findOne({ name: groupName}).populate('allowedUsers');
 
         // If the groupChat exists 
         if (groupChat) {
@@ -188,13 +227,13 @@ io.on('connection', (socket) => {
         console.log("%%%%%%%%%%%%%%%");
         console.log(content);
         // Find group chat by name
-        const groupChat = await mouseHoleModel.findOne({name: groupName});
+        const groupChat = await MouseHole.findOne({name: groupName});
         const user_objID = await UserModel.findOne({username: userId});
 
         // Create the message object
         if(groupChat){
             console.log("Groupchat found!!!!!!!");
-            const message = new messageModel({
+            const message = new Message({
                 sender: user_objID._id,
                 content: content,
             });
@@ -225,6 +264,41 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('A user disconnected');
     });
+    socket.on('hoard message', async (msgData) => {
+        try {
+            const user = await Controller.findUsername(msgData.sender);
+            if(!user) {
+                console.log("No User Found");
+            }
+
+
+            const message = new Message({
+            sender: user._id,
+            senderUname: msgData.sender,
+            recipient: msgData.recipient, 
+            content: msgData.content,
+          });
+    
+          const savedMessage = await message.save();
+          
+          const hoard = await Hoard.findOne();
+          if (!hoard) {
+            // Create and save a new Hoard document if it doesn't exist
+            const newHoard = new Hoard({ chatHistory: [] });
+            await newHoard.save();
+            console.log('New Hoard created');
+          }
+          hoard.chatHistory.push(savedMessage._id);
+          await hoard.save();
+
+          message.sender = msgData.sender;
+          console.log("Sender: " + message.sender);
+          // Emit the saved message back to all connected clients
+          io.emit('hoard message', message);
+        } catch (error) {
+          console.error('Error saving message:', error);
+        }
+      });
 });
 
 

@@ -1,12 +1,12 @@
 const User = require('../models/model');
+const Group = require('../models/model'); //constant for group
 const bcrypt = require('bcryptjs');
 //const User = require('../models/temp_model');
-
+const Horde = require("../models/hoard");
 const fs = require('fs');
 const UserModel = require('../models/model');
 const MouseHole = require('../models/mouseHole');
 const Message = require('../models/messageModel');
-
 //###############################################
 // UTILITY FUNCTIONS #######################
 //###############################################
@@ -64,6 +64,11 @@ const getUserByName = async(req, res) => {
     }
 };
 
+// find groupname fucntion for getting group chat url
+const findGroupname = async (req, res) => {
+    const query = {groupname: group};
+    return await Group.findOne(query);
+};
 
 
 //###############################################
@@ -105,7 +110,7 @@ const createUser = async (req,res) => {
         .catch(err => console.error("hash error"))
         
         //enter data into the database
-        let db_data = {username: uname, password: hashed_pword, cheese: cheeze, profilepicture: propic, contacts: [], groups: [], isOnline: false}; //change pword to hashed_pword, returns 404 error User does not exist
+        let db_data = {username: uname, password: hashed_pword, cheese: cheeze, profilepicture: propic, contacts: [], groups: [], isOnline: false, socketID: "0"}; //change pword to hashed_pword, returns 404 error User does not exist
         await User.create(db_data).then( (createdUser) => {
             if (!createdUser)
                 return res.status(404).json({ success: false, message: "User creation failed", error: "Unable to get created User" });
@@ -117,7 +122,7 @@ const createUser = async (req,res) => {
 
         .catch( (error) => {
             //res.status(404).json({ success: false, error: error.message});
-            res.render("signup", {message: "User Does Not Exist"})
+            res.render("signup", {message: error.message})
         });
     } catch (error) {
         //res.status(500).json({ success: false, message: "Internal server error"});
@@ -154,7 +159,7 @@ const login = async(req, res) => {
                 changeActive(true, user.username, user.password);
                 user.isOnline = true
                 req.session.user = user;
-                res.redirect('/protected');
+                res.redirect('/message');
                 return;
             } else{ //return invalid credentials error
                 res.render('login', {message: "Invalid Credentials, Incorrect Password"});
@@ -196,7 +201,7 @@ const createMouseHole = async(name, users) => {
     for (let i = 0; i < users.length; i++){
         u = await UserModel.findByName(users[i]);
         if(u){
-            groupChat.allowedUsers.push(u._id);
+            mousehole.allowedUsers.push(u._id);
         } else {
             console.log("Mousehole unable to be made!");
             console.log(`${u.username} not found!`);
@@ -533,7 +538,28 @@ const changeActive = async(active, username, password) =>{
     }
 };
 
-
+async function getHordeHistory() {
+    const horde = await Horde.findOne();
+    if(horde == null) {
+        return [];
+    }
+    const chat = horde.chatHistory;
+    const messages = []
+    if(chat){
+        for (let i = 0; i < chat.length; i++) {
+            const this_chat = await Message.findById(chat[i]._id);
+            const message = {
+                sender: this_chat.senderUname,
+                content: this_chat.content,
+            };
+            messages.push(message);
+        }
+        return messages;
+    }
+    else{
+        return [];
+    }
+}
 
 //###############################################
 // commented out functions ######################
@@ -667,5 +693,5 @@ const changeActive = async(active, username, password) =>{
 
 //************LINE 500 *///////////////
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, getHordeHistory};
 
