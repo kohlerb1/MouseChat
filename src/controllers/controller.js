@@ -4,8 +4,8 @@ const bcrypt = require('bcryptjs');
 
 const fs = require('fs');
 const UserModel = require('../models/model');
-const groupChatModel = require('../models/mouseHole');
-const messageModel = require('../models/messageModel');
+const MouseHole = require('../models/mouseHole');
+const Message = require('../models/messageModel');
 
 //###############################################
 // UTILITY FUNCTIONS #######################
@@ -18,7 +18,7 @@ const userExists = async (uname) => {
 
 const mouseholeExists = async (gname) => {
     query = {name: gname};
-    return await groupChatModel.exists(query);
+    return await MouseHole.exists(query);
 };
 
 const findUsername = async (uname) => {
@@ -188,7 +188,7 @@ const createMouseHole = async(name, users) => {
         return;
     }
 
-    const groupChat = new groupChatModel({
+    const groupChat = new MouseHole({
         name: name,
         allowedUsers: [], 
         chatHistory: [],
@@ -209,7 +209,7 @@ const createMouseHole = async(name, users) => {
 
 async function getChatHistory(chatId) {
     //const groupChat = await groupChatModel.findById(chatId).populate('chatHistory');
-    const groupChat = await groupChatModel.findById(chatId);
+    const groupChat = await MouseHole.findById(chatId);
     console.log(groupChat);
     //console.log(groupChat.chatHistory);
     if(!groupChat){
@@ -221,7 +221,7 @@ async function getChatHistory(chatId) {
     for (let i = 0; i < chatHistory.length; i++){
         console.log("===========");
         console.log(chatHistory[i]);
-        msg = await messageModel.findById(chatHistory[i]._id);
+        msg = await Message.findById(chatHistory[i]._id);
         if(!msg){
             console.log("not found");
             continue;
