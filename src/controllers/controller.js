@@ -2,11 +2,11 @@ const User = require('../models/model');
 const Group = require('../models/model'); //constant for group
 const bcrypt = require('bcryptjs');
 //const User = require('../models/temp_model');
-
+const Horde = require("../models/hoard");
 const fs = require('fs');
 const UserModel = require('../models/model');
 const MouseHole = require('../models/mouseHole');
-
+const Message = require('../models/messageModel');
 //###############################################
 // UTILITY FUNCTIONS #######################
 //###############################################
@@ -436,7 +436,28 @@ const changeActive = async(active, username, password) =>{
     }
 };
 
-
+async function getHordeHistory() {
+    const horde = await Horde.findOne();
+    if(horde == null) {
+        return [];
+    }
+    const chat = horde.chatHistory;
+    const messages = []
+    if(chat){
+        for (let i = 0; i < chat.length; i++) {
+            const this_chat = await Message.findById(chat[i]._id);
+            const message = {
+                sender: this_chat.senderUname,
+                content: this_chat.content,
+            };
+            messages.push(message);
+        }
+        return messages;
+    }
+    else{
+        return [];
+    }
+}
 
 //###############################################
 // commented out functions ######################
@@ -552,5 +573,5 @@ const changeActive = async(active, username, password) =>{
 
 //************LINE 500 *///////////////
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, getHordeHistory};
 

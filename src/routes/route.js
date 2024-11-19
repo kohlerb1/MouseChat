@@ -145,8 +145,9 @@ router.get('/settings', checkSignIn, (req, res) => {
 });
 
 
-router.get('/message/horde/:sender', checkSignIn,  (req, res) => {
-    res.render('horde_message');
+router.get('/message/horde/:sender', checkSignIn, async (req, res) => {
+    const hordeHistory = await Controller.getHordeHistory();
+    res.render('horde_message', { hordeHistory });
 })
 
 
@@ -177,7 +178,6 @@ io.on('connection', (socket) => {
             senderUname: msgData.sender,
             recipient: msgData.recipient, 
             content: msgData.content,
-            attachment: msgData.attachment,
           });
     
           const savedMessage = await message.save();
