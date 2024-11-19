@@ -5,8 +5,8 @@ const [sender, recipient] = sndrcv.split("~");
 
 
 console.log(sndrcv);
-console.log(sender);
-console.log(recipient);
+console.log("Sender: " + sender);
+console.log("Recipient: " + recipient);
 console.log('CLIENT RUNNING');
 const form = document.getElementById('form');
 const contentInput = document.getElementById('content');
@@ -42,15 +42,33 @@ form.addEventListener('submit', (e) => {
 
 socket.on('privateSqueak', (msg) => {
     console.log("msg: " + msg);
+    console.log("sender username: "+ msg.senderUname);
+    if(msg.senderUname == recipient){
+        const item = document.createElement('li');
+        item.textContent = `${msg.senderUname}: ${msg.content}`;
+        if(msg.attachment) {
+            //********Currently Does Not Work ********************/
+            item.textContent += ` | Attachment: ${msg.attachment}`;
+        }
+        messages.appendChild(item);
+  
+        item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    }
+});
+
+socket.on('privateSqueakSelf', (msg) => {
+    console.log("msg: " + msg);
+    
     const item = document.createElement('li');
     item.textContent = `${msg.senderUname}: ${msg.content}`;
     if(msg.attachment) {
-        //********Currently Does Not Work ********************/
+       //********Currently Does Not Work ********************/
         item.textContent += ` | Attachment: ${msg.attachment}`;
     }
     messages.appendChild(item);
   
     item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    
 });
 
 console.log('end reached');

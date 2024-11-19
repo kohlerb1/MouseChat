@@ -205,7 +205,7 @@ io.on('connection', (socket) => {
         console.log("after objects made");
         console.log("reciever: " + msgData.recipient);
         
-        const query = {username: msgData.recipient};
+        //const query = {username: msgData.recipient};
        /* await User.find(query).then( (foundUser) => {
             if (!foundUser){ //if no ps macthes session, error
                 console.log("one of two users doesnt exist")
@@ -214,9 +214,11 @@ io.on('connection', (socket) => {
             socketid = foundUser.socketID;
             
         }); */
+        await Controller.createPS(sndObject, rcvObject);
         socketid = rcvObject.socketID;
         console.log("after socketID updated to " + socketid);
         try {
+            
             console.log("before message object made");
             const message = new Message({
                 sender: sndObject.id,
@@ -230,7 +232,6 @@ io.on('connection', (socket) => {
             const savedMessage = await message.save();
             
             //makes PS ONLY if it doesnt already exist
-            await Controller.createPS(sndObject, rcvObject);
 
             let query = { Users: {$all: [sndObject, rcvObject]} };
             await PrivateSqueak.findOne(query).then( (foundPS) => {
@@ -248,9 +249,9 @@ io.on('connection', (socket) => {
                 foundPS.save();
                 try{
                     io.to(socketid).emit("privateSqueak", message);
-                    io.to(socket.id).emit("privateSqueak", message);
+                    io.to(socket.id).emit("privateSqueakSelf", message);
                 } catch {
-                    io.to(socket.id).emit("privateSqueak", message);
+                    io.to(socket.id).emit("privateSqueakSelf", message);
                 }
                 
             }); 
