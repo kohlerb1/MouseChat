@@ -38,13 +38,13 @@ form.addEventListener('submit', (e) => {
     }
 
     // Read attachment file if any
-    const attachment = attachmentInput.files[0] 
-        ? {
-            name: attachmentInput.files[0].name,
-            data: attachmentInput.files[0],
-            type: attachmentInput.files[0].type,
-        }
-        : null;
+    // const attachment = attachmentInput.files[0] 
+    //     ? {
+    //         name: attachmentInput.files[0].name,
+    //         data: attachmentInput.files[0],
+    //         type: attachmentInput.files[0].type,
+    //     }
+    //     : null;
 
     // Emit hoard message
     console.log("-----------");
@@ -57,7 +57,7 @@ form.addEventListener('submit', (e) => {
     socket.emit('sendGroupMessage', { user, group, content });
     console.log("Message sent");
     contentInput.value = '';
-    attachmentInput.value = '';
+    //attachmentInput.value = '';
 });
 
 console.log('event listener added');

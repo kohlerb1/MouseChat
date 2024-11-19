@@ -15,7 +15,6 @@ const path = require('path');
 const session = require("express-session");
 const MouseHole = require("../models/mouseHole.js");
 const UserModel = require('../models/model.js');
-const Message = require("../models/messageModel.js");
 
 const {getChatHistory} = require('../controllers/controller.js');
 const { group } = require("console");
