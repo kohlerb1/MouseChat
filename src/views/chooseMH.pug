@@ -27,11 +27,11 @@ html
   body
     script(src="/styles/themes.js")
     h1 Type in Chat You want to Message
-    ul
+    div
       each group in chatList
-        li Mousehole Name: #{group.name}
+        p Mousehole Name: #{group.name}
         each user in group.members
-          li User: #{user.username}
+          p User: #{user.username}
         br
         br
     br
@@ -39,6 +39,8 @@ html
     br
     form(onSubmit="event.preventDefault(); redirectToUrl();")
       input#inputBox(type="text" placeholder="Enter your group name" required)
+      br
+      Button Submit
     br
     a(href="/message") 
       button Go Back
