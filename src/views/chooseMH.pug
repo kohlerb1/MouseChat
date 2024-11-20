@@ -1,17 +1,17 @@
 doctype html
 html
-script.
-        function redirectToUrl() {
-            const userInput = document.getElementById('Gname').value;
-            const self = !{JSON.stringify(id)};
-            if (userInput) {
-                const baseUrl = window.location.href;
-                let modifiedString = baseUrl.replace("chooseMousehole", "");
-                window.location.href = baseUrl + "/" + encodeURIComponent(userInput) + "~" + encodeURIComponent(self);
-            } else {
-                alert('Please enter a value!');
-            }
-        }
+  script.
+          function redirectToUrl() {
+              const userInput = document.getElementById('Gname').value;
+              const self = !{JSON.stringify(id)};
+              if (userInput) {
+                  const baseUrl = window.location.href;
+                  let modifiedString = baseUrl.replace("chooseMousehole", "");
+                  window.location.href = baseUrl + "/" + encodeURIComponent(userInput) + "~" + encodeURIComponent(self);
+              } else {
+                  alert('Please enter a value!');
+              }
+          }
   head
     include ./header.pug
     link(rel='stylesheet' href='/styles/mainStyle.css')
@@ -21,7 +21,7 @@ script.
     h1 Type in Chat You want to Message
     ul#messages
       each group in chatList
-        li Group Name: #{group.name}
+        li Mousehole Name: #{group.name}
         each user in group.members
           li User: #{user.username}
         br
