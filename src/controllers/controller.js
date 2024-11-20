@@ -548,15 +548,8 @@ const changeActive = async(active, username, password) =>{
 
 const createPS = async(sender, receiver) =>{
     try{
-        //make query and update on approproate infromation
-        //let query = { Users: { $all: [sender, receiver] } };
-        //let query = {Users: [sender, receiver]};
-        //let query = { Users: { $in: [sender.id] }, Users: { $in: [receiver.id]} };
         const query = { Users: {$all: [sender, receiver]} };
-        //let query = { Users: { $all: [sender.id, receiver.id] } };
-
-        //{ Users: {$all: [ObjectId('673b81c84450096e7f35b105'), ObjectId('673b7710e64b037d6a732421')]} }
-
+        
         await PrivateSqueak.findOne(query).then( (foundPS) => {
             if (!foundPS){ //if no ps macthes session, error
                 console.log("creating PS in controller");
@@ -575,6 +568,7 @@ const createPS = async(sender, receiver) =>{
 const makePS = async(sender, receiver) =>{ //sender rec are usernames
     let db_data = {Users: [sender, receiver], chatHistory:[]}; 
     await PrivateSqueak.create(db_data);
+    return;
 }; 
 
 const updatePS = async (PSid, passedPS) => { //set socketid to 0 to indicate person isnt connected
@@ -589,6 +583,37 @@ const updatePS = async (PSid, passedPS) => { //set socketid to 0 to indicate per
     return;
     }
 )};
+
+async function getChatHistoryPS(sender, receiver) {
+    
+    const query = { Users: {$all: [sender, receiver]} };
+
+    const PS = await PrivateSqueak.findOne(query);
+   // console.log(groupChat);
+    //console.log(groupChat.chatHistory);
+    if(!PS){
+        return [];
+    }
+    const chatHistory = PS.chatHistory;
+    let PSHistory = [];
+
+    for (let i = 0; i < chatHistory.length; i++){
+        console.log("===========");
+        console.log(chatHistory[i]);
+        msg = await Message.findById(chatHistory[i]._id);
+        if(!msg){
+            console.log("not found");
+            continue;
+        }  
+        sender = await UserModel.findById(msg.sender._id);
+        PSHistory.push(`${sender.username}: ${msg.content}`);
+    }
+    console.log("----------------")
+    console.log(chatHistory);
+    console.log("-------------");
+    console.log(PSHistory);
+    return(PSHistory);
+}
 
 const updateUserSocket = async (uname, socketid) => { //set socketid to 0 to indicate person isnt connected
     const query = {username: uname};
@@ -668,5 +693,5 @@ async function getHordeHistory() {
 // };
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS};
 

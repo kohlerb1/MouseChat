@@ -12,7 +12,7 @@ const form = document.getElementById('form');
 const contentInput = document.getElementById('content');
 const attachmentInput = document.getElementById('attachment');
 const messages = document.getElementById('messages');
-socket.emit('establishSocketPS', sender);
+socket.emit('establishSocketPS', {sender, recipient});
 console.log('consts declared');
 
 //Adapted from ChatGPT Code
@@ -69,6 +69,18 @@ socket.on('privateSqueakSelf', (msg) => {
   
     item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     
+});
+
+socket.on('chatHistoryPS', (chatHistory) => {
+    console.log(chatHistory);
+    
+    for (i = 0; i < chatHistory.length; i++){
+        const item = document.createElement('li');
+        item.textContent = chatHistory[i];
+        messages.appendChild(item);
+    }
+    item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+
 });
 
 console.log('end reached');

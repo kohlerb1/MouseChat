@@ -186,12 +186,17 @@ router.get('/message/mousehole/:groupName~:username', (req, res) => {
 io.on('connection', (socket) => {
     console.log('a user connected');
 
-    socket.on('establishSocketPS', (sender) => {
+    socket.on('establishSocketPS', async (sndrcv) => {
         console.log("#############");
-        console.log(sender);
+        console.log(sndrcv.sender);
         console.log(socket.id);
+        console.log(sndrcv.recipient);
         console.log("#############");
-        Controller.updateUserSocket(sender, socket.id);
+        Controller.updateUserSocket(sndrcv.sender, socket.id);
+        const sndObject = await Controller.findUsername(sndrcv.sender);
+        const rcvObject = await Controller.findUsername(sndrcv.recipient);
+        const chistory = await Controller.getChatHistoryPS(sndObject, rcvObject);
+        socket.emit('chatHistoryPS', (chistory));
     });
 
     socket.on('disconnect', () => {
@@ -208,11 +213,7 @@ io.on('connection', (socket) => {
         console.log("before objects made")
         const sndObject = await Controller.findUsername(msgData.sender);
         const rcvObject = await Controller.findUsername(msgData.recipient);
-        console.log("senderobj: " + sndObject);
-        console.log("rcvobj: " + rcvObject);
-
-        console.log("senderobj: " + sndObject.id);
-        console.log("rcvobj: " + rcvObject.id);
+        
         if (sndObject == null){
             console.log("could not find: " + msgData.sender);
             return;
@@ -243,7 +244,8 @@ io.on('connection', (socket) => {
                 attachment: msgData.attachment,
               });
             console.log("after message object made");
-
+            
+            
             const savedMessage = await message.save();
             
             //makes PS ONLY if it doesnt already exist
@@ -257,11 +259,13 @@ io.on('connection', (socket) => {
                 console.log("privatesquak: ", foundPS);
                 // Create and save a new Hoard document if it doesn't exist
                 //await Controller.createPS(sndObject, rcvObject);
-            
+                console.log("Before: " + foundPS.chatHistory[0].content);
                 //PS = await Controller.fetchPS(sndObject, rcvObject);
                 
                 foundPS.chatHistory.push(savedMessage._id);
                 foundPS.save();
+                console.log("After: " + foundPS.chatHistory[0].content);
+
                 try{
                     io.to(socketid).emit("privateSqueak", message);
                     io.to(socket.id).emit("privateSqueakSelf", message);
