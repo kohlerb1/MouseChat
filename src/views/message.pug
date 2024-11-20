@@ -21,7 +21,7 @@ html
         h1 Welcome To MouseChat! 
         br
         div(style="display:flex; align-items:left; justify-content:center;")
-            img(src=pic alt="Profile Picture" style='width:150px;height:150px;margin-right:20px;')
+            img(src=pic alt="Profile Picture" style='width:150px;height:150px;margin-right:20px;' id = "profile-pic" onclick ="playSound()")
             div(style="text-align:center;")
                 div Hey #{id}, How are you doing today? 
                 div Your favorite cheese is #{cheese}. 
@@ -29,9 +29,8 @@ html
                 br
             br
         br
-        h2 Enter A MouseHole (Group Messaging)
-        input(name = "groupname" type = "text" required placeholder = "Group name")
-        a(href=`/message/group`)
+        h2 Message A MouseHole (Group Messaging)
+        a(href=`/message/chooseMousehole`)
             button Message Group 
         br
         h2 Send A Private Squeak (Individual Messaging) 
@@ -53,7 +52,7 @@ html
         div 
         h2 Want to make a MouseHole?
           p 
-            a(href="./createMousehole")
+            a(href="/message/createMousehole")
                 button Create MouseHole
         br
         h2 Change User Settings 
@@ -65,6 +64,12 @@ html
             button Logout
         br
         br
+        script.
+            function playSound() {
+                //const audio = new Audio('.\styles\Squeaky Toy Sound Effect.mp3'); // Replace with the path to your sound file
+                //audio.play();
+                //FOR NOW DOESN'T WORK BUT I WILL FIX -LUKE J
+            }
         include ./footer.pug
 
 
