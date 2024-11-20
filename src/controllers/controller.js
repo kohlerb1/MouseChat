@@ -79,12 +79,20 @@ const getUserGroups = async (user) => {
     let chatList = u.groups;
     let mouseholes = [];
 
-    for (let i = 0; i < chatList; i++){
+    for (let i = 0; i < chatList.length; i++){
         let gc = await mouseHoleModel.findById(chatList[i]._id);
         if(!gc){
             continue;
         }
-        mouseholes.push(gc.name);
+        let gc_members = [];
+        for (let j = 0; j < gc.allowedUsers.length; j++){
+            let member = await UserModel.findById(gc.allowedUsers[j]._id);
+            if (member.username == user){
+                continue;
+            }
+            gc_members.push(member);
+        }
+        mouseholes.push({name: gc.name, members: gc_members });
     }
 
     return mouseholes;
