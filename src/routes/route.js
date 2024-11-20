@@ -146,7 +146,7 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
-router.post("/searchUsername", Controller.searchUsername);
+router.post("/message", Controller.searchUsername);
 
 
 router.get('/settings', checkSignIn, (req, res) => {

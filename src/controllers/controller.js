@@ -52,17 +52,32 @@ const searchUsername = async(req, res) => {
         let uname = req.body.username
 
         let query = {username: uname};
+        const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
+        const profilePic = bufferData.toString('base64');
+        const contentType = req.session.user.profilepicture.contentType;
 
         await User.findOne(query).then( (foundUser) => {
-            if (!foundUser)
-                return res.status(404).json({success: false, message: "Unable to Find User", error: "User does not Exist"});
-            res.status(201).json({success: true, foundUser});
+            if (!foundUser){
+                res.render('message',{id: req.session.user.username, message: uname + " does not exist" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
+
+                //res.render("message", {message: uname + " does not exist"});
+            }
+            else {
+                if (foundUser.isOnline)
+                    res.render('message',{id: req.session.user.username, message: uname + " is online" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
+
+                    //res.render("message", {message: foundUser.username + " is online"});
+                else
+                    res.render('message',{id: req.session.user.username, message: uname + " is offline" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
+
+                    //res.render("message", {message: foundUser.id + "is offline"});
+            }
         })
         .catch( (error) => {
-            res.status(404).json({success: false, error: error.message});
+            res.render("message", {message: "User does not exist"});
         });
     } catch (error) {
-        res.status(500).json({success: false, message: "Internal Server Error"});
+        res.render("message", {message: "User does not exist"});
     }
 };
 
@@ -364,7 +379,7 @@ const updateUserPfp = async (req, res) => {
 const internalUpdate = async(uname, pword, req, res) => {
     let user = await findUser(uname, pword); //finds matching username/password in database, updates session to it
     req.session.user = user;
-    res.redirect('/protected'); //redirects to user protected page
+    res.redirect('/message'); //redirects to user protected page
 };
 //************LINE 200 */////////////// 
 
