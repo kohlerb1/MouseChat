@@ -1,5 +1,17 @@
 doctype html
 html
+script.
+        function redirectToUrl() {
+            const userInput = document.getElementById('Gname').value;
+            const self = !{JSON.stringify(id)};
+            if (userInput) {
+                const baseUrl = window.location.href;
+                let modifiedString = baseUrl.replace("chooseMousehole", "");
+                window.location.href = baseUrl + "/" + encodeURIComponent(userInput) + "~" + encodeURIComponent(self);
+            } else {
+                alert('Please enter a value!');
+            }
+        }
   head
     include ./header.pug
     link(rel='stylesheet' href='/styles/mainStyle.css')
@@ -17,7 +29,7 @@ html
     br
     br
     br
-    form(action="/choose-group" method="POST")
+    form(onSubmit="event.preventDefault(); redirectToUrl();" action="/choose-group" method="POST")
       input(type="text" name="GName" placeholder="Enter your group name" required)
       button(type="submit") Submit
     br
