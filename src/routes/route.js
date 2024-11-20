@@ -195,7 +195,7 @@ router.get("/message/:sndrcv", checkSignIn, (req,res) => {
     //const name = path.join(__dirname, '../storage/PS.html');
     //res.sendFile(name);
 });
-router.get('/message/mousehole/:groupName~:username',  (req, res) => {
+router.get('/message/mousehole/:groupName~:username', checkSignIn, (req, res) => {
     res.render('groupMessage');
 })
 
