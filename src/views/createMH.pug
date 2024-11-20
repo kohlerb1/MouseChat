@@ -7,9 +7,11 @@ html
     script.
       function addInput() {
         const container = document.getElementById('input-container');
+        const input = document.createElement('input'); // Create a new input element
         input.type = 'text';
         input.name = 'members'; // Ensure all inputs are grouped as an array
         input.placeholder = 'Enter an existing user';
+        input.required = true; // Add required attribute if needed
         container.appendChild(input);
       }
   body
@@ -24,4 +26,9 @@ html
         br
       button(type="button" onclick="addInput()") Add Another User
       button(type="submit") Submit
-    include ./footer.pug 
+
+    br
+    br
+    a(href="./message") 
+        button Go Back
+    include ./footer.pug
