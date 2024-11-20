@@ -25,19 +25,11 @@ form.addEventListener('submit', (e) => {
     }
 
     // Read attachment file if any
-    const attachment = attachmentInput.files[0] 
-        ? {
-            name: attachmentInput.files[0].name,
-            data: attachmentInput.files[0],
-            type: attachmentInput.files[0].type,
-        }
-        : null;
-
+    
     // Emit squeak message
-    socket.emit('privateSqueak', {sender, recipient, content, attachment});
+    socket.emit('privateSqueak', {sender, recipient, content});
 
     contentInput.value = '';
-    attachmentInput.value = '';
 });
 
 socket.on('privateSqueak', (msg) => {
@@ -46,10 +38,7 @@ socket.on('privateSqueak', (msg) => {
     if(msg.senderUname == recipient){
         const item = document.createElement('li');
         item.textContent = `${msg.senderUname}: ${msg.content}`;
-        if(msg.attachment) {
-            //********Currently Does Not Work ********************/
-            item.textContent += ` | Attachment: ${msg.attachment}`;
-        }
+        
         messages.appendChild(item);
   
         item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
@@ -61,10 +50,7 @@ socket.on('privateSqueakSelf', (msg) => {
     
     const item = document.createElement('li');
     item.textContent = `${msg.senderUname}: ${msg.content}`;
-    if(msg.attachment) {
-       //********Currently Does Not Work ********************/
-        item.textContent += ` | Attachment: ${msg.attachment}`;
-    }
+    
     messages.appendChild(item);
   
     item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
@@ -73,6 +59,7 @@ socket.on('privateSqueakSelf', (msg) => {
 
 socket.on('chatHistoryPS', (chatHistory) => {
     console.log(chatHistory);
+    const item = document.createElement('li');
     
     for (i = 0; i < chatHistory.length; i++){
         const item = document.createElement('li');

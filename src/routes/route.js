@@ -176,7 +176,7 @@ router.get('/socket-test', (req, res) => {
     res.sendFile(name);
 });
 
-router.get("/message/:sndrcv", (req,res) => { 
+router.get("/message/:sndrcv", checkSignIn, (req,res) => { 
     res.render('PS');
     //const name = path.join(__dirname, '../storage/PS.html');
     //res.sendFile(name);
@@ -245,7 +245,6 @@ io.on('connection', (socket) => {
                 senderUname: msgData.sender,
                 recipient: rcvObject.id, 
                 content: msgData.content,
-                attachment: msgData.attachment,
               });
             console.log("after message object made");
             
