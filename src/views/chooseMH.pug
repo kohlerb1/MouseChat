@@ -1,13 +1,13 @@
 doctype html
 html
-script.
+  script.
         function redirectToUrl() {
-            const userInput = document.getElementById('Gname').value;
+            const userInput = document.getElementById('inputBox').value;
             const self = !{JSON.stringify(id)};
             if (userInput) {
                 const baseUrl = window.location.href;
-                let modifiedString = baseUrl.replace("chooseMousehole", "");
-                window.location.href = baseUrl + "/" + encodeURIComponent(userInput) + "~" + encodeURIComponent(self);
+                let modifiedString = baseUrl.replace("chooseMousehole", "mousehole");
+                window.location.href = modifiedString + "/" + encodeURIComponent(userInput) + "~" + encodeURIComponent(self);
             } else {
                 alert('Please enter a value!');
             }
@@ -20,6 +20,6 @@ script.
     script(src="/styles/themes.js")
     h1 Type in Chat You want to Message
     form(onSubmit="event.preventDefault(); redirectToUrl();"       action="/choose-group" method="POST")
-      input(type="text" name="GName" placeholder="Enter your group name" required)
+      input#inputBox(type="text" placeholder="Enter your group name" required)
       button(type="submit") Submit
     include ./footer.pug 

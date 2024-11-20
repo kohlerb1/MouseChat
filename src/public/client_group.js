@@ -88,6 +88,10 @@ socket.on('chatHistory', chatHistory => {
 
 });
 
+socket.on('error', (err_msg) => {
+    
+})
+
 console.log('end reached');
 
 // ChatGPT Code 

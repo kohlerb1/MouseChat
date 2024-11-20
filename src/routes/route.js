@@ -319,6 +319,7 @@ io.on('connection', (socket) => {
                 socket.emit('chatHistory', chatHistory);
             } else {
                 console.log("you arent in this one bud");
+                socket.emit("You are not a part of this groupChat");
                 socket.emit('error', 'You are not a part of this groupChat');
             }
         } else {
@@ -351,6 +352,11 @@ io.on('connection', (socket) => {
             console.log(message);
             console.log(message.content);
             console.log("-------------");
+
+            const sendable = groupChat.allowedUsers.some(u => u._id.equals(user_objID))
+            if(!sendable){
+                return;
+            }
 
             // Save the message
             await message.save();
