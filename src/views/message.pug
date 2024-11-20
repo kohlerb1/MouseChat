@@ -1,5 +1,16 @@
 doctype html 
 html 
+    script.
+        function redirectToUrl() {
+            const userInput = document.getElementById('inputBox').value;
+            const self = !{JSON.stringify(id)};
+            if (userInput) {
+                const baseUrl = window.location.href;
+                window.location.href = baseUrl + "/" + encodeURIComponent(self) + "~" + encodeURIComponent(userInput);
+            } else {
+                alert('Please enter a value!');
+            }
+        }
     head 
         link(rel='stylesheet' href='/styles/mainStyle.css')
         title Message
@@ -24,9 +35,9 @@ html
             button Message Group 
         br
         h2 Send A Private Squeak (Individual Messaging) 
-        input(name = "username" type = "text" required placeholder = "Username")
-        a(href=`/message/${id}~${username}`)
-            button Message User 
+        form(onSubmit="event.preventDefault(); redirectToUrl();")
+            input#inputBox(type="text" placeholder="Username")
+            button(type="submit") Start Squeaking
         br
         h2 Message The Horde (Global Messaging)
         a(href=`/message/horde/${id}`)
