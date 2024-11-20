@@ -1,5 +1,16 @@
 doctype html
 html
+script.
+        function redirectToUrl() {
+            const userInput = document.getElementById('inputBox').value;
+            const self = !{JSON.stringify(id)};
+            if (userInput) {
+                const baseUrl = window.location.href;
+                window.location.href = baseUrl + "/" + encodeURIComponent(self) + "~" + encodeURIComponent(userInput);
+            } else {
+                alert('Please enter a value!');
+            }
+        }
   head
     include ./header.pug
     link(rel='stylesheet' href='/styles/mainStyle.css')
