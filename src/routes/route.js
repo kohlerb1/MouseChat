@@ -166,7 +166,10 @@ router.get('/settings', checkSignIn, (req, res) => {
 router.get("/createMousehole", checkSignIn, (req, res) => {
     res.render("createMH", {id: req.session.user.username});
 })
-
+//generate group selection page
+router.get("/message/chooseMousehole", checkSignIn, (req, res) => {
+    res.render("chooseMH", {id: req.session.user.groups});
+})
 
 router.get('/message/horde/:sender', checkSignIn, async (req, res) => {
     const hordeHistory = await Controller.getHordeHistory();

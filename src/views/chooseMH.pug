@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    include ./header.pug
+    link(rel='stylesheet' href='/styles/mainStyle.css')
+    title Choose MouseHole
+  body
+    script(src="/styles/themes.js")
+    h1 Type in Chat You want to Message
+    form(action="/choose-group" method="POST")
+      input(type="text" name="GName" placeholder="Enter your group name" required)
+      button(type="submit") Submit
+    include ./footer.pug 
