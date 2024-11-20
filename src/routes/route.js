@@ -108,6 +108,13 @@ router.get("/message/private", (req,res) => { //test route for pug file
 router.get('/message/group', (req,res) =>{ //test route for pug file
     res.render('group_message')
 }); 
+
+
+// router get call to specific group, need to make a findGroup in controller
+router.get('/message/mousehole', checkSignIn, (req,res) =>{ //test route for pug file
+    res.render('mousehole');
+}); 
+
 //router.get("/message/:groupname",Controller.findGroupname)
 
 //router get call to global chat
@@ -179,7 +186,7 @@ router.get("/message/:sndrcv", (req,res) => {
     //const name = path.join(__dirname, '../storage/PS.html');
     //res.sendFile(name);
 });
-router.get('/message/mousehole/:groupName~:username', (req, res) => {
+router.get('/message/mousehole/:groupName~:username',  (req, res) => {
     res.render('groupMessage');
 })
 
