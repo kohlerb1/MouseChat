@@ -153,6 +153,8 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
+router.post("/message", Controller.searchUsername);
+
 
 router.get('/settings', checkSignIn, (req, res) => {
         // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
@@ -188,7 +190,7 @@ router.get('/socket-test', (req, res) => {
     res.sendFile(name);
 });
 
-router.get("/message/:sndrcv", (req,res) => { 
+router.get("/message/:sndrcv", checkSignIn, (req,res) => { 
     res.render('PS');
     //const name = path.join(__dirname, '../storage/PS.html');
     //res.sendFile(name);
@@ -201,16 +203,16 @@ io.on('connection', (socket) => {
     console.log('a user connected');
 
     socket.on('establishSocketPS', async (sndrcv) => {
-        console.log("#############");
-        console.log(sndrcv.sender);
-        console.log(socket.id);
-        console.log(sndrcv.recipient);
-        console.log("#############");
+        
         Controller.updateUserSocket(sndrcv.sender, socket.id);
         const sndObject = await Controller.findUsername(sndrcv.sender);
         const rcvObject = await Controller.findUsername(sndrcv.recipient);
+        //makes PS ONLY if it doesnt already exist
+        await Controller.createPS(sndObject, rcvObject);
         const chistory = await Controller.getChatHistoryPS(sndObject, rcvObject);
-        socket.emit('chatHistoryPS', (chistory));
+        if (chistory != null || !chistory){
+            socket.emit('chatHistoryPS', (chistory));
+        }
     });
 
     socket.on('disconnect', () => {
@@ -235,34 +237,18 @@ io.on('connection', (socket) => {
         console.log("after objects made");
         console.log("reciever: " + msgData.recipient);
         
-        //const query = {username: msgData.recipient};
-       /* await User.find(query).then( (foundUser) => {
-            if (!foundUser){ //if no ps macthes session, error
-                console.log("one of two users doesnt exist")
-                return;
-            }
-            socketid = foundUser.socketID;
-            
-        }); */
-        await Controller.createPS(sndObject, rcvObject);
         socketid = rcvObject.socketID;
         console.log("after socketID updated to " + socketid);
         try {
             
-            console.log("before message object made");
             const message = new Message({
                 sender: sndObject.id,
                 senderUname: msgData.sender,
                 recipient: rcvObject.id, 
                 content: msgData.content,
-                attachment: msgData.attachment,
               });
-            console.log("after message object made");
-            
             
             const savedMessage = await message.save();
-            
-            //makes PS ONLY if it doesnt already exist
 
             let query = { Users: {$all: [sndObject, rcvObject]} };
             await PrivateSqueak.findOne(query).then( (foundPS) => {
@@ -271,15 +257,10 @@ io.on('connection', (socket) => {
                     console.log("nothing to do");
                 }
                 console.log("privatesquak: ", foundPS);
-                // Create and save a new Hoard document if it doesn't exist
-                //await Controller.createPS(sndObject, rcvObject);
-                console.log("Before: " + foundPS.chatHistory[0].content);
-                //PS = await Controller.fetchPS(sndObject, rcvObject);
                 
                 foundPS.chatHistory.push(savedMessage._id);
                 foundPS.save();
-                console.log("After: " + foundPS.chatHistory[0].content);
-
+               
                 try{
                     io.to(socketid).emit("privateSqueak", message);
                     io.to(socket.id).emit("privateSqueakSelf", message);

@@ -15,13 +15,14 @@ html
 
     form#form(enctype="multipart/form-data")
   
-      label(for="content") Message:
-      input#content(type="text" name="content" required placeholder="Type your message here...")
+      label(for="content") Squeak:
+      input#content(type="text" name="content" required placeholder="Type your squeak here...")
 
-      label(for="attachment") Attachment (optional):
-      input#attachment(type="file" name="attachment" accept="image/jpeg,image/jpg")
   
-      button(type="submit") Send Message
+      button(type="submit") Send Squeak
+    
+    a(href="/message") 
+        button Go Back
     include ./footer.pug
     script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
     script(src="/public/clientPS.js")

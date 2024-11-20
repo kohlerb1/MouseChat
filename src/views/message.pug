@@ -18,7 +18,7 @@ html
     
     body 
         script(src="/styles/themes.js")
-        h1 Welcome To MouseChat 
+        h1 Welcome To MouseChat! 
         br
         div(style="display:flex; align-items:left; justify-content:center;")
             img(src=pic alt="Profile Picture" style='width:150px;height:150px;margin-right:20px;' id = "profile-pic" onclick ="playSound()")
@@ -34,16 +34,23 @@ html
             button Message Group 
         br
         h2 Send A Private Squeak (Individual Messaging) 
+        form(action = "/message" method = "POST")
+            br
+            input(name = "username" type = "text" required placeholder = "check username")
+            br
+            button(name =  type = "Submit") Check User Online/Offline
+        if(message)
+            h4 #{message}
         form(onSubmit="event.preventDefault(); redirectToUrl();")
             input#inputBox(type="text" placeholder="Username")
             button(type="submit") Start Squeaking
         br
-        h2 Message The Horde (Global Messaging)
+        h2 Consult The Horde (Global Messaging)
         a(href=`/message/horde/${id}`)
             button The Horde 
         br
         div 
-        h2 Want to make a Group Chat?
+        h2 Want to make a MouseHole?
           p 
             a(href="/message/createMousehole")
                 button Create MouseHole
