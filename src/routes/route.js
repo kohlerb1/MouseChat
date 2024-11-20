@@ -319,7 +319,6 @@ io.on('connection', (socket) => {
                 socket.emit('chatHistory', chatHistory);
             } else {
                 console.log("you arent in this one bud");
-                socket.emit("You are not a part of this groupChat");
                 socket.emit('error', 'You are not a part of this groupChat');
             }
         } else {
