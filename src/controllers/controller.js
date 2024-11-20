@@ -582,6 +582,21 @@ const createPS = async(sender, receiver) =>{
 
 const makePS = async(sender, receiver) =>{ //sender rec are usernames
     let db_data = {Users: [sender, receiver], chatHistory:[]}; 
+    const query = {username: sender.name};
+    await User.findOne(query).then( (foundUser) => {
+        if (!foundUser){ //if no ps macthes session, error
+            console.log("significant error in finding user");
+            console.log("nothing to do because failure");
+        }
+        console.log("found user: ", foundUser);
+        // Create and save a new Hoard document if it doesn't exist
+        //await Controller.createPS(sndObject, rcvObject);
+        //console.log("Before: " + foundPS.chatHistory[0].content);
+        //PS = await Controller.fetchPS(sndObject, rcvObject);
+        
+        foundUser.contacts.push(receiver.name);
+        foundUser.save();
+    });
     await PrivateSqueak.create(db_data);
     return;
 }; 
