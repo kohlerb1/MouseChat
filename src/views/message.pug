@@ -25,7 +25,7 @@ html
         br
         h2 Send A Private Squeak (Individual Messaging) 
         input(name = "username" type = "text" required placeholder = "Username")
-        a(href=`/message/:private`)
+        a(href=`/message/${id}~${username}`)
             button Message User 
         br
         h2 Message The Horde (Global Messaging)

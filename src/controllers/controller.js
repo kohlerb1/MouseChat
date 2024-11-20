@@ -1,6 +1,8 @@
 const User = require('../models/model');
+const PrivateSqueak = require('../models/privateSqueakModel');
 const Group = require('../models/model'); //constant for group
 const bcrypt = require('bcryptjs');
+const path = require('path');
 //const User = require('../models/temp_model');
 const Horde = require("../models/hoard");
 const fs = require('fs');
@@ -522,21 +524,125 @@ const changeActive = async(active, username, password) =>{
         //update cheese of user that matches user
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
             if (!foundUser){ //if no user macthes session, rerender page and display error
-                console.log("no such user")
+                console.log("could not find user to update active statuc")
                 return;
             }
         //req.session.user = foundUser;  
         return;
         })
         .catch ( (error) => { //catch find and update errors to display error to user
-            console.log("no such user")
+            console.log("update status small catch")
             return;
         }) 
     } catch (error){ //catch big try block and display error
-        console.log("no such user")
+        console.log("update status big catch")
         return;
     }
 };
+
+
+//###############################################
+// messaging functions ##########################
+//###############################################
+
+
+const createPS = async(sender, receiver) =>{
+    try{
+        const query = { Users: {$all: [sender, receiver]} };
+        
+        await PrivateSqueak.findOne(query).then( (foundPS) => {
+            if (!foundPS){ //if no ps macthes session, error
+                console.log("creating PS in controller");
+                makePS(sender, receiver);
+                return;
+            }
+            console.log("PS Exists do not create");
+            return;
+        })
+    } catch (error){ //catch big try block and display error
+        console.log("major error in creating PS")
+        return;
+    }
+};
+
+const makePS = async(sender, receiver) =>{ //sender rec are usernames
+    let db_data = {Users: [sender, receiver], chatHistory:[]}; 
+    await PrivateSqueak.create(db_data);
+    return;
+}; 
+
+const updatePS = async (PSid, passedPS) => { //set socketid to 0 to indicate person isnt connected
+    const update = {Users: passedPS.Users, chatHistory: passedPS.chatHistory};
+    const query = {id: PSid};
+    console.log("work");
+    await PrivateSqueak.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("could PS to update");
+            return;
+        } 
+    return;
+    }
+)};
+
+async function getChatHistoryPS(sender, receiver) {
+    
+    const query = { Users: {$all: [sender, receiver]} };
+
+    const PS = await PrivateSqueak.findOne(query);
+   // console.log(groupChat);
+    //console.log(groupChat.chatHistory);
+    if(!PS){
+        return [];
+    }
+    const chatHistory = PS.chatHistory;
+    let PSHistory = [];
+
+    for (let i = 0; i < chatHistory.length; i++){
+        console.log("===========");
+        console.log(chatHistory[i]);
+        msg = await Message.findById(chatHistory[i]._id);
+        if(!msg){
+            console.log("not found");
+            continue;
+        }  
+        sender = await UserModel.findById(msg.sender._id);
+        PSHistory.push(`${sender.username}: ${msg.content}`);
+    }
+    console.log("----------------")
+    console.log(chatHistory);
+    console.log("-------------");
+    console.log(PSHistory);
+    return(PSHistory);
+}
+
+const updateUserSocket = async (uname, socketid) => { //set socketid to 0 to indicate person isnt connected
+    const query = {username: uname};
+    const update = {socketID: socketid}
+    await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("could not find user to update socket")
+            return;
+        } 
+    return;
+    }
+)};
+
+const resetUserSocket = async (socketid) => { //set socketid to 0 to indicate person isnt connected
+    const query = {socketID: socketid};
+    const update = {socketID: "0"}
+    await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+        if (!foundUser){ //if no user macthes session, rerender page and display error
+            console.log("could not find user to reset socket")
+            return;
+        } 
+    return;
+    }
+)};
+
+
+
+
+
 
 async function getHordeHistory() {
     const horde = await Horde.findOne();
@@ -587,111 +693,5 @@ async function getHordeHistory() {
 // };
 
 
-
-
-
-
-
-
-
-
-//************LINE 400 *///////////////
-
-//variation of findUser that only returns username, in order to find and compare password seperately in login function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//************LINE 500 *///////////////
-
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, getHordeHistory};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS};
 

@@ -1,12 +1,15 @@
 const router = require("express").Router();
+//const User = require('../models/model');
 
 const Controller= require("../controllers/controller");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage:storage });
+const mongoose = require('mongoose');
 const Message = require("../models/messageModel.js")
 const Hoard = require("../models/hoard.js");
 const User = require("../models/model.js");
+const PrivateSqueak = require("../models/privateSqueakModel.js");
 //const socketIo = require('socket.io');
 //const server = require('../index');
 const io = require('../index.js');
@@ -21,12 +24,12 @@ const { group } = require("console");
 const { get } = require("http");
 
 router.get('/signup', (req, res) => {
-    res.render('signup');
+    res.render('signup.pug');
 });
 //router.post call function to go to do signup
 
 router.get('/login', (req, res) => {
-    res.render('login');
+    res.render('login.pug');
 });
 //router.post call function to do login
 router.post('/login', Controller.login);
@@ -41,7 +44,7 @@ const checkSignIn = (req, res, next) => { // note: does not work on redirect fro
     if(req.session.user){
         return next() //If session exists, proceed to page
     } else{
-       res.render('not_logged')
+       res.render('not_logged.pug')
     }
 };
 
@@ -52,7 +55,7 @@ router.get('/protected', checkSignIn, (req, res) => {
     const profilePic = bufferData.toString('base64');
     const contentType = req.session.user.profilepicture.contentType;
     // pass the user name, cheese, and profile picture data to the pug file 
-    res.render('protected_page', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
+    res.render('protected_page.pug', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 
 //router.delete("/:username/:password", Controller.deleteUser);
@@ -61,7 +64,7 @@ router.get('/protected', checkSignIn, (req, res) => {
 
 //home page here
 router.get('/', (req, res) => {
-    res.render('homepage');
+    res.render('homepage.pug');
 });
 router.get("/all", Controller.getAllUsers);
 router.get("/get/:username/:password", async (req, res) => {
@@ -119,29 +122,30 @@ module.exports = router;
 //all protected page-accessed pages, need to be signed in to reach
 //post functions are accessed by PUG files, called thru buttons
 router.get("/updateUserCheese", checkSignIn, (req, res) => {
-    res.render("updateUserCheese", {id: req.session.user.id});
+    res.render("updateUserCheese.pug", {id: req.session.user.id});
 })
 router.post("/updateUserCheese", Controller.updateUserCheese);
 
 router.get("/updateUserPFP", checkSignIn, (req, res) => {
-    res.render("updateUserPFP", {id: req.session.user.id});
+    res.render("updateUserPFP.pug", {id: req.session.user.id});
 })
 router.post("/updateUserPFP", upload.single('profilepicture'), Controller.updateUserPfp);
 
 router.get("/deleteUser", checkSignIn, (req, res) => {
-    res.render("deleteUser", {id: req.session.user.id});
+    res.render("deleteUser.pug", {id: req.session.user.id});
 })
 router.post("/deleteUser", Controller.deleteUser);
 
 router.get("/updateUserName", checkSignIn, (req, res) => {
-    res.render("updateUserName", {id: req.session.user.id});
+    res.render("updateUserName.pug", {id: req.session.user.id});
 })
 router.post("/updateUserName", Controller.updateUserName);
 
 router.get("/updateUserPassword", checkSignIn, (req, res) => {
-    res.render("updateUserPassword", {id: req.session.user.id});
+    res.render("updateUserPassword.pug", {id: req.session.user.id});
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
+
 
 router.get('/settings', checkSignIn, (req, res) => {
         // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
@@ -166,10 +170,15 @@ router.get('/message/horde/:sender', checkSignIn, async (req, res) => {
 
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
-    const name = path.join(__dirname, '../views/index.html');
+    const name = path.join(__dirname, '../storage/index.html');
     res.sendFile(name);
 });
 
+router.get("/message/:sndrcv", (req,res) => { 
+    res.render('PS');
+    //const name = path.join(__dirname, '../storage/PS.html');
+    //res.sendFile(name);
+});
 router.get('/message/mousehole/:groupName~:username', (req, res) => {
     res.render('groupMessage');
 })
@@ -177,13 +186,101 @@ router.get('/message/mousehole/:groupName~:username', (req, res) => {
 io.on('connection', (socket) => {
     console.log('a user connected');
 
+    socket.on('establishSocketPS', async (sndrcv) => {
+        console.log("#############");
+        console.log(sndrcv.sender);
+        console.log(socket.id);
+        console.log(sndrcv.recipient);
+        console.log("#############");
+        Controller.updateUserSocket(sndrcv.sender, socket.id);
+        const sndObject = await Controller.findUsername(sndrcv.sender);
+        const rcvObject = await Controller.findUsername(sndrcv.recipient);
+        const chistory = await Controller.getChatHistoryPS(sndObject, rcvObject);
+        socket.emit('chatHistoryPS', (chistory));
+    });
+
     socket.on('disconnect', () => {
         console.log('a user disconnected');
+        //Controller.resetUserSocket(socket.id);
     });
 
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
     });
+
+    socket.on('privateSqueak', async(msgData) => { //rcv is user name as string
+        let socketid = "0";
+        console.log("before objects made")
+        const sndObject = await Controller.findUsername(msgData.sender);
+        const rcvObject = await Controller.findUsername(msgData.recipient);
+        
+        if (sndObject == null){
+            console.log("could not find: " + msgData.sender);
+            return;
+        }
+        console.log("after objects made");
+        console.log("reciever: " + msgData.recipient);
+        
+        //const query = {username: msgData.recipient};
+       /* await User.find(query).then( (foundUser) => {
+            if (!foundUser){ //if no ps macthes session, error
+                console.log("one of two users doesnt exist")
+                return;
+            }
+            socketid = foundUser.socketID;
+            
+        }); */
+        await Controller.createPS(sndObject, rcvObject);
+        socketid = rcvObject.socketID;
+        console.log("after socketID updated to " + socketid);
+        try {
+            
+            console.log("before message object made");
+            const message = new Message({
+                sender: sndObject.id,
+                senderUname: msgData.sender,
+                recipient: rcvObject.id, 
+                content: msgData.content,
+                attachment: msgData.attachment,
+              });
+            console.log("after message object made");
+            
+            
+            const savedMessage = await message.save();
+            
+            //makes PS ONLY if it doesnt already exist
+
+            let query = { Users: {$all: [sndObject, rcvObject]} };
+            await PrivateSqueak.findOne(query).then( (foundPS) => {
+                if (!foundPS){ //if no ps macthes session, error
+                    console.log("significant error");
+                    console.log("nothing to do");
+                }
+                console.log("privatesquak: ", foundPS);
+                // Create and save a new Hoard document if it doesn't exist
+                //await Controller.createPS(sndObject, rcvObject);
+                console.log("Before: " + foundPS.chatHistory[0].content);
+                //PS = await Controller.fetchPS(sndObject, rcvObject);
+                
+                foundPS.chatHistory.push(savedMessage._id);
+                foundPS.save();
+                console.log("After: " + foundPS.chatHistory[0].content);
+
+                try{
+                    io.to(socketid).emit("privateSqueak", message);
+                    io.to(socket.id).emit("privateSqueakSelf", message);
+                } catch {
+                    io.to(socket.id).emit("privateSqueakSelf", message);
+                }
+                
+            }); 
+
+        } catch (error) {
+            console.error('Error saving message:');
+        }
+  
+    });
+
 
     //socket.on('mousehole')
 
@@ -305,12 +402,10 @@ io.on('connection', (socket) => {
 
 
 
-
-
 //catches anything not in website to redirect to the homepage
 router.get("/*", (req, res) => {
     res.render('homepage');
-})
+});
 
 
 router.post('/group', (req, res) => {
