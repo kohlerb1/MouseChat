@@ -221,10 +221,10 @@ const createMouseHole = async(name, users) => {
     for (let i = 0; i < users.length; i++){
         u = await UserModel.findByName(users[i]);
         if(u){
-            mousehole.allowedUsers.push(u._id);
+            groupChat.allowedUsers.push(u._id);
         } else {
             console.log("Mousehole unable to be made!");
-            console.log(`${u.username} not found!`);
+            console.log(`${users[i]} not found!`);
             return;
         }
     }
@@ -234,7 +234,7 @@ const createMouseHole = async(name, users) => {
     // This loop can only run if the groupchat is successfully made with all users
     for (let i = 0; i < users.length; i++){
         u = await UserModel.findByName(users[i]);
-        u.groups.push(groupchat._id);
+        u.groups.push(groupChat._id);
         await u.save();
     }
 
