@@ -169,6 +169,9 @@ router.get("/message/createMousehole", checkSignIn, (req, res) => {
 //generate group selection page
 router.get("/message/chooseMousehole", checkSignIn, async (req, res) => {
     const chatList = await Controller.getUserGroups(req.session.user.username);
+    console.log("^^^^^^^^^^^^^^^^");
+    console.log(chatList);
+    console.log("^^^^^^^^^^^^^^^^");
     res.render("chooseMH", {id: req.session.user.username, chatList});
 })
 
@@ -315,8 +318,12 @@ io.on('connection', (socket) => {
                 console.log(`${user.username} joined the group ${groupName}`);
                 // Get the chat history for the group chat
                 const chatHistory = await getChatHistory(groupChat._id);
-                console.log(chatHistory);
-                socket.emit('chatHistory', chatHistory);
+                if( chatHistory != null || !chatHistory){
+                    console.log(chatHistory);
+                    socket.emit('chatHistory', chatHistory);
+                }
+                // console.log(chatHistory);
+                // socket.emit('chatHistory', chatHistory);
             } else {
                 console.log("you arent in this one bud");
                 socket.emit('error', 'You are not a part of this groupChat');
@@ -352,7 +359,8 @@ io.on('connection', (socket) => {
             console.log(message.content);
             console.log("-------------");
 
-            const sendable = groupChat.allowedUsers.some(u => u._id.equals(user_objID))
+            const sendable = groupChat.allowedUsers.some(u => u._id.equals(user_objID._id));
+            console.log(sendable);
             if(!sendable){
                 return;
             }
@@ -429,6 +437,6 @@ router.post('/group', (req, res) => {
     const name = req.body.GName;
     console.log(members); // Log the array of strings
     console.log(name);
-    res.send(`Received strings: ${members.join(', ')}`);
+    res.redirect('/message');
     Controller.createMouseHole(name,members);
   });

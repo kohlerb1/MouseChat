@@ -1,13 +1,21 @@
 doctype html
 html
   script.
+        const chatList = !{JSON.stringify(chatList)}; 
         function redirectToUrl() {
             const userInput = document.getElementById('inputBox').value;
             const self = !{JSON.stringify(id)};
             if (userInput) {
+
+              const isValidChatRoom = chatList.some(group => group.name.toLowerCase() === userInput.toLowerCase());
+              if (isValidChatRoom) {
                 const baseUrl = window.location.href;
                 let modifiedString = baseUrl.replace("chooseMousehole", "mousehole");
                 window.location.href = modifiedString + "/" + encodeURIComponent(userInput) + "~" + encodeURIComponent(self);
+              }
+              else {
+                alert('This MouseHole does not exist or you do not belong to it!');
+              }
             } else {
                 alert('Please enter a value!');
             }
@@ -19,7 +27,7 @@ html
   body
     script(src="/styles/themes.js")
     h1 Type in Chat You want to Message
-    ul#messages
+    ul
       each group in chatList
         li Mousehole Name: #{group.name}
         each user in group.members
@@ -28,7 +36,8 @@ html
         br
     br
     br
-    form(onSubmit="event.preventDefault(); redirectToUrl();"       action="/choose-group" method="POST")
+    br
+    form(onSubmit="event.preventDefault(); redirectToUrl();")
       input#inputBox(type="text" placeholder="Enter your group name" required)
     br
     a(href="/message") 

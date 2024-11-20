@@ -75,19 +75,27 @@ const findGroupname = async (req, res) => {
 
 // Takes in the username to find the user object id, then find all associated groupchat names 
 const getUserGroups = async (user) => {
+    console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{");
     console.log(user);
     const u = await UserModel.findByName(user);
+    console.log(u);
     let chatList = u.groups;
+    console.log(chatList);
     let mouseholes = [];
 
     for (let i = 0; i < chatList.length; i++){
         let gc = await mouseHoleModel.findById(chatList[i]._id);
         if(!gc){
+            console.log("fake");
             continue;
         }
         let gc_members = [];
         for (let j = 0; j < gc.allowedUsers.length; j++){
+
             let member = await UserModel.findById(gc.allowedUsers[j]._id);
+            console.log("????????????????????????");
+            console.log(gc.allowedUsers[j]);
+            console.log(member);
             if (member.username == user){
                 continue;
             }

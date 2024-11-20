@@ -78,7 +78,8 @@ socket.on('groupChatMessage', (msg) => {
 
 socket.on('chatHistory', chatHistory => {
     console.log(chatHistory);
-    
+    const item = document.createElement('li');
+
     for (i = 0; i < chatHistory.length; i++){
         const item = document.createElement('li');
         item.textContent = chatHistory[i];
