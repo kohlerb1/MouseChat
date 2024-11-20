@@ -35,6 +35,13 @@ html
             button Message Group 
         br
         h2 Send A Private Squeak (Individual Messaging) 
+        form(action = "/message" method = "POST")
+            br
+            input(name = "username" type = "text" required placeholder = "check username")
+            br
+            button(name =  type = "Submit") Check if user exists 
+        if(message)
+            h4 #{message}
         form(onSubmit="event.preventDefault(); redirectToUrl();")
             input#inputBox(type="text" placeholder="Username")
             button(type="submit") Start Squeaking
