@@ -582,6 +582,30 @@ const createPS = async(sender, receiver) =>{
 
 const makePS = async(sender, receiver) =>{ //sender rec are usernames
     let db_data = {Users: [sender, receiver], chatHistory:[]}; 
+
+    const query1 = {username: sender.username};
+    console.log("my own NAME: " + sender.username);
+    await User.findOne(query1).then( (foundUser) => {
+        if (!foundUser){ //if no ps macthes session, error
+            console.log("significant error in finding user");
+            console.log("nothing to do because failure");
+        }
+        console.log("reciever name: " + receiver.username);
+        foundUser.contacts.push(receiver.username);
+        foundUser.save();
+    });
+    
+    const query2 = {username: receiver.username};
+    console.log("other name: " + receiver.username);
+    await User.findOne(query2).then( (foundUser) => {
+        if (!foundUser){ //if no ps macthes session, error
+            console.log("significant error in finding user");
+            console.log("nothing to do because failure");
+        }
+        console.log("updating other contact: " + sender.username);
+        foundUser.contacts.push(sender.username);
+        foundUser.save();
+    });
     await PrivateSqueak.create(db_data);
     return;
 }; 

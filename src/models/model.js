@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
 
     },
     contacts:{
-        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'privateSqueak' }],
+        type: [{ type: String }],
         required:true
     },
     groups:{
