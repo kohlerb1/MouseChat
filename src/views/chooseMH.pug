@@ -19,7 +19,18 @@ html
   body
     script(src="/styles/themes.js")
     h1 Type in Chat You want to Message
+    ul#messages
+      each group in chatList
+        li Mousehole Name: #{group.name}
+        each user in group.members
+          li User: #{user.username}
+        br
+        br
+    br
+    br
     form(onSubmit="event.preventDefault(); redirectToUrl();"       action="/choose-group" method="POST")
       input#inputBox(type="text" placeholder="Enter your group name" required)
-      button(type="submit") Submit
+    br
+    a(href="/message") 
+      button Go Back
     include ./footer.pug 
