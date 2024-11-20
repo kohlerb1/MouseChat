@@ -47,7 +47,7 @@ const getAllUsers = async (req,res) => {
     }
 };
 
-const getUserByName = async(req, res) => {
+const searchUsername = async(req, res) => {
     try{
         let uname = req.body.username
 
@@ -693,5 +693,5 @@ async function getHordeHistory() {
 // };
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, searchUsername, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS};
 
