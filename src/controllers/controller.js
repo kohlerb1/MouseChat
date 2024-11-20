@@ -9,6 +9,7 @@ const fs = require('fs');
 const UserModel = require('../models/model');
 const MouseHole = require('../models/mouseHole');
 const Message = require('../models/messageModel');
+const mouseHoleModel = require('../models/mouseHole');
 //###############################################
 // UTILITY FUNCTIONS #######################
 //###############################################
@@ -71,6 +72,23 @@ const findGroupname = async (req, res) => {
     const query = {groupname: group};
     return await Group.findOne(query);
 };
+
+// Takes in the username to find the user object id, then find all associated groupchat names 
+const getUserGroups = async (user) => {
+    const u = await UserModel.findByName(user);
+    let chatList = u.groups;
+    let mouseholes = [];
+
+    for (let i = 0; i < chatList; i++){
+        let gc = await mouseHoleModel.findById(chatList[i]._id);
+        if(!gc){
+            continue;
+        }
+        mouseholes.push(gc.name);
+    }
+
+    return mouseholes;
+}
 
 
 //###############################################
@@ -212,6 +230,14 @@ const createMouseHole = async(name, users) => {
     }
     console.log('i believe it worked' + groupChat.allowedUsers + groupChat.name);
     await groupChat.save();
+
+    // This loop can only run if the groupchat is successfully made with all users
+    for (let i = 0; i < users.length; i++){
+        u = await UserModel.findByName(users[i]);
+        u.groups.push(groupchat._id);
+        await u.save();
+    }
+
 }
 
 async function getChatHistory(chatId) {
@@ -693,5 +719,5 @@ async function getHordeHistory() {
 // };
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, getUserByName, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS, getUserGroups};
 
