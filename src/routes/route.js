@@ -146,6 +146,8 @@ router.get("/updateUserPassword", checkSignIn, (req, res) => {
 })
 router.post("/updateUserPassword", Controller.updateUserPassword);
 
+router.post("/message", Controller.searchUsername);
+
 
 router.get('/settings', checkSignIn, (req, res) => {
         // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
@@ -196,7 +198,9 @@ io.on('connection', (socket) => {
         const sndObject = await Controller.findUsername(sndrcv.sender);
         const rcvObject = await Controller.findUsername(sndrcv.recipient);
         const chistory = await Controller.getChatHistoryPS(sndObject, rcvObject);
-        socket.emit('chatHistoryPS', (chistory));
+        if (chistory != null || !chistory){
+            socket.emit('chatHistoryPS', (chistory));
+        }
     });
 
     socket.on('disconnect', () => {
@@ -259,12 +263,12 @@ io.on('connection', (socket) => {
                 console.log("privatesquak: ", foundPS);
                 // Create and save a new Hoard document if it doesn't exist
                 //await Controller.createPS(sndObject, rcvObject);
-                console.log("Before: " + foundPS.chatHistory[0].content);
+                //console.log("Before: " + foundPS.chatHistory[0].content);
                 //PS = await Controller.fetchPS(sndObject, rcvObject);
                 
                 foundPS.chatHistory.push(savedMessage._id);
                 foundPS.save();
-                console.log("After: " + foundPS.chatHistory[0].content);
+               // console.log("After: " + foundPS.chatHistory[0].content);
 
                 try{
                     io.to(socketid).emit("privateSqueak", message);
