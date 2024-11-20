@@ -163,7 +163,7 @@ router.get('/settings', checkSignIn, (req, res) => {
     res.render('settings', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 //generate group page
-router.get("/createMousehole", checkSignIn, (req, res) => {
+router.get("/message/createMousehole", checkSignIn, (req, res) => {
     res.render("createMH", {id: req.session.user.username});
 })
 //generate group selection page
