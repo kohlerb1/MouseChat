@@ -75,6 +75,7 @@ const findGroupname = async (req, res) => {
 
 // Takes in the username to find the user object id, then find all associated groupchat names 
 const getUserGroups = async (user) => {
+    console.log(user);
     const u = await UserModel.findByName(user);
     let chatList = u.groups;
     let mouseholes = [];
