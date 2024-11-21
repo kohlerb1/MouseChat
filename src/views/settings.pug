@@ -8,7 +8,7 @@ html
     body
         script(src="/styles/themes.js")
         div(style="display:flex; align-items:left; justify-content:center;")
-            img(src=pic alt="Profile Picture" style='width:150px;height:150px;margin-right:20px;')
+            img(src=pic alt="Profile Picture" style='width:150px;height:150px;margin-right:20px;' id = "profile-pic" onclick ="playSound()")
             div(style="text-align:center;")
                 div Hey #{id}, How are you doing today? 
                 div Your favorite cheese is #{cheese}. 
@@ -65,4 +65,10 @@ html
         br
         br
         br
+        script.
+            function playSound() {
+            const audio = new Audio('https://raw.githubusercontent.com/kohlerb1/MouseChat/main/src/views/styles/Squeaky%20Toy%20Sound%20Effect.mp3');
+            audio.volume = 0.15;
+            audio.play();
+            }
         include ./footer.pug
