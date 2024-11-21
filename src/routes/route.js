@@ -115,6 +115,13 @@ router.get("/message/private", (req,res) => { //test route for pug file
 router.get('/message/group', (req,res) =>{ //test route for pug file
     res.render('group_message')
 }); 
+
+
+// router get call to specific group, need to make a findGroup in controller
+router.get('/message/mousehole', checkSignIn, (req,res) =>{ //test route for pug file
+    res.render('mousehole');
+}); 
+
 //router.get("/message/:groupname",Controller.findGroupname)
 
 //router get call to global chat
@@ -165,10 +172,17 @@ router.get('/settings', checkSignIn, (req, res) => {
     res.render('settings', {id: req.session.user.username, cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 });
 //generate group page
-router.get("/createMousehole", checkSignIn, (req, res) => {
+router.get("/message/createMousehole", checkSignIn, (req, res) => {
     res.render("createMH", {id: req.session.user.username});
 })
-
+//generate group selection page
+router.get("/message/chooseMousehole", checkSignIn, async (req, res) => {
+    const chatList = await Controller.getUserGroups(req.session.user.username);
+    console.log("^^^^^^^^^^^^^^^^");
+    console.log(chatList);
+    console.log("^^^^^^^^^^^^^^^^");
+    res.render("chooseMH", {id: req.session.user.username, chatList});
+})
 
 router.get('/message/horde/:sender', checkSignIn, async (req, res) => {
     const hordeHistory = await Controller.getHordeHistory();
@@ -188,7 +202,7 @@ router.get("/message/:sndrcv", checkSignIn, (req,res) => {
     //const name = path.join(__dirname, '../storage/PS.html');
     //res.sendFile(name);
 });
-router.get('/message/mousehole/:groupName~:username', (req, res) => {
+router.get('/message/mousehole/:groupName~:username', checkSignIn, (req, res) => {
     res.render('groupMessage');
 })
 
@@ -292,8 +306,12 @@ io.on('connection', (socket) => {
                 console.log(`${user.username} joined the group ${groupName}`);
                 // Get the chat history for the group chat
                 const chatHistory = await getChatHistory(groupChat._id);
-                console.log(chatHistory);
-                socket.emit('chatHistory', chatHistory);
+                if( chatHistory != null || !chatHistory){
+                    console.log(chatHistory);
+                    socket.emit('chatHistory', chatHistory);
+                }
+                // console.log(chatHistory);
+                // socket.emit('chatHistory', chatHistory);
             } else {
                 console.log("you arent in this one bud");
                 socket.emit('error', 'You are not a part of this groupChat');
@@ -328,6 +346,12 @@ io.on('connection', (socket) => {
             console.log(message);
             console.log(message.content);
             console.log("-------------");
+
+            const sendable = groupChat.allowedUsers.some(u => u._id.equals(user_objID._id));
+            console.log(sendable);
+            if(!sendable){
+                return;
+            }
 
             // Save the message
             await message.save();
@@ -401,6 +425,6 @@ router.post('/group', (req, res) => {
     const name = req.body.GName;
     console.log(members); // Log the array of strings
     console.log(name);
-    res.send(`Received strings: ${members.join(', ')}`);
+    res.redirect('/message');
     Controller.createMouseHole(name,members);
   });

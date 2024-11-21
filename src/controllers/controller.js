@@ -9,6 +9,7 @@ const fs = require('fs');
 const UserModel = require('../models/model');
 const MouseHole = require('../models/mouseHole');
 const Message = require('../models/messageModel');
+const mouseHoleModel = require('../models/mouseHole');
 //###############################################
 // UTILITY FUNCTIONS #######################
 //###############################################
@@ -107,6 +108,40 @@ const findGroupname = async (req, res) => {
     const query = {groupname: group};
     return await Group.findOne(query);
 };
+
+// Takes in the username to find the user object id, then find all associated groupchat names 
+const getUserGroups = async (user) => {
+    console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{");
+    console.log(user);
+    const u = await UserModel.findByName(user);
+    console.log(u);
+    let chatList = u.groups;
+    console.log(chatList);
+    let mouseholes = [];
+
+    for (let i = 0; i < chatList.length; i++){
+        let gc = await mouseHoleModel.findById(chatList[i]._id);
+        if(!gc){
+            console.log("fake");
+            continue;
+        }
+        let gc_members = [];
+        for (let j = 0; j < gc.allowedUsers.length; j++){
+
+            let member = await UserModel.findById(gc.allowedUsers[j]._id);
+            console.log("????????????????????????");
+            console.log(gc.allowedUsers[j]);
+            console.log(member);
+            if (member.username == user){
+                continue;
+            }
+            gc_members.push(member);
+        }
+        mouseholes.push({name: gc.name, members: gc_members });
+    }
+
+    return mouseholes;
+}
 
 
 //###############################################
@@ -239,15 +274,23 @@ const createMouseHole = async(name, users) => {
     for (let i = 0; i < users.length; i++){
         u = await UserModel.findByName(users[i]);
         if(u){
-            mousehole.allowedUsers.push(u._id);
+            groupChat.allowedUsers.push(u._id);
         } else {
             console.log("Mousehole unable to be made!");
-            console.log(`${u.username} not found!`);
+            console.log(`${users[i]} not found!`);
             return;
         }
     }
     console.log('i believe it worked' + groupChat.allowedUsers + groupChat.name);
     await groupChat.save();
+
+    // This loop can only run if the groupchat is successfully made with all users
+    for (let i = 0; i < users.length; i++){
+        u = await UserModel.findByName(users[i]);
+        u.groups.push(groupChat._id);
+        await u.save();
+    }
+
 }
 
 async function getChatHistory(chatId) {
@@ -753,5 +796,5 @@ async function getHordeHistory() {
 // };
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, searchUsername, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS, getContacts};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, searchUsername, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS, getUserGroups, getContacts};
 
