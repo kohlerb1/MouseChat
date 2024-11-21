@@ -48,39 +48,60 @@ const getAllUsers = async (req,res) => {
     }
 };
 
+const getContacts = async (req,res, uname) => {
+    try{
+        query = {username: uname};
+        await User.findOne(query).then( (foundUser) => {
+            const contacts = foundUser.contacts;
+            console.log("CONATCS");
+            console.log(contacts);
+            res.render('contacts',{contacts});
+        })
+        .catch((error) => {
+            res.status(404).json({ success:false, message: "Can't find ", error});
+        })
+    } catch (error) {
+        res.status(500).json({success: false, message: "Internal Server Error", error:error.message});
+    }
+};
+
 const searchUsername = async(req, res) => {
     try{
         let uname = req.body.username
-
-        let query = {username: uname};
         const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
         const profilePic = bufferData.toString('base64');
         const contentType = req.session.user.profilepicture.contentType;
+        if(uname == undefined){
+            console.log("TESTETSTETS: " + uname);
+            uname = req.session.user.username
+            let contList = [];
+            //list contacts
+        }
+        else {
+            let query = {username: uname};
+        
+            await User.findOne(query).then( (foundUser) => {
+                if (!foundUser){
+                    res.render('message',{id: req.session.user.username, message: uname + " does not exist" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
 
-        await User.findOne(query).then( (foundUser) => {
-            if (!foundUser){
-                res.render('message',{id: req.session.user.username, message: uname + " does not exist" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
-
-                //res.render("message", {message: uname + " does not exist"});
-            }
-            else {
-                if (foundUser.isOnline)
-                    res.render('message',{id: req.session.user.username, message: uname + " is online" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
-
-                    //res.render("message", {message: foundUser.username + " is online"});
-                else
-                    res.render('message',{id: req.session.user.username, message: uname + " is offline" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
-
-                    //res.render("message", {message: foundUser.id + "is offline"});
-            }
-        })
-        .catch( (error) => {
-            res.render("message", {message: "User does not exist"});
-        });
+                    //res.render("message", {message: uname + " does not exist"});
+                }
+                else {
+                    if (foundUser.isOnline)
+                        res.render('message',{id: req.session.user.username, message: uname + " is online" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
+                    else
+                        res.render('message',{id: req.session.user.username, message: uname + " is offline" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
+                }
+            })
+            .catch( (error) => {
+                res.render("message", {message: "User does not exist"});
+            });
+        }
     } catch (error) {
         res.render("message", {message: "User does not exist"});
     }
 };
+
 
 // find groupname fucntion for getting group chat url
 const findGroupname = async (req, res) => {
@@ -775,5 +796,5 @@ async function getHordeHistory() {
 // };
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, searchUsername, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS, getUserGroups};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, searchUsername, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS, getUserGroups, getContacts};
 

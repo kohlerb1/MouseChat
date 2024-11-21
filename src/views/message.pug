@@ -11,6 +11,15 @@ html
                 alert('Please enter a value!');
             }
         }
+        function redirectContacts() {
+            const self = !{JSON.stringify(id)};
+            if (self) {
+                const baseUrl = window.location.href;
+                window.location.href = baseUrl + "/" + encodeURIComponent(self) + "/contacts";
+            } else {
+                alert('Please enter a value!');
+            }
+        }
     head 
         link(rel='stylesheet' href='/styles/mainStyle.css')
         title Message
@@ -34,16 +43,17 @@ html
             button Message Group 
         br
         h2 Send A Private Squeak (Individual Messaging) 
-        form(action = "/message" method = "POST")
-            br
-            input(name = "username" type = "text" required placeholder = "check username")
-            br
-            button(name =  type = "Submit") Check User Online/Offline
         if(message)
             h4 #{message}
         form(onSubmit="event.preventDefault(); redirectToUrl();")
             input#inputBox(type="text" placeholder="Username")
             button(type="submit") Start Squeaking
+        form(action = "/message" method = "POST")
+            br
+            input(name = "username" type = "text" required placeholder = "check username" )
+            button(name =  type = "Submit") Check User Online/Offline
+        form(onSubmit="event.preventDefault(); redirectContacts();")
+            button(type="submit") See Contacts
         br
         h2 Consult The Horde (Global Messaging)
         a(href=`/message/horde/${id}`)
