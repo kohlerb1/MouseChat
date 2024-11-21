@@ -1,0 +1,16 @@
+html 
+    head 
+        link(rel='stylesheet' href='/styles/mainStyle.css')
+        title Contacts
+    body
+        script(src="/styles/themes.js")
+        include ./header.pug
+        ul
+            each user in contacts
+                li #{user}
+        br
+        br
+        br
+        a(href="/message") 
+            button Go Back
+        include ./footer.pug

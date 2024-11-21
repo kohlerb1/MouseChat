@@ -67,6 +67,13 @@ router.get('/', (req, res) => {
     res.render('homepage.pug');
 });
 router.get("/all", Controller.getAllUsers);
+
+router.get("/message/:uname/contacts", checkSignIn, (req, res) => {
+    const name = req.params.uname; 
+    console.log("uname:" + name);
+    Controller.getContacts(req, res, name); 
+});
+
 router.get("/get/:username/:password", async (req, res) => {
     try {
         const uname = req.params.username;
