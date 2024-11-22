@@ -14,8 +14,8 @@ html
             input(name="profilepicture" type="file" accept="image/jpeg,image/jpg" required placeholder="Profile Picture")
             br
             button(type = "Submit") Update
-        a(href=`/settings`)
-            button Settings
+        form(action = "/settings" method = "GET")
+            button(name =  type = "Submit") Settings 
         br
         br
         include ./footer.pug

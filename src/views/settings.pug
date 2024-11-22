@@ -21,47 +21,47 @@ html
         div Want to change your cheese? 
             br
             br
-            a(href="./updateUserCheese")
-                button Update Cheese
+            form(action = "/updateUserCheese" method = "GET")
+                button(name =  type = "Submit") Update Cheese 
             br
             br
         br
         div Want to change your name? 
             br
             br
-            a(href="./updateUserName")
-                button Update Name
+            form(action = "/updateUserName" method = "GET")
+                button(name =  type = "Submit") Update Name 
             br
             br
         br
         div Want to change your password? 
             br
             br
-            a(href="./updateUserPassword")
-                button Update Password
+            form(action = "/updateUserPassword" method = "GET")
+                button(name =  type = "Submit") Update Password 
             br
             br
         br
         div Want to Change your Profile Picture?
           p
-            a(href="./updateUserPFP")
-                button Update PFP
+            form(action = "/updateUserPFP" method = "GET")
+                button(name =  type = "Submit") Update Profile Picture 
         br
         div Want to log out?
         div 
           p 
-              a(href="/logout") 
-                    button Logout
+              form(action = "/logout" method = "GET")
+                button(name =  type = "Submit") Logout
         br
         div Want to Delete your MouseChat account?
           p 
-            a(href="./deleteUser")
-                button Delete User
+            form(action = "/deleteUser" method = "GET")
+                button(name =  type = "Submit") Delete User 
         br
-        div Want to return to chatting?
+        div Want to return to squeaking?
           p 
-            a(href="/message")
-                button Return to Chatting
+            form(action = "/message" method = "GET")
+                button(name =  type = "Submit") Return to Squeaking 
         br
         br
         br

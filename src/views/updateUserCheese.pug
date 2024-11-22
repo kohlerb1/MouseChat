@@ -15,8 +15,8 @@ html
             button(name =  type = "Submit") Update Cheese 
         br
         br
-        a(href=`/settings`)
-            button Settings
+        form(action = "/settings" method = "GET")
+            button(name =  type = "Submit") Settings 
         input(type="hidden" id="name" value=`${id}`)
         br
         include ./footer.pug
