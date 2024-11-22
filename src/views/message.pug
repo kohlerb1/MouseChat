@@ -54,6 +54,8 @@ html
             button(name =  type = "Submit") Check User Online/Offline
         form(onSubmit="event.preventDefault(); redirectContacts();")
             button(type="submit") See Contacts
+        a(href=`all`)
+            button Browse all users 
         br
         h2 Consult The Horde (Global Messaging)
         a(href=`/message/horde/${id}`)

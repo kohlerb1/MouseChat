@@ -36,9 +36,15 @@ const findUser = async (uname, pword) => {
 
 const getAllUsers = async (req,res) => {
     try{
-        User.find().sort('-date').then( (allUsers) => {
-            console.log(allUsers);
-            res.status(200).render('all',{success: true, allUsers});
+        User.find().then( (allUsers) => {
+            let output = [];
+            for(i = 0; i<allUsers.length; i++){
+                output.push(allUsers[i].username);
+            }
+            output.sort((a, b) => a.localeCompare(b));
+                //sorting gotten from chatgpt to be case insensitive
+            console.log("OUTPIT: " + output);
+            res.status(200).render('all',{success: true, output});
         })
         .catch((error) => {
             res.status(404).json({ success:false, message: "Can't find ", error});
@@ -52,7 +58,8 @@ const getContacts = async (req,res, uname) => {
     try{
         query = {username: uname};
         await User.findOne(query).then( (foundUser) => {
-            const contacts = foundUser.contacts;
+            const contacts = (foundUser.contacts).sort((a, b) => a.localeCompare(b));;
+                                        //sorting gotten from chatgpt to be case insensitive
             console.log("CONATCS");
             console.log(contacts);
             res.render('contacts',{contacts});

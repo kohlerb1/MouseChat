@@ -8,8 +8,14 @@ html
         if(type == "error")
             h3(style = "color:red") #{message} 
         else 
-            h2(style = "color:blue") Below Are All Users in the Database: 
-            each user in allUsers
+            h2(style = "color:blue") Check out all the Squeakers in the Horde: 
+            each user in output
                 p 
-                    | Username: #{user.username} | Password: #{user.password} | Favorite Cheese: #{user.cheese} 
+                    | Username: #{user}
+
+        br 
+        br
+        br
+        a(href="/message") 
+            button Go Back
         include ./footer.pug
