@@ -38,42 +38,45 @@ html
                 br
             br
         br
-        h2 Message A MouseHole (Group Messaging)
-        a(href=`/message/chooseMousehole`)
-            button Message Group 
-        br
+        h2 See who has been squeaking you
+        div(style = "display:flex; justify-content:center;" )
+            form(onSubmit="event.preventDefault(); redirectContacts();")
+                button(type="submit") See Contacts
+            form(action=`/all` method = "GET")
+                button Browse all users 
+            br
+        form(action = "/message" method = "POST")
+            br
+            input(name = "username" type = "text" required placeholder = "check username" )
+            button(name =  type = "Submit") Check User Online/Offline
         h2 Send A Private Squeak (Individual Messaging) 
         if(message)
             h4 #{message}
         form(onSubmit="event.preventDefault(); redirectToUrl();")
             input#inputBox(type="text" placeholder="Username")
             button(type="submit") Start Squeaking
-        form(action = "/message" method = "POST")
-            br
-            input(name = "username" type = "text" required placeholder = "check username" )
-            button(name =  type = "Submit") Check User Online/Offline
-        form(onSubmit="event.preventDefault(); redirectContacts();")
-            button(type="submit") See Contacts
-        a(href=`all`)
-            button Browse all users 
-        br
-        h2 Consult The Horde (Global Messaging)
-        input(type="hidden" id="name" value=`${id}`)
-        a(href=`/message/horde/${id}`)
-            button The Horde 
+        h2 Message A MouseHole (Group Messaging)
+        form(action='/message/chooseMousehole' method="GET")
+            button Message Group 
         br
         div 
         h2 Want to make a MouseHole?
           p 
-            a(href="/message/createMousehole")
+            form(action='/message/createMousehole' method="GET")
                 button Create MouseHole
         br
+        h2 Consult The Horde (Global Messaging)
+        input(type="hidden" id="name" value=`${id}`)
+        a(href=`/message/horde/${id}` style= "background-color: transparent;")
+            button The Horde 
+        br
+       
         h2 Change User Settings 
-        a(href=`/settings`)
+        form(action='/settings' method="GET")
             button Update User Settings
         br
         h2 Would you like to logout?
-        a(href="/logout")
+        form(action='/logout' method="GET")
             button Logout
         br
         br

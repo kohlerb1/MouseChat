@@ -5,13 +5,13 @@ html
     body
         script(src="/styles/themes.js")
         include ./header.pug
-        ul
+        p 
             each user in contacts
-                li #{user}
+                p #{user}
         br
         br
         br
-        a(href="/message") 
+        a(href="/message" style= "background-color: transparent;") 
             button Go Back
         include ./footer.pug
     script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")

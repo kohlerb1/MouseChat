@@ -8,7 +8,7 @@ html
         if(type == "error")
             h3(style = "color:red") #{message} 
         else 
-            h2(style = "color:blue") Check out all the Squeakers in the Horde: 
+            h2 Check out all the Squeakers in the Horde: 
             each user in output
                 p 
                     | Username: #{user}
@@ -16,7 +16,7 @@ html
         br 
         br
         br
-        a(href="/message") 
+        a(href="/message" style= "background-color: transparent;") 
             button Go Back
         include ./footer.pug
     script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
