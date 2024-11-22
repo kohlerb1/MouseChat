@@ -275,6 +275,7 @@ const createMouseHole = async(name, users) => {
 
     if(name.includes(" ") || name.includes("~")){
         console.log("Invalid name!!");
+        //res.render("createMH", {message: "Mousehole names can't contain spaces or ~ "});
         return;
     }
 

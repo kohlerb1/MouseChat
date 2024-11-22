@@ -432,6 +432,6 @@ router.post('/group', (req, res) => {
     const name = req.body.GName;
     console.log(members); // Log the array of strings
     console.log(name);
-    res.redirect('/message');
     Controller.createMouseHole(name,members);
+    res.redirect('/message');
   });

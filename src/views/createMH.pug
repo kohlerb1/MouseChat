@@ -15,9 +15,13 @@ html
         container.appendChild(input);
       }
   body
+    if(message)
+      h4(style = "color:red") #{message}
     script(src="/styles/themes.js")
     h2 Enter Info Below
     form(action="/group" method="POST")
+      div 
+        h4 Mousehole names cannot contain spaces or ~
       input(type="text" name="GName" placeholder="Enter MouseHole name" required)
       div#input-container
         input(type="text" name="members" value=id readonly)
