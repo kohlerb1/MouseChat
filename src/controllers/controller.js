@@ -79,7 +79,6 @@ const searchUsername = async(req, res) => {
         const profilePic = bufferData.toString('base64');
         const contentType = req.session.user.profilepicture.contentType;
         if(uname == undefined){
-            console.log("TESTETSTETS: " + uname);
             uname = req.session.user.username
             let contList = [];
             //list contacts
@@ -118,27 +117,20 @@ const findGroupname = async (req, res) => {
 
 // Takes in the username to find the user object id, then find all associated groupchat names 
 const getUserGroups = async (user) => {
-    console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{");
-    console.log(user);
+    
     const u = await UserModel.findByName(user);
-    console.log(u);
     let chatList = u.groups;
-    console.log(chatList);
     let mouseholes = [];
 
     for (let i = 0; i < chatList.length; i++){
         let gc = await mouseHoleModel.findById(chatList[i]._id);
         if(!gc){
-            console.log("fake");
             continue;
         }
         let gc_members = [];
         for (let j = 0; j < gc.allowedUsers.length; j++){
 
             let member = await UserModel.findById(gc.allowedUsers[j]._id);
-            console.log("????????????????????????");
-            console.log(gc.allowedUsers[j]);
-            console.log(member);
             if (member.username == user){
                 continue;
             }
@@ -266,7 +258,6 @@ const logout = async (req, res) => {
 // users is an array of username strings 
 // Method creates a groupchat given the name of the chat and an array of the users, will fail to create the chat if any of the specified users don't exist
 const createMouseHole = async(name, users) => {
-    console.log(users);
 
     if (await mouseholeExists(name)) {
         console.log("Group Chat Already Exists!!");
@@ -294,7 +285,6 @@ const createMouseHole = async(name, users) => {
             return;
         }
     }
-    console.log('i believe it worked' + groupChat.allowedUsers + groupChat.name);
     await groupChat.save();
 
     // This loop can only run if the groupchat is successfully made with all users
@@ -309,7 +299,6 @@ const createMouseHole = async(name, users) => {
 async function getChatHistory(chatId) {
     //const groupChat = await groupChatModel.findById(chatId).populate('chatHistory');
     const groupChat = await MouseHole.findById(chatId);
-    console.log(groupChat);
     //console.log(groupChat.chatHistory);
     if(!groupChat){
         return [];
@@ -318,20 +307,13 @@ async function getChatHistory(chatId) {
     let mouseHoleHistory = [];
 
     for (let i = 0; i < chatHistory.length; i++){
-        console.log("===========");
-        console.log(chatHistory[i]);
         msg = await Message.findById(chatHistory[i]._id);
         if(!msg){
-            console.log("not found");
             continue;
         }  
         sender = await UserModel.findById(msg.sender._id);
         mouseHoleHistory.push(`${sender.username}: ${msg.content}`);
     }
-    console.log("----------------")
-    console.log(chatHistory);
-    console.log("-------------");
-    console.log(mouseHoleHistory);
     return(mouseHoleHistory);
 }
 
@@ -737,20 +719,13 @@ async function getChatHistoryPS(sender, receiver) {
     let PSHistory = [];
 
     for (let i = 0; i < chatHistory.length; i++){
-        console.log("===========");
-        console.log(chatHistory[i]);
         msg = await Message.findById(chatHistory[i]._id);
         if(!msg){
-            console.log("not found");
             continue;
         }  
         sender = await UserModel.findById(msg.sender._id);
         PSHistory.push(`${sender.username}: ${msg.content}`);
     }
-    console.log("----------------")
-    console.log(chatHistory);
-    console.log("-------------");
-    console.log(PSHistory);
     return(PSHistory);
 }
 
