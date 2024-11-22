@@ -236,7 +236,7 @@ const login = async(req, res) => {
         bcrypt.compare( pword, hashPassword)
         .then(function(result) {
             if (result == true){ // if true than successful login, start a session and redirect to protected page
-                changeActive(true, user.username, user.password);
+                //changeActive(true, user.username, user.password);
                 user.isOnline = true
                 req.session.user = user;
                 res.redirect('/message');
@@ -255,7 +255,7 @@ const logout = async (req, res) => {
     let pword = req.session.user.password;
     // destroy the current user's session 
     await req.session.destroy( () => {
-        changeActive(false, user, pword)
+        //changeActive(false, user, pword)
         console.log(`${user} logged out`);
     });
     // send user back to the homepage 
@@ -599,14 +599,37 @@ const updateUserName = async (req, res) => {
 //###############################################
 // active status updaters ######################
 //###############################################
-const changeActive = async(active, username, password) =>{
+const onlineOn = async(username) =>{
     try{
         //get username password from call, password should be hashed variety
         let uname = username;
-        let pword = password;
         //make query and update on approproate infromation
-        let query = {username: uname, password: pword};
-        let update = {isOnline: active};
+        let query = {username: uname};
+        let update = {isOnline: true};
+        //update cheese of user that matches user
+        await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
+            if (!foundUser){ //if no user macthes session, rerender page and display error
+                console.log("could not find user to update active statuc")
+                return;
+            }
+        //req.session.user = foundUser;  
+        return;
+        })
+        .catch ( (error) => { //catch find and update errors to display error to user
+            console.log("update status small catch")
+            return;
+        }) 
+    } catch (error){ //catch big try block and display error
+        console.log("update status big catch")
+        return;
+    }
+};
+
+const onlineOff = async(socketid) =>{
+    try{
+        //make query and update on approproate infromation
+        const query = {socketID: socketid}
+        let update = {isOnline: false};
         //update cheese of user that matches user
         await User.findOneAndUpdate(query, update, {new:true}).then( (foundUser) => {
             if (!foundUser){ //if no user macthes session, rerender page and display error
@@ -803,5 +826,5 @@ async function getHordeHistory() {
 // };
 
 
-module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, searchUsername, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS, getUserGroups, getContacts};
+module.exports = {createUser, deleteUser, updateUserCheese, updateUserPfp, login, getAllUsers, searchUsername, logout, updateUserName, updateUserPassword, getChatHistory, createMouseHole, findUsername, updateUserSocket, resetUserSocket, createPS, findUsername, updatePS, getHordeHistory, getChatHistoryPS, getUserGroups, getContacts, onlineOn, onlineOff};
 

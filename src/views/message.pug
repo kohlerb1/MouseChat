@@ -58,6 +58,7 @@ html
             button Browse all users 
         br
         h2 Consult The Horde (Global Messaging)
+        input(type="hidden" id="name" value=`${id}`)
         a(href=`/message/horde/${id}`)
             button The Horde 
         br
@@ -83,6 +84,7 @@ html
             audio.play();
             }
         include ./footer.pug
-
+    script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+    script(src="/public/clientDefault.js")
 
         

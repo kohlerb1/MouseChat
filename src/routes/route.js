@@ -209,6 +209,17 @@ router.get('/message/mousehole/:groupName~:username', checkSignIn, (req, res) =>
 io.on('connection', (socket) => {
     console.log('a user connected');
 
+    socket.on('disconnect', async() => {
+        console.log('a user disconnected');
+        await Controller.onlineOff(socket.id);
+    });
+
+    socket.on('onlineKeep', async (uname) => {
+        await Controller.updateUserSocket(uname, socket.id);
+        console.log("USER: " + uname);
+        Controller.onlineOn(uname);
+    });
+
     socket.on('establishSocketPS', async (sndrcv) => {
         
         Controller.updateUserSocket(sndrcv.sender, socket.id);
@@ -222,10 +233,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('disconnect', () => {
-        console.log('a user disconnected');
-        //Controller.resetUserSocket(socket.id);
-    });
 
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);

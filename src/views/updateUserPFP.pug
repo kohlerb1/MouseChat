@@ -8,6 +8,7 @@ html
         h2 Select your new Profile Picture 
         if(message)
             h4(style = "color:red") #{message} 
+        input(type="hidden" id="name" value=`${id}`)
         form(action = "/updateUserPFP" method = "POST" enctype="multipart/form-data")
             br
             input(name="profilepicture" type="file" accept="image/jpeg,image/jpg" required placeholder="Profile Picture")
@@ -16,3 +17,5 @@ html
             br
             br
             include ./footer.pug
+    script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+    script(src="/public/clientDefault.js")

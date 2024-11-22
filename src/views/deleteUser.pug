@@ -18,4 +18,7 @@ html
             button(type = "Submit") Delete
             br
             br
+        input(type="hidden" id="name" value=`${id}`)
         include ./footer.pug
+    script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+    script(src="/public/clientDefault.js")

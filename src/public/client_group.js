@@ -19,7 +19,7 @@ const group = user_info.split("~")[0];
 
 console.log(user);
 console.log(group);
-
+socket.emit('onlineKeep', user);
 
 console.log('consts declared');
 

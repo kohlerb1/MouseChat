@@ -15,6 +15,8 @@ const messages = document.getElementById('messages');
 socket.emit('establishSocketPS', {sender, recipient});
 console.log('consts declared');
 
+
+socket.emit('onlineKeep', sender);
 //Adapted from ChatGPT Code
 form.addEventListener('submit', (e) => {
     e.preventDefault();

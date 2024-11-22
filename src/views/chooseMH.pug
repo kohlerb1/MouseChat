@@ -26,6 +26,7 @@ html
     title Choose MouseHole
   body
     script(src="/styles/themes.js")
+    input(type="hidden" id="name" value=`${id}`)
     h2 Type in MouseHole You Want to Squeak
     div
       h3 MouseHoles You're A Part Of
@@ -46,3 +47,6 @@ html
     a(href="/message") 
       button Go Back
     include ./footer.pug 
+    
+    script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
+    script(src="/public/clientDefault.js")

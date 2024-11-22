@@ -15,6 +15,7 @@ const [path1, path2, path3, uname] = reciever.split("/");
 console.log("Uname: " + uname);
 
 
+socket.emit('onlineKeep', uname);
 //Adapted from ChatGPT Code
 
 form.addEventListener('submit', (e) => {
