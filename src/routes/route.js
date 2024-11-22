@@ -178,9 +178,7 @@ router.get("/message/createMousehole", checkSignIn, (req, res) => {
 //generate group selection page
 router.get("/message/chooseMousehole", checkSignIn, async (req, res) => {
     const chatList = await Controller.getUserGroups(req.session.user.username);
-    console.log("^^^^^^^^^^^^^^^^");
-    console.log(chatList);
-    console.log("^^^^^^^^^^^^^^^^");
+    
     res.render("chooseMH", {id: req.session.user.username, chatList});
 })
 
@@ -297,16 +295,12 @@ io.on('connection', (socket) => {
     socket.on('joinGroupChat', async (msg) => {
         userId = msg.user;
         groupName = msg.group;
-        console.log(userId);
-        console.log(groupName);
         // Gets the groupChat object for the specified groupChat name and populates the data for each allowed User in the allowedUsers field of the groupChat object 
         const groupChat = await MouseHole.findOne({ name: groupName}).populate('allowedUsers');
 
         // If the groupChat exists 
         if (groupChat) {
-            console.log("groupchat found");
             const user = await UserModel.findOne({username: userId});
-            console.log(user);
             // If there is a user in the allowed users that matches the current user
             if (groupChat.allowedUsers.some(u => u._id.equals(user._id))) {
                 socket.join(groupName)
@@ -314,17 +308,14 @@ io.on('connection', (socket) => {
                 // Get the chat history for the group chat
                 const chatHistory = await getChatHistory(groupChat._id);
                 if( chatHistory != null || !chatHistory){
-                    console.log(chatHistory);
                     socket.emit('chatHistory', chatHistory);
                 }
                 // console.log(chatHistory);
                 // socket.emit('chatHistory', chatHistory);
             } else {
-                console.log("you arent in this one bud");
                 socket.emit('error', 'You are not a part of this groupChat');
             }
         } else {
-            console.log("schizo");
             socket.emit('error', 'Groupchat does not exist');
         }
     });
@@ -333,29 +324,18 @@ io.on('connection', (socket) => {
         const userId = msg.user;
         const groupName = msg.group;
         const content = msg.content;
-        console.log(userId);
-        console.log("%%%%%%%%%%%%%%%");
-        console.log(groupName);
-        console.log("%%%%%%%%%%%%%%%");
-        console.log(content);
         // Find group chat by name
         const groupChat = await MouseHole.findOne({name: groupName});
         const user_objID = await UserModel.findOne({username: userId});
 
         // Create the message object
         if(groupChat){
-            console.log("Groupchat found!!!!!!!");
             const message = new Message({
                 sender: user_objID._id,
                 content: content,
             });
-            console.log("----------------");
-            console.log(message);
-            console.log(message.content);
-            console.log("-------------");
 
             const sendable = groupChat.allowedUsers.some(u => u._id.equals(user_objID._id));
-            console.log(sendable);
             if(!sendable){
                 return;
             }
@@ -370,7 +350,6 @@ io.on('connection', (socket) => {
                 sender: userId,
                 content: message.content,
             });
-            console.log("Group message signal sent");
         } else {
             socket.emit('error', 'Groupchat not found');
         }
@@ -430,8 +409,6 @@ router.get("/*", (req, res) => {
 router.post('/group', (req, res) => {
     const members = req.body.members; // Access the array of strings
     const name = req.body.GName;
-    console.log(members); // Log the array of strings
-    console.log(name);
     Controller.createMouseHole(name,members);
     res.redirect('/message');
   });
