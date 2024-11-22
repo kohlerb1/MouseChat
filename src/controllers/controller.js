@@ -58,8 +58,13 @@ const getContacts = async (req,res, uname) => {
     try{
         query = {username: uname};
         await User.findOne(query).then( (foundUser) => {
-            const contacts = (foundUser.contacts).sort((a, b) => a.localeCompare(b));;
+            let contacts = (foundUser.contacts).sort((a, b) => a.localeCompare(b));;
                                         //sorting gotten from chatgpt to be case insensitive
+            if (contacts.length == 0){
+                contacts.push("No Contacts Yet!! Get Squeaking!!");
+                contacts.save;
+            }
+                
             console.log("CONATCS");
             console.log(contacts);
             res.render('contacts',{contacts});

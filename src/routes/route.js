@@ -48,6 +48,14 @@ const checkSignIn = (req, res, next) => { // note: does not work on redirect fro
     }
 };
 
+const validateUser = (userSession, uname) => { // note: does not work on redirect from inital signup, but works on login
+    if(userSession == uname){
+        return true; //If session exists, proceed to page
+    } else{
+       return false;
+    }
+};
+
 // router call for proected page, calls checksign in for authication before accessing protected page
 router.get('/protected', checkSignIn, (req, res) => {
     // Code used to unpack the buffer data from the picture and pass it to the pug file comes from ChatGPT
@@ -71,7 +79,12 @@ router.get("/all", Controller.getAllUsers);
 router.get("/message/:uname/contacts", checkSignIn, (req, res) => {
     const name = req.params.uname; 
     console.log("uname:" + name);
-    Controller.getContacts(req, res, name); 
+    if(validateUser(req.session.user.username, name)){
+        Controller.getContacts(req, res, name); 
+    } else {
+        res.render('not_logged.pug');
+    }
+    
 });
 
 router.get("/get/:username/:password", async (req, res) => {
@@ -182,9 +195,17 @@ router.get("/message/chooseMousehole", checkSignIn, async (req, res) => {
     res.render("chooseMH", {id: req.session.user.username, chatList});
 })
 
+
+
 router.get('/message/horde/:sender', checkSignIn, async (req, res) => {
-    const hordeHistory = await Controller.getHordeHistory();
-    res.render('horde_message', { hordeHistory });
+    const name = req.params.sender; 
+    if (validateUser(req.session.user.username, name)){
+        const hordeHistory = await Controller.getHordeHistory();
+        res.render('horde_message', { hordeHistory });
+    }
+    else
+        res.render('not_logged.pug');
+    
 })
 
 router.get('/all', checkSignIn, async (req, res) => {
@@ -198,13 +219,35 @@ router.get('/socket-test', (req, res) => {
 });
 
 router.get("/message/:sndrcv", checkSignIn, (req,res) => { 
-    res.render('PS');
+    const [sender, rec] = req.params.sndrcv.split("~");
+    console.log("SENDER: " + sender);
+    console.log("SESSION NAME: " + req.session.user.username);
+    if (validateUser(req.session.user.username, sender))
+        res.render('PS');
+    else
+        res.render('not_logged.pug');
     //const name = path.join(__dirname, '../storage/PS.html');
     //res.sendFile(name);
 });
 router.get('/message/mousehole/:groupName~:username', checkSignIn, (req, res) => {
-    res.render('groupMessage');
+    const name = req.params.username; 
+    console.log("uname:" + name);
+    if(validateUser(req.session.user.username, name)){
+        res.render('groupMessage');
+    } else {
+        res.render('not_logged.pug');
+    }
+    
 })
+
+
+
+
+
+
+
+
+
 
 io.on('connection', (socket) => {
     console.log('a user connected');
