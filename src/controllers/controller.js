@@ -455,7 +455,7 @@ const updateUserPfp = async (req, res) => {
 const internalUpdate = async(uname, pword, req, res) => {
     let user = await findUser(uname, pword); //finds matching username/password in database, updates session to it
     req.session.user = user;
-    res.redirect('/message'); //redirects to user protected page
+    res.redirect('/settings'); //redirects to user protected page
 };
 //************LINE 200 */////////////// 
 
