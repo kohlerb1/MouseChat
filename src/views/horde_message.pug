@@ -23,11 +23,17 @@ html
       input#content(type="text" name="content" required placeholder="Type your squeak here...")
 
   
-      button(type="submit") Send Squeak
+      button(type="submit" onclick ="playSound()") Send Squeak
     br
     br
-    a(href="/message") 
+    a(href="/message" style= "background-color: transparent;") 
         button Go Back
     include ./footer.pug
     script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")
     script(src="/public/clientHorde.js")
+    script.
+            function playSound() {
+            const audio = new Audio('https://raw.githubusercontent.com/kohlerb1/MouseChat/main/src/views/styles/Squeaky%20Toy%20Sound%20Effect.mp3');
+            audio.volume = 0.15;
+            audio.play();
+            }

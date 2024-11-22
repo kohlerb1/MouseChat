@@ -187,7 +187,9 @@ router.get('/message/horde/:sender', checkSignIn, async (req, res) => {
     res.render('horde_message', { hordeHistory });
 })
 
-
+router.get('/all', checkSignIn, async (req, res) => {
+    res.render('all');
+})
 
 //************SOCKET DIRECTS************************** */
 router.get('/socket-test', (req, res) => {  
