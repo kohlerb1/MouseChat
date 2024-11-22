@@ -273,6 +273,11 @@ const createMouseHole = async(name, users) => {
         return;
     }
 
+    if(name.includes(" ") || name.includes("~")){
+        console.log("Invalid name!!");
+        return;
+    }
+
     const groupChat = new MouseHole({
         name: name,
         allowedUsers: [], 
