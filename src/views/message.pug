@@ -49,9 +49,9 @@ html
             br
             input(name = "username" type = "text" required placeholder = "check username" )
             button(name =  type = "Submit") Check User Online/Offline
-        h2 Send A Private Squeak (Individual Messaging) 
         if(message)
             h4 #{message}
+        h2 Send A Private Squeak (Individual Messaging) 
         form(onSubmit="event.preventDefault(); redirectToUrl();")
             input#inputBox(type="text" placeholder="Username")
             button(type="submit") Start Squeaking

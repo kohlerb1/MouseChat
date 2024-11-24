@@ -218,12 +218,21 @@ router.get('/socket-test', (req, res) => {
     res.sendFile(name);
 });
 
-router.get("/message/:sndrcv", checkSignIn, (req,res) => { 
+router.get("/message/:sndrcv", checkSignIn, async (req,res) => { 
     const [sender, rec] = req.params.sndrcv.split("~");
     console.log("SENDER: " + sender);
     console.log("SESSION NAME: " + req.session.user.username);
     if (validateUser(req.session.user.username, sender))
-        res.render('PS');
+        if(await Controller.userExists(rec)){
+            res.render('PS');
+        }
+        else{
+            //const bufferData = Buffer.from(req.session.user.profilepicture.data.data);
+            //const profilePic = bufferData.toString('base64');
+            //const contentType = req.session.user.profilepicture.contentType;
+            //res.render('message',{id: req.session.user.username, message: rec + " does not exist" ,cheese: req.session.user.cheese, pic: `data:${contentType};base64,${profilePic}`});
+            res.redirect('/message')
+        }
     else
         res.render('not_logged.pug');
     //const name = path.join(__dirname, '../storage/PS.html');
@@ -264,7 +273,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('establishSocketPS', async (sndrcv) => {
-        
+        if( !(await Controller.userExists(sndrcv.recipient)) )
+            return;
         Controller.updateUserSocket(sndrcv.sender, socket.id);
         const sndObject = await Controller.findUsername(sndrcv.sender);
         const rcvObject = await Controller.findUsername(sndrcv.recipient);
