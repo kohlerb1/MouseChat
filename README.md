@@ -11,7 +11,13 @@ Bryan Kohler
 Jason Birdsong
 
 # Content
-To view the User Guide and watch the Tech Demo, go to the docs folder
+To Use MouseChat, use the following link:
+[MouseChat](https://mousechat-04752a8a3873.herokuapp.com/)
+
+To See the User Guide use the following link:
+[User Guide](/docs/Final%20User%20Guide.md)
+
+To watch the Tech Demo, go to the docs folder
 
 To view how we connected to the MongoDB database, go to the src>config folder and select the db.js file
 
