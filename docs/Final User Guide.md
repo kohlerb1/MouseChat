@@ -17,7 +17,7 @@
 ### <u> MouseChat Login </u>
 - On the MouseChat login page, (`/login`) the user is presented with the standard MouseChat header logo and the footer.  They also see two text boxes and a button.  The first text box is the User ID box.  This text box is where the user would type in their existing username/User ID.  The second text box is the Password box.  This box is where the user would type in their existing password.  To login, the user would enter their existing and corresponding login information and click the “Log in” button. 
 
-<img src = "../figures/login.png" height="200">
+<img src = "../figures/Login.png" height="200">
 
 ### <u> Themes (Visuals/CSS) </u>
 - On every page, in the footer near the bottom, There is a section to choose a theme.  There are currently 7 themes for users to choose from in the form of radio buttons: Mouse, Rat, Cheese, Field, Space Mouse, Lab Rat, and Black Plague.  When a user clicks/selects one of the options, the color scheme of the site changes.  This change will persist through the site, even if the user closes out of the site and reopens it.
